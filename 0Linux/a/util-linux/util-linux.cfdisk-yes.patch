@@ -1,0 +1,25 @@
+From ce3134dfdd3a9feb614050cbf742cec4c97e984b Mon Sep 17 00:00:00 2001
+From: Karel Zak <kzak@redhat.com>
+Date: Tue, 26 Aug 2014 17:03:11 +0200
+Subject: cfdisk: wrong interpretation of yes in non-english language
+
+Reported-by: tnut@nutyx.org
+Signed-off-by: Karel Zak <kzak@redhat.com>
+
+diff --git a/disk-utils/cfdisk.c b/disk-utils/cfdisk.c
+index 88f9b48..3f2698e 100644
+--- a/disk-utils/cfdisk.c
++++ b/disk-utils/cfdisk.c
+@@ -1870,8 +1870,8 @@ static int main_menu_action(struct cfdisk *cf, int key)
+ 			  buf, sizeof(buf));
+ 
+ 		ref = 1;
+-		if (rc <= 0 || strcasecmp(buf, "yes") != 0
+-			    || strcasecmp(buf, _("yes")) != 0) {
++		if (rc <= 0 || (strcasecmp(buf, "yes") != 0
++			        && strcasecmp(buf, _("yes"))) != 0) {
+ 			info = _("Did not write partition table to disk");
+ 			break;
+ 		}
+-- 
+cgit v0.10.1
