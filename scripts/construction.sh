@@ -152,11 +152,14 @@ for param in $@; do
 		# Si on doit régénérer une image ISO :
 		elif [ ! "$(echo ${param} | grep 'generer-iso')" = "" ]; then
 			
+			# On définit la version du système :
+			source /etc/os-release
+			
 			# On découpe le paramètre pour savoir quel type d'ISO on doit générer (mini, maxi, etc.) :
 			ISOTYPE="$(echo ${param} | cut -d'-' -f3)"
 			
 			# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
-			sudo rm -rf /usr/local/temp/iso/*
+			sudo rm -rf /usr/local/temp/iso/${VERSION}/*
 			sudo TMP=/usr/local/temp 0creation_live --${ISOTYPE} ${PKGREPO}/$(uname -m)/
 			
 			# On copie le noyau et l'initrd fraîchement générés :
@@ -167,7 +170,7 @@ for param in $@; do
 			NOMISO=$(ls -1 /usr/local/temp/iso/)
 			
 			# On copie l'image et on génère la somme de contrôle MD5 :
-			cp /usr/local/temp/iso/${NOMISO} $(pwd)/../../../pub/iso/${VERSION}/
+			cp /usr/local/temp/iso/${NOMISO} $(pwd)/../../../pub/iso/${VERSION}
 			cd $(pwd)/../../../pub/iso/${VERSION}/
 			md5sum ${NOMISO} > ${NOMISO}.md5
 			cd -
