@@ -150,13 +150,13 @@ for param in $@; do
 				done 
 		
 		# Si on doit régénérer une image ISO :
-		elif [ ! "$(echo '${param}' | grep 'generer-iso')" = "" ]; then
+		elif [ ! "$(echo ${param} | grep 'generer-iso')" = "" ]; then
 			
 			# On découpe le paramètre pour savoir quel type d'ISO on doit générer (mini, maxi, etc.) :
 			ISOTYPE="$(echo ${param} | cut -d'-' -f3)"
 			
 			# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
-			rm -rf /usr/local/temp/iso
+			sudo rm -rf /usr/local/temp/iso
 			sudo TMP=/usr/local/temp 0creation_live --${ISOTYPE} ${PKGREPO}/$(uname -m)/
 			
 			# On copie le noyau et l'initrd fraîchement générés :
