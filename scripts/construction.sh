@@ -156,7 +156,7 @@ for param in $@; do
 			ISOTYPE="$(echo ${param} | cut -d'-' -f3)"
 			
 			# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
-			sudo rm -rf /usr/local/temp/iso
+			sudo rm -rf /usr/local/temp/iso/*
 			sudo TMP=/usr/local/temp 0creation_live --${ISOTYPE} ${PKGREPO}/$(uname -m)/
 			
 			# On copie le noyau et l'initrd fraîchement générés :
