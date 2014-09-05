@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.5.14
+VERSION=5.6.0
 WGET=http://www.php.net/distributions/$NAMESRC-$VERSION.tar.bz2
 DESC="Le langage de programmation PHP"
 
@@ -37,6 +37,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-ctype=shared \
 	--enable-dba=shared \
 	--enable-exif=shared \
+	--enable-fpm \
 	--enable-ftp=shared \
 	--enable-gd-jis-conv \
 	--enable-gd-native-ttf \
@@ -64,6 +65,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-config-file-path=/etc/httpd \
 	--with-curl=shared \
 	--with-enchant=shared,/usr \
+	--with-fpm-user=apache \
+	--with-fpm-group=apache \
 	--with-freetype-dir=/usr \
 	--with-gd=shared \
 	--with-gettext=shared,/usr \
@@ -103,8 +106,25 @@ mv ${PKG}/etc/php/pear.conf{,.0nouveau}
 # On en a fini avec le 'httpd.conf' :
 rm -rf ${PKG}/etc/httpd
 
+# On place le service pour php-fpm, désactivé par défaut :
+mkdir -p ${PKG}/etc/{rc.d,fpm.d}
+cp sapi/fpm/init.d.php-fpm ${PKG}/etc/rc.d/rc.php-fpm
+
+# On crée le répertoire des sessions d ePHP :
+mkdir -p ${PKG}/var/lib/php
+chmod 770 ${PKG}/var/lib/php
+
 installer_doc
 creer_post_installation
+
+# On complète la post-installation en s'assurant des permissions :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On s'assure de permissions des sessions PHP :
+chown root:apache var/lib/php
+
+EOF
+
 stripper
 empaqueter
 

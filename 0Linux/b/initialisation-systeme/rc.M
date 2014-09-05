@@ -142,6 +142,11 @@ if [ -x /etc/rc.d/rc.httpd ]; then
 	/etc/rc.d/rc.httpd start
 fi
 
+# Lancement de PHP-FPM:
+if [ -x /etc/rc.d/rc.php-fpm ]; then
+	/etc/rc.d/rc.php-fpm start
+fi
+
 # Lancement de GPSd :
 if [ -x /etc/rc.d/rc.gpsd ]; then
 	/etc/rc.d/rc.gpsd start
