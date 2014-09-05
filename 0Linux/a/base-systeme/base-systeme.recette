@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.3.1
+VERSION=5.3.2
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
 
@@ -277,7 +277,16 @@ blacklist wdt_pci
 
 EOF
 
-# On crée le fichier de configuration pour les modules gérant l'USB :
+# On crée le fichier de blacklist du module 'floppy' :
+cat > ${PKG}/etc/modprobe.d/blacklist-floppy.conf.0nouveau << "EOF"
+# Le module 'floppy' pour les antiques lecteurs de disquettes fait
+# planter 'fdisk -l' entre autres s'il est chargé mais qu'aucun lecteur
+# n'est présent sur le contrôleur (il faut le désactiver dans le BIOS/EFI,
+# on bannit donc le pilote par précaution) :
+blacklist floppy
+
+EOF
+
 cat > ${PKG}/etc/modprobe.d/usb.conf.0nouveau << "EOF"
 # On s'assure de lancer d'abord ehci_hcd pour les hôtes USB ohci et uhci
 # pour s'éviter des messages d'avertissement du noyau :
