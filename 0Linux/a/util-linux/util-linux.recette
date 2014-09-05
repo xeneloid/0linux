@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.25
+VERSION=2.25.1
 WGET=http://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Ensemble d'outils système vitaux"
 
@@ -14,10 +14,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
-	
-	# On corrige le comportement de 'cfdisk' en français qui empêche de 
-	# partitionner (lol.) :
-	cat $CWD/util-linux.cfdisk-yes.patch | patch -p1
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -50,10 +46,6 @@ cflags
 # présent ; voir le paquet 'binutils'.
 
 # On n'installe pas non plus 'hostname' ; voir le paquet 'net-tools'
-
-# On corrige le comportement de 'cfdisk' en français qui empêche de 
-# partitionner (lol.) :
-cat $CWD/util-linux.cfdisk-yes.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
