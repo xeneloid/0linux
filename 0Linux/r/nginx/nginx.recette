@@ -19,7 +19,7 @@ chmod 0700 ${PKG}/var/lib/nginx
 
 # On corrige l'emplacement de la configuration pour les hôtes virtuels et la
 # documentation HTML :
-sed -i -e "/root[ ]*html/s|html;|/usr/doc/${NAMETGS}-${VERSION}/&|" \
+sed -i -e "/root[ ]*html/s|html;|/usr/doc/${NAMETGZ}-${VERSION}/&|" \
 	-e '$s|.*|    include /etc/nginx/nginx.conf.d/\*.conf;\n&|' \
 	conf/nginx.conf
 
