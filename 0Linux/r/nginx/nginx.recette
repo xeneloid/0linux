@@ -3,8 +3,8 @@
 
 VERSION=1.6.1
 WGET=http://nginx.org/download/$NAMESRC-$VERSION.tar.gz
-DESC="Des bibliothèques et outils pour faire fonctionner quelque chose de précis..."
-EXTRADEPS="geoiplibtruc libmachin gconf xproto"
+DESC="Serveur/ proxy inverse HTTP et proxy IMAP/POP3 hautes performances"
+EXTRADEPS="geoip"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
