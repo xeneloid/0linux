@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.3.2
+VERSION=5.3.3
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
 
@@ -19,7 +19,7 @@ mkdir -p ${PKG}/usr/{bin,dict,doc,include,info,lib${LIBDIRSUFFIX},local/paquets,
 mkdir -p ${PKG}/usr/man/man{1,2,3,4,5,6,7,8,9,n}
 mkdir -p ${PKG}/usr/share/{games,wallpapers}
 mkdir -p ${PKG}/run/lock
-mkdir -p ${PKG}/var/{cache,empty,local,mail,opt,spool,tmp}
+mkdir -p ${PKG}/var/{cache,empty,games,local,mail,opt,spool,tmp}
 mkdir -p ${PKG}/var/log/{packages,removed_packages,removed_scripts,setup,scripts}
 
 # Le cas du multilib sous x86_64 : '/usr/lib' n'est pas un lien :
@@ -33,6 +33,13 @@ chmod 1710 ${PKG}/root
 
 # Les répertoires temporaires :
 chmod 1777 ${PKG}/{var/tmp,tmp}
+
+# Les scores des jeux doivent être totalement accessibles au groupe :
+chmod 0775 var/games
+
+# Certains répertoires partagés critiques :
+chmod 1777 var/mail
+chmod 1777 run/lock
 
 # La hiérarchie pour les paquets compilés par recettes :
 chmod -R 777 ${PKG}/usr/local/paquets

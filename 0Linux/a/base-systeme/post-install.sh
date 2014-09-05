@@ -314,6 +314,7 @@ chown root.utmp run/utmp* var/log/wtmp* >/dev/null 2>&1
 chmod 664 run/utmp* >/dev/null 2>&1
 chown root.shadow etc/shadow* etc/gshadow* >/dev/null 2>&1
 chgrp ftp srv/ftp >/dev/null 2>&1
+chgrp games var/games >/dev/null 2>&1
 
 # La fonction de traitement des fichiers '*.0nouveau', normalement appelée
 # dans creer_post_installation() :
