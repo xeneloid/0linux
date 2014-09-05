@@ -169,7 +169,8 @@ for param in $@; do
 			# On déduit le nom de l'image ISO :
 			NOMISO=$(ls -1 /usr/local/temp/iso/)
 			
-			# On copie l'image et on génère la somme de contrôle MD5 :
+			# On nettoie toute ancienne image, on copie l'image et on génère la somme de contrôle MD5 :
+			rm -f $(pwd)/../../../pub/iso/${VERSION}/*-${ISOTYPE}-$(uname -m).iso*
 			cp /usr/local/temp/iso/${NOMISO} $(pwd)/../../../pub/iso/${VERSION}
 			cd $(pwd)/../../../pub/iso/${VERSION}/
 			md5sum ${NOMISO} > ${NOMISO}.md5
