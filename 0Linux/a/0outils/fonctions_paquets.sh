@@ -259,7 +259,7 @@ preparer_sources() {
 			else
 				echo "L'archive contient des fichiers en vrac. Extraction dans :"
 				echo "	${TMP}/${CURRENTARCHIVE}/"
-				NAME="${TMP}/${CURRENTARCHIVE}"
+				NAME="${CURRENTARCHIVE}"
 				mkdir -p ${TMP}/${CURRENTARCHIVE}
 				tar xf ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -C $TMP/${CURRENTARCHIVE}
 			fi

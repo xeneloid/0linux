@@ -6,19 +6,9 @@ EXT=tar.xz
 WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
 DESC="Outils réseau pour Linux"
 
-
 telecharger_sources
 cflags
-
-# On décompacte et on se place dans les sources :
-mkdir -p $TMP/net-tools
-tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-$VERSION.$EXT -C $TMP/net-tools
-cd $TMP/net-tools
-
-# On vérifie les permissions des sources :
-find . \
-	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
-	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+preparer_sources
 
 # Configuration un peu spéciale :
 sed -i -e '/Token/s/y$/n/' config.in
@@ -43,13 +33,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 fakeroot make update BASEDIR=${PKG}
 
-# On inclut le programme de Slackware pour l'extraction de données réseau :
+# On inclut le programme de Slackware pour la détection du masque réseau :
 cc -O2 -o ${PKG}/bin/ipmask $CWD/ipmask.c
 chmod 755 ${PKG}/bin/ipmask
 
 # On déplace ces binaires où il faut :
 mv ${PKG}/{,s}bin ${PKG}/usr/
-mv ${PKG}/usr/bin/{ifconfig,route} ${PKG}/usr/sbin/
 
 # On crée quelques binaires pointant sur 'hostname' - et non en dur :
 rm -f ${PKG}/usr/bin/dnsdomainname
@@ -70,7 +59,5 @@ installer_doc
 creer_post_installation
 stripper
 empaqueter
-
-rm -rf $TMP/net-tools
 
 # C'est fini.
