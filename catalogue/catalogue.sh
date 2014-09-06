@@ -34,8 +34,8 @@ nom_court() {
 	echo $(basename "${1}" | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n)
 }
 
-# Affiche le champ de la base de données du journal demandé.
-# $f (nom|paquet|emplacement|taille|dépendances)
+# Affiche le champ de la base de données du paquet demandé.
+# $f (nom|paquet|emplacement|taille|deps) NOMDEPAQUET
 afficher_champ_db() {
 	[ "$1" = "" ] && echo "Erreur : Champ de la db non spécifié !" && exit 1
 	[ "$1" = "nom" ] && IDCHAMP="1"
