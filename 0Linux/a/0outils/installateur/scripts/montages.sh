@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# NOTE : un argument à l'appel de ce script permet d'automatiser le traitement
+# du montage de '/tmp' en tpmfs.
+
 # On nettoie avant toute chose :
 rm -f $TMP/fstab
 unset MOUNTPART MOUNTDIR FSMOUNT MOUNTOPTIONS MAJORMINOR LINE LINEDOS
@@ -137,51 +140,58 @@ echo "proc        /proc       proc        nosuid,noexec,nodev    0 0" >> ${SETUP
 echo "tmpfs       /run        tmpfs       defaults               0 0" >> ${SETUPROOT}/etc/fstab
 echo "sysfs       /sys        sysfs       nosuid,noexec,nodev    0 0" >> ${SETUPROOT}/etc/fstab
 
-# Boucle d'affichage du menu du choix pour le montage de '/tmp' en tmpfs :
-while [ 0 ]; do
-	if [ "${INSTALLDEBUG}" = "" ]; then
-		clear
+# Boucle d'affichage du menu du choix pour le montage de '/tmp' en tmpfs.
+# L'argument permet d'ignorer et d'automatiser le traitement :
+if [ -n "${1}" ]; then
+	if [ "${1}" = "tmp_tmpfs" ]; then
+		echo "tmpfs       /tmp        tmpfs       defaults               0 0" >> ${SETUPROOT}/etc/fstab
 	fi
-	echo -e "\033[1;32mMonter '/tmp' en RAM ?\033[0;0m"
-	echo ""
-	echo "Si vous possédez suffisamment de mémoire vive (RAM), vous pouvez décider"
-	echo "de monter le répertoire système '/tmp' en RAM dans un « tmpfs » afin"
-	echo "d'accélérer le fonctionnement des applications. Évitez de monter '/tmp'"
-	echo "en tmpfs si vous l'utlisez pour stocker des fichiers persistants car tous"
-	echo "les tmpfs sont effacés à chaque démarrage."
-	echo ""
-	echo "- Entrez « oui » pour ajouter une entrée tmpfs '/tmp' à '/etc/fstab' (moitié de"
-	echo "  la quantité de RAM maximum, par défaut, recommandé) - OU"
-	echo "- Entrez une valeur en méga-octets (M) ou giga-octets (G) pour décider"
-	echo "  de la quantité de RAM allouée à '/tmp' - OU"
-	echo "- Appuyez sur ENTRÉE pour ignorer cette étape."
-	echo ""
-	echo "Exemples : oui ; 1024M ; 4G ; etc."
-	echo ""
-	echo -n "Votre choix : "
-	read TMPFSMOUNT;
-	if [ "${TMPFSMOUNT}" = "" ]; then
-		# On ne fait rien :
-		break
-	else
-		if [ "${TMPFSMOUNT}" = "oui" ] || [ "${TMPFSMOUNT}" = "OUI" ]; then
-			# On ajoute le tmpfs à '/etc/fstab' :
-			echo "tmpfs       /tmp        tmpfs       defaults               0 0" >> ${SETUPROOT}/etc/fstab
+else
+	while [ 0 ]; do
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
+		echo -e "\033[1;32mMonter '/tmp' en RAM ?\033[0;0m"
+		echo ""
+		echo "Si vous possédez suffisamment de mémoire vive (RAM), vous pouvez décider"
+		echo "de monter le répertoire système '/tmp' en RAM dans un « tmpfs » afin"
+		echo "d'accélérer le fonctionnement des applications. Évitez de monter '/tmp'"
+		echo "en tmpfs si vous l'utlisez pour stocker des fichiers persistants car tous"
+		echo "les tmpfs sont effacés à chaque démarrage."
+		echo ""
+		echo "- Entrez « oui » pour ajouter une entrée tmpfs '/tmp' à '/etc/fstab' (moitié de"
+		echo "  la quantité de RAM maximum, par défaut, recommandé) - OU"
+		echo "- Entrez une valeur en méga-octets (M) ou giga-octets (G) pour décider"
+		echo "  de la quantité de RAM allouée à '/tmp' - OU"
+		echo "- Appuyez sur ENTRÉE pour ignorer cette étape."
+		echo ""
+		echo "Exemples : oui ; 1024M ; 4G ; etc."
+		echo ""
+		echo -n "Votre choix : "
+		read TMPFSMOUNT;
+		if [ "${TMPFSMOUNT}" = "" ]; then
+			# On ne fait rien :
 			break
 		else
-			if [ "$(echo ${TMPFSMOUNT} | grep -E 'M$')" = "" ] && [ "$(echo ${TMPFSMOUNT} | grep -E 'G$')" = "" ]; then
-				# On ne sait pas ce que l'utilisateur a entré, on ignore :
-				echo "Valeur incorrecte : ne se termine pas par « M » ou « G », montage ignoré..."
-				sleep 3
+			if [ "${TMPFSMOUNT}" = "oui" ] || [ "${TMPFSMOUNT}" = "OUI" ]; then
+				# On ajoute le tmpfs à '/etc/fstab' :
+				echo "tmpfs       /tmp        tmpfs       defaults               0 0" >> ${SETUPROOT}/etc/fstab
 				break
 			else
-				# On ajoute le tmpfs à '/etc/fstab' avec la taille :
-				echo "tmpfs       /tmp        tmpfs       size=${TMPFSMOUNT}             0 0" >> ${SETUPROOT}/etc/fstab
-				break
+				if [ "$(echo ${TMPFSMOUNT} | grep -E 'M$')" = "" ] && [ "$(echo ${TMPFSMOUNT} | grep -E 'G$')" = "" ]; then
+					# On ne sait pas ce que l'utilisateur a entré, on ignore :
+					echo "Valeur incorrecte : ne se termine pas par « M » ou « G », montage ignoré..."
+					sleep 3
+					break
+				else
+					# On ajoute le tmpfs à '/etc/fstab' avec la taille :
+					echo "tmpfs       /tmp        tmpfs       size=${TMPFSMOUNT}             0 0" >> ${SETUPROOT}/etc/fstab
+					break
+				fi
 			fi
 		fi
-	fi
-done
+	done
+fi
 
 # Puis on ajoute le reste des différentes partitions :
 echo "" >> ${SETUPROOT}/etc/fstab

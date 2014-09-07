@@ -58,26 +58,10 @@ accueillir un système Linux. L'installateur ne le fera pas pour vous !
 Il vous faut au minimum une partition de type Linux et optionnellement une 
 partition d'échange (ou partition « swap »). 
 
-Si vous disposez de suffisamment d'espace disque, il est plus 
-aisé de gérer un système partitionné de la facon suivante  :
-
-	- 5 giga-octets minimum pour la racine du système (« / »)
-	- de l'espace supplémentaire dédié aux utilisateurs sur '/home' 
-	- 1 partition « swap » éventuelle d'un peu plus que votre quantité de
-	  mémoire vive (RAM)
-
-Gardez à l'esprit que le système 0Linux, si l'intégralité des paquets
-disponibles est installée, peut occuper 40 Go voire plus ! Prévoyez 60 Go si
-vous disposez de cet espace et que vous pensez devoir tester de nombreux
-logiciels.
-
-Faire une partition séparée pour /home est optionnel mais recommandé,
-celle-ci contenant entre autres les préférences des utilisateurs.
-
 Partitionnez avec le programme 'cfdisk', ou bien avec sa version plus 
 « vieille école », 'fdisk'. Les deux programmes font le même travail. 
 'cfdisk' est plus accessible car il est administrable via des menus 
-graphiques.
+graphiques. 'parted' est quant à lui entièrement compatible MBR et GPT.
 
 Par défaut, 'fdisk' et 'cfdisk' sélectionnent le premier
 lecteur de disque dur de votre machine, '/dev/sda'. 
@@ -105,9 +89,21 @@ exploitables.
 	   choisir le type des partitions puis finissez par 'w' pour écrire la
 	   nouvelle table de partitions avant de quitter.
 
-N'oubliez pas de rendre amorçable la partition destinée à accueillir 0Linux !
-Utilisez pour cela l'option « Amorçable » ou « Bootable » de 'cfdisk'.
+Si vous disposez de suffisamment d'espace disque, il est plus 
+aisé de gérer un système partitionné de la facon suivante  :
 
+	- 5 giga-octets minimum pour la racine du système (« / »). Obligatoire.
+	- de l'espace supplémentaire pour les utilisateurs sur '/home'. Facultatif.
+	- 1 partition « swap » éventuelle d'un peu plus que votre quantité de
+	  mémoire vive (RAM). Facultative.
+
+Gardez à l'esprit que le système 0Linux, si l'intégralité des paquets
+disponibles est installée, peut occuper 40 Go voire plus ! Prévoyez 60 Go pour
+votre racine système si vous disposez de cet espace et que vous pensez devoir
+installer de nombreux logiciels.
+
+Faire une partition séparée pour /home est optionnel mais recommandé,
+celle-ci contenant entre autres les préférences des utilisateurs.
 
 3- Lancement de l'installateur
 

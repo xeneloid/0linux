@@ -14,38 +14,43 @@ crunch() {
 	echo ${STRING};
 }
 
-while [ 0 ]; do
-	if [ "${INSTALLDEBUG}" = "" ]; then
-		clear
-	fi
-	echo -e "\033[1;32mAjout d'un nouvel utilisateur.\033[0;0m"
-	echo ""
-	echo "Entrez ci-après le nom du nouvel utilisateur souhaité."
-	echo "Le nom ne doit comporter ni majuscule, ni ponctuation, ni caractère"
-	echo "spécial et ne doit pas commencer par un chiffre."
-	echo ""
-	echo -n "Votre choix : "
-	read USERNM;
-	# Si l'utilisateur se trompe :
-	if [ "${USERNM}" = "" -o ! "$(echo ${USERNM} | grep -E '^[0-9]|\.')" = "" -o \
-		! "${USERNM}" = "$(echo ${USERNM} | tr A-Z a-z)" ]; then
-		echo "Veuillez entrer un nom d'utilisateur valide."
-		unset USERNM
-		sleep 2
-		continue
-	else
-		# Si l'utilisateur existe déjà :
-		if [ ! "$(grep \"^${USERNM}:\" /etc/passwd)" = "" ]; then
-			echo "Cet utilisateur existe déjà ! Veuillez en choisir un autre."
+# Un argument active le traitement automatisé :
+if [ -n "${1}" ]; then
+	echo -e "${2}\n${2}" | (passwd --stdin ${1})
+else
+	while [ 0 ]; do
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
+		echo -e "\033[1;32mAjout d'un nouvel utilisateur.\033[0;0m"
+		echo ""
+		echo "Entrez ci-après le nom du nouvel utilisateur souhaité."
+		echo "Le nom ne doit comporter ni majuscule, ni ponctuation, ni caractère"
+		echo "spécial et ne doit pas commencer par un chiffre."
+		echo ""
+		echo -n "Votre choix : "
+		read USERNM;
+		# Si l'utilisateur se trompe :
+		if [ "${USERNM}" = "" -o ! "$(echo ${USERNM} | grep -E '^[0-9]|\.')" = "" -o \
+			! "${USERNM}" = "$(echo ${USERNM} | tr A-Z a-z)" ]; then
+			echo "Veuillez entrer un nom d'utilisateur valide."
 			unset USERNM
 			sleep 2
 			continue
 		else
-			# Le nom d'utilisateur est OK :
-			break
+			# Si l'utilisateur existe déjà :
+			if [ ! "$(grep \"^${USERNM}:\" /etc/passwd)" = "" ]; then
+				echo "Cet utilisateur existe déjà ! Veuillez en choisir un autre."
+				unset USERNM
+				sleep 2
+				continue
+			else
+				# Le nom d'utilisateur est OK :
+				break
+			fi
 		fi
-	fi
-done
+	done
+fi
 
 # On détecte le premier UID libre en commençant à 1000 :
 USERID=1000
@@ -60,20 +65,27 @@ while [ 0 ]; do
 	fi
 done
 
-# Choix de l'UID :
-if [ "${INSTALLDEBUG}" = "" ]; then
-	clear
-fi
-echo -e "\033[1;32mChoix d'un numéro d'identifiant utilisateur (UID).\033[0;0m"
-echo ""
-echo "Entrez ci-après le numéro d'identifiant utilisateur souhaité ou appuyez sur"
-echo "ENTRÉE pour le premier UID libre trouvé : ${USERID}."
-echo ""
-echo -n "Votre choix : "
-read READID;
-# Si l'utilisateur saisit quelque chose :
-if [ ! "${READID}" = "" ]; then
-	USERID="${READID}"
+# Un argument active le traitement automatisé :
+if [ -z "${1}" ]; then
+	
+	# Choix de l'UID :
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
+	echo -e "\033[1;32mChoix d'un numéro d'identifiant utilisateur (UID).\033[0;0m"
+	echo ""
+	echo "Entrez ci-après le numéro d'identifiant utilisateur souhaité ou appuyez sur"
+	echo "ENTRÉE pour le premier UID libre trouvé : ${USERID}."
+	echo ""
+	echo -n "Votre choix : "
+	read READID;
+	# Si l'utilisateur saisit quelque chose :
+	if [ ! "${READID}" = "" ]; then
+		USERID="${READID}"
+	fi
+else
+	# On récupère le nom d'utilisateur passé en argument :
+	USERNM="${1}"
 fi
 
 # Si le répertoire utilisateur existe déjà :
@@ -85,32 +97,39 @@ else
 	chmod 711 /home/${USERNM}
 fi
 
-# Appartenance au 'sudo' ou pas ? Ce groupe a les privilèges root sans mot de passe.
-if [ "${INSTALLDEBUG}" = "" ]; then
-	clear
-fi
-echo -e "\033[1;32mAppartenance au groupe 'sudo'.\033[0;0m"
-echo ""
-echo "Voulez-vous que cet utilisateur appartienne au groupe 'sudo' ?"
-echo ""
-echo "Le groupe 'sudo' peut invoquer 'sudo' pour obtenir les privilèges"
-echo "normalement réservés à 'root', mais SANS MOT DE PASSE. Réfléchissez bien"
-echo "aux implications en terme de sécurité : si vous ajoutez un utilisateur au"
-echo "groupe 'sudo', c'est comme si vous lui donniez le mot de passe root !!!"
-echo ""
-echo "Voulez-vous donner les pleins pouvoirs à l'utilisateur '${USERNM}' ?"
-echo "Répondez par « oui » ou par « non » ou appuyez sur ENTRÉE (non par défaut)."
-echo ""
-echo -n "Votre choix (oui/non/ENTRÉE) : "
-read READSUDOGROUPS;
+# Un argument active le traitement automatisé :
+if [ -z "${1}" ]; then
 
-# Si l'utilisateur veut prendre des risques :
-if [ "${READSUDOGROUPS}" = "oui" ]; then
-	USERGROUPS="audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,sudo,vboxusers,video,wheel"
+	# Appartenance au 'sudo' ou pas ? Ce groupe a les privilèges root sans mot de passe.
+	if [ "${INSTALLDEBUG}" = "" ]; then
+		clear
+	fi
+	echo -e "\033[1;32mAppartenance au groupe 'sudo'.\033[0;0m"
+	echo ""
+	echo "Voulez-vous que cet utilisateur appartienne au groupe 'sudo' ?"
+	echo ""
+	echo "Le groupe 'sudo' peut invoquer 'sudo' pour obtenir les privilèges"
+	echo "normalement réservés à 'root', mais SANS MOT DE PASSE. Réfléchissez bien"
+	echo "aux implications en terme de sécurité : si vous ajoutez un utilisateur au"
+	echo "groupe 'sudo', c'est comme si vous lui donniez le mot de passe root !!!"
+	echo ""
+	echo "Voulez-vous donner les pleins pouvoirs à l'utilisateur '${USERNM}' ?"
+	echo "Répondez par « oui » ou par « non » ou appuyez sur ENTRÉE (non par défaut)."
+	echo ""
+	echo -n "Votre choix (oui/non/ENTRÉE) : "
+	read READSUDOGROUPS;
 
-# Si l'utilisateur est raisonnable (oui, ça existe) :
+	# Si l'utilisateur veut prendre des risques :
+	if [ "${READSUDOGROUPS}" = "oui" ]; then
+		USERGROUPS="audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,sudo,vboxusers,video,wheel"
+
+	# Si l'utilisateur est raisonnable (oui, ça existe) :
+	else
+		USERGROUPS="audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,vboxusers,video,wheel"
+	fi
 else
-	USERGROUPS="audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,vboxusers,video,wheel"
+	# On active tous les groupes dans le mode automatique :
+	USERGROUPS="audio,cdrom,floppy,lp,netdev,plugdev,power,scanner,sudo,vboxusers,video,wheel"
 fi
 
 # On crée maintenant l'utilisateur sans oublier les groupes supplémentaires :
@@ -120,7 +139,9 @@ useradd ${USERNM} -M -u ${USERID} -g users -G ${USERGROUPS} -s /bin/sh
 # On peut maintenant modifier les permissions :
 chown ${USERNM}.users /home/${USERNM}
 
-# On définit un mot de passe pour le nouvel utilisateur :
-passwd ${USERNM}
+# On définit un mot de passe pour le nouvel utilisateur (sauf mode automatique) :
+if [ -z "${1}" ]; then
+	passwd ${USERNM}
+fi
 
-# C'est fini !
+# C'est fini.

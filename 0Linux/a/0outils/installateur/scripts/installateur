@@ -23,16 +23,219 @@ rm -f $TMP/{fstab,formatages,partition_racine}
 
 # On vérifie qu'on n'est pas dans un mode spécial d'installation (mode automatique) :
 if [ -n "$1" ]; then
+	
+	# Mode automatique :
 	if [ "$1" = "auto" ]; then
 		
 		# Si on a une configuration en local, on la charge :
-		if [ "$(echo ${2} | grep -E '^http|^ftp')" = "" ]; then
-			[ -r ${2} ] && source ${2}
-		
-		# Si on a une configuration distante, on la charge via 'curl-statique' :
-		else
-			curl-statique ${2} | source
+		if [ -n ${2} ]; then
+			if [ "$(echo ${2} | grep -E '^http|^ftp')" = "" ]; then
+				if [ -r ${2} ]; then
+					source ${2}
+					
+				else
+					echo "Erreur : le fichier de configuration '${2}' est introuvable."
+					echo "Essayez plutôt 'installateur auto' ou 'installateur'."
+					exit 1
+				fi
+			
+			# Si on a une configuration distante, on la charge via 'curl-statique' :
+			else
+				curl-statique ${2} | source
+			fi
 		fi
+		
+		ABO_PAR_DEFAUT="base-abonnement \
+			opt-abonnement \
+			xorg-abonnement \
+			xfce-abonnement \
+			chrome \
+			dropbox \
+			epdfview \
+			firefox \
+			flashplayer \
+			gparted \
+			pidgin\
+			skype \
+			steam \
+			thunderbird \
+			transmission \
+			vlc"
+		
+		# Les variables par défaut , franco-françaises (AZERTY étendu, Paris):
+		CLAVIER_CONFIG=${CLAVIER_CONFIG:-"fr-latin9"}
+		HORLOGE_CONFIG=${HORLOGE_CONFIG:-"Europe/Paris"}
+		LANGUE_CONFIG=${LANGUE_CONFIG:-"fr_FR.UTF-8"}
+		PWROOT_CONFIG=${PWROOT_CONFIG:-"$(cat /dev/urandom | tr -dc A-Za-z0-9_ | head -c6 | tr '[A-Z]' '[a-z]')"}
+		NOMUTILISATEUR_CONFIG=${NOMUTILISATEUR_CONFIG:-"0linux"}
+		PWUTILISATEUR_CONFIG=${PWUTILISATEUR_CONFIG:-"$(cat /dev/urandom | tr -dc A-Za-z0-9_ | head -c6 | tr '[A-Z]' '[a-z]')"}
+		ABONNEMENTS=${ABONNEMENTS:-"${ABO_PAR_DEFAUT}"}
+		
+		# On demande quel disque sacrifier :
+		while [ 0 ]; do
+			if [ "${INSTALLDEBUG}" = "" ]; then
+				clear
+			fi
+			echo -e "\033[1;32mInstallation automatique.\033[0;0m"
+			echo ""
+			echo "Ce mode d'installation automatique va créer une partition Linux sur votre"
+			echo "disque dur, la formater, la rendre amorçable et y installer le système"
+			echo "0Linux. Cette méthode est DESTRUCTIVE, vous êtes prévenu(e) ! Choisissez"
+			echo "dans la liste suivante le disque dur qui va accueillir le système 0Linux"
+			echo "en tapant son code numérique ou appuyez sur ENTRÉE pour quitter :"
+			echo ""
+			echo "$(lsblk -f)"
+			echo ""
+			echo "1 : sda"
+			echo "2 : sdb"
+			echo "3 : sdc"
+			echo "4 : sdd"
+			echo "5 : sde"
+			echo "6 : sdf"
+			echo "7 : sdg"
+			echo "8 : sdh"
+			echo ""
+			echo -n "Votre choix (1/2/3/4/5/6/7/8) : "
+			read WIPEME;
+			case "$WIPEME" in
+			"1")
+				DEVICETOWIPE="sda"
+				break
+			;;
+			"2")
+				DEVICETOWIPE="sdb"
+				break
+			;;
+			"3")
+				DEVICETOWIPE="sdc"
+				break
+			;;
+			"4")
+				DEVICETOWIPE="sdd"
+				break
+			;;
+			"5")
+				DEVICETOWIPE="sde"
+				break
+			;;
+			"6")
+				DEVICETOWIPE="sdf"
+				break
+			;;
+			"7")
+				DEVICETOWIPE="sdg"
+				break
+			;;
+			"8")
+				DEVICETOWIPE="sdh"
+				break
+			;;
+			"")
+				exit 0
+			;;
+			*)
+				echo "Réponse probablement erronée. Veuillez entrer un chiffre entre 1 et 8."
+				sleep 3
+				continue
+			esac
+		done
+		
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
+		echo -e "\033[1;32mInstallation automatique.\033[0;0m"
+		echo ""
+		echo "Le système 0Linux va être installé selon les paramètres qui vont suivre. "
+		echo "Notez les mots de passe et le nom d'utilisateur (pensez à les changer"
+		echo "quand vous aurez redémarré) ! Mis à part le disque dur, vous pourrez"
+		echo "modifier tous ces paramètres plus tard."
+		echo "Si les paramètres ne vous conviennent pas, quittez cet installateur automatique"
+		echo "avec la combinaison de touches CTRL+C et appelez simplement 'installateur' pour"
+		echo "l'installation interactive."
+		echo "NOTE : vous devez être connecté(e) à Internet."
+		echo ""
+		echo -n "Appuyez sur ENTRÉE pour voir les paramètres d'installation."
+		
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
+		echo -e "\033[1;32mParamètres d'installation.\033[0;0m"
+		echo ""
+		echo "Les paramètres ci-dessous vont être appliqués :"
+		echo "Préparer/formater   : /dev/${DEVICETOWIPE}"
+		echo "Clavier             : ${CLAVIER_CONFIG}"
+		echo "Fuseau horaire      : ${HORLOGE_CONFIG}"
+		echo "Langue              : ${LANGUE_CONFIG}"
+		echo "Mot de passe root   : ${PWROOT_CONFIG}"
+		echo "Nom d'utilisateur   : ${NOMUTILISATEUR_CONFIG}"
+		echo "Et son mot de passe : ${PWUTILISATEUR_CONFIG}"
+		echo "Paquets/Abonnements : ${ABONNEMENTS}"
+		echo ""
+		echo -n "Appuyez sur ENTRÉE pour lancer l'installation ou sur CTRL+C pour quitter."
+		read STRIKE1;
+		
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
+		fi
+		echo -e "\033[1;32mConfirmer le formatage et l'installation ?\033[0;0m"
+		echo ""
+		echo "ATTENTION : toutes les données du disque dur '${DEVICETOWIPE}' seront perdues !"
+		echo ""
+		echo -n "Appuyez sur ENTRÉE pour confirmer ou sur CTRL+C pour quitter."
+		read STRIKE2;
+		
+		# C'est parti pour le pilote automatique. On partitionne :
+		echo "Création d'une partition amorçable sur '/dev/${DEVICETOWIPE}'..."
+		parted -a optimal --script /dev/${DEVICETOWIPE} -- mktable gpt
+		parted -a optimal --script /dev/${DEVICETOWIPE} -- mkpart 0% 100%
+		parted -a optimal --script /dev/${DEVICETOWIPE} -- set 1 boot on
+		sleep 1
+		
+		# On formate :
+		echo "Formatage de '/dev/${DEVICETOWIPE}1' en ext4..."
+		mkfs.ext4 -L 0LINUX /dev/${DEVICETOWIPE}1
+		
+		# On ajoute le montage de '/' au fichier des choix de partitions :
+		echo "${DEVICETOWIPE}1 /" > $TMP/choix_partitions
+		
+		# On monte /setuproot et on crée le fichier 'fstab'. '/tmp' sera monté
+		# en tmpfs d'office :
+		. montages.sh tmp_tmpfs
+		
+		# On applique la configuration de façon non-interactive :
+		. clavier.sh ${CLAVIER_CONFIG}
+		
+		# On ajoute la racine cible pour l'outil d'installation d epaquets :
+		echo "ROOT=\"${SETUPROOT}\""                 >> /etc/0outils/0g.conf
+		
+		# On installe avec '0g' les paquets critiques :
+		0g busybox
+		0g base-systeme
+		0g glibc
+		0g ncurses readline bash sgml-common 0outils
+		
+		# $SETUPROOT a aussi besoin du cache de 0g :
+		mkdir -p ${SETUPROOT}/var/cache/0g
+		mount --bind /var/cache/0g ${SETUPROOT}/var/cache/0g 1>/dev/null 2>/dev/null
+		
+		# On installe avec '0g' l'ensemble des paquets et abonnements :
+		0g ${ABONNEMENTS}
+		
+		# Configuration post-installation automatisée :
+		chroot ${SETUPROOT} 0horloge ${HORLOGE_CONFIG}
+		chroot ${SETUPROOT} 0locale ${LANGUE_CONFIG}
+		chroot ${SETUPROOT} 0police 16
+		chroot ${SETUPROOT} 0reseau dhcp
+		. motdepasseroot.sh ${PWROOT_CONFIG}
+		
+		# On définit Xfce par défaut :
+		ln -sf xinitrc.xfce ${SETUPROOT}/etc/X11/xinit/xinitrc
+		
+		# On crée l'utilisateur et son mot de passe :
+		chroot ${SETUPROOT} 0nouvel_utilisateur ${NOMUTILISATEUR_CONFIG} ${PWUTILISATEUR_CONFIG}
+		
+		# Installation du chargeur d'amorçage :
+		. bootconfig.sh /dev/${DEVICETOWIPE}1
 	fi
 
 # Ici débute le mode d'installation classique avec questions-réponses :
@@ -74,10 +277,6 @@ else
 	echo "et partitionner vos disques durs. Les outils de partitionnement 'fdisk'"
 	echo "et 'parted' sont également disponibles."
 	echo ""
-	echo "N.B. : assurez-vous que la partition racine à amorcer soit bien marquée"
-	echo "active, bootable ou amorçable ou votre système Linux ne démarrera pas"
-	echo "avec le chargeur d'amorçage de 0Linux (Extlinux)."
-	echo ""
 	echo "Vous pouvez ignorer la préparation des disques durs si vous prévoyez"
 	echo "d'utiliser l'installation automatique, qui s'en occupera à votre place."
 	echo ""
@@ -88,7 +287,7 @@ else
 	
 	# Boucle pour l'affichage du menu :
 	unset CHOIXMENUNPRINCIPAL
-
+	
 	while [ 0 ]; do
 		
 		# On définit les messages sur l'état d'avancement de l'installation :
@@ -257,4 +456,4 @@ if [ "${INSTALLDEBUG}" = "" ]; then
 	rm -rf $TMP/*
 fi
 
-# C'est fini !
+# C'est fini.

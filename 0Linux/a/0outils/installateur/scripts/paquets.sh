@@ -52,11 +52,7 @@ else
 	0g busybox
 	0g base-systeme
 	0g glibc
-	0g ncurses
-	0g readline
-	0g bash
-	0g sgml-common
-	0g 0outils
+	0g ncurses readline bash sgml-common 0outils
 	
 	# La config' de 0g sur $SETUPROOT n'a pas besoin de "ROOT=" :
 	echo "Source=\"${PROTOCOLE}${MEDIACHOISI}\"" >> ${SETUPROOT}/etc/0outils/0g.conf

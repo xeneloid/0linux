@@ -3,82 +3,93 @@
 # On nettoie :
 unset TZSELECTRESULT FAIL UTCORNOT
 
-while [ 0 ]; do
-	if [ "${INSTALLDEBUG}" = "" ]; then
-		clear
-	fi
-	echo -e "\033[1;32mDéfinition du fuseau horaire.\033[0;0m"
-	echo ""
-	echo "Passez sur une autre console et tapez 'tzselect' afin de choisir votre"
-	echo "fuseau horaire en suivant les instructions à l'écran, puis revenez sur"
-	echo "cette console pour y recopier le résultat de 'tzselect' (la dernière ligne"
-	echo "affichée, qui doit être de la forme « Zone/Sous-zone »). Appuyez sur ENTRÉE"
-	echo "pour ignorer cette étape."
-	echo ""
-	echo -n "Votre fuseau (ex. : Europe/Paris) : "
-	read TZSELECTRESULT;
-	if [ "${TZSELECTRESULT}" = "" ]; then
-		break
-	else
-		if [ ! -r /usr/share/zoneinfo/${TZSELECTRESULT} ]; then
-			echo "Ce fuseau horaire n'existe pas ! Le fichier "
-			echo "'/usr/share/zoneinfo/${TZSELECTRESULT}' est introuvable."
-			echo "Veuillez saisir un fichier de fuseau valide."
-			echo "Exemples :"
-			echo "	Africa/Casablanca"
-			echo "	America/New_York"
-			echo "	America/Winnipeg"
-			echo "	Europe/Paris"
-			echo "	Indian/Reunion"
-			echo "Appuyez sur ENTRÉE pour saisir un autre fuseau horaire."
-			read FAIL;
-			unset TZSELECTRESULT
-			continue
-		else
-			# On installe le fichier '/etc/localtime' :
-			ln -sf ../usr/share/zoneinfo/${TZSELECTRESULT} /etc/localtime
-			
-			# On propose le temps local ou universel coordonné (UTC) :
-			while [ 0 ]; do
-				if [ "${INSTALLDEBUG}" = "" ]; then
-					clear
-				fi
-				echo -e "\033[1;32mChoix du type d'horloge système.\033[0;0m"
-				echo ""
-				echo "Désirez-vous une horloge systèm en temps local (« localtime ») ou bien en"
-				echo "temps universel coordonné (« UTC ») ? Votre horloge matérielle doit"
-				echo "correspondre à l'horloge système idéalement. La commande 'hwclock --show'"
-				echo "vous montrera l'heure de votre horloge matérielle."
-				echo "'UTC' est préférable, mais 'localtime' peut éviter des incompatibilités avec"
-				echo "d'autres systèmes (vieillissants)."
-				echo ""
-				echo "1 : UTC       - Temps universel coordonné (recommandé)"
-				echo "2 : localtime - Temps local"
-				echo ""
-				echo -n "Votre choix : "
-				read UTCORNOT;
-				case "$UTCORNOT" in
-				"1")
-					HWCLOCKTYPE="UTC"
-								;;
-				"2")
-					HWCLOCKTYPE="localtime"
-				;;
-				*)
-					echo "Veuillez entrer un numéro valide (entre 1 et 2)."
-					sleep 2
-					continue
-				esac
-				
-				# On crée le fichier '/etc/hardwareclock' :
-				echo "# /etc/hardwareclock : fichier de configuration de l'horloge matérielle." > /etc/hardwareclock
-				echo "${HWCLOCKTYPE}" >> /etc/hardwareclock
-				break
-			done
-
-		break
+# Un argument active le traitement automatisé :
+if [ -n "${1}" ]; then
+	
+	# On installe le fichier '/etc/localtime' :
+	ln -sf ../usr/share/zoneinfo/"${1}" /etc/localtime
+	
+	# UTC d'office :
+	echo "# /etc/hardwareclock : fichier de configuration de l'horloge matérielle." > /etc/hardwareclock
+	echo "UTC" >> /etc/hardwareclock
+else
+	while [ 0 ]; do
+		if [ "${INSTALLDEBUG}" = "" ]; then
+			clear
 		fi
-	fi
-done
+		echo -e "\033[1;32mDéfinition du fuseau horaire.\033[0;0m"
+		echo ""
+		echo "Passez sur une autre console et tapez 'tzselect' afin de choisir votre"
+		echo "fuseau horaire en suivant les instructions à l'écran, puis revenez sur"
+		echo "cette console pour y recopier le résultat de 'tzselect' (la dernière ligne"
+		echo "affichée, qui doit être de la forme « Zone/Sous-zone »). Appuyez sur ENTRÉE"
+		echo "pour ignorer cette étape."
+		echo ""
+		echo -n "Votre fuseau (ex. : Europe/Paris) : "
+		read TZSELECTRESULT;
+		if [ "${TZSELECTRESULT}" = "" ]; then
+			break
+		else
+			if [ ! -r /usr/share/zoneinfo/${TZSELECTRESULT} ]; then
+				echo "Ce fuseau horaire n'existe pas ! Le fichier "
+				echo "'/usr/share/zoneinfo/${TZSELECTRESULT}' est introuvable."
+				echo "Veuillez saisir un fichier de fuseau valide."
+				echo "Exemples :"
+				echo "	Africa/Casablanca"
+				echo "	America/New_York"
+				echo "	America/Winnipeg"
+				echo "	Europe/Paris"
+				echo "	Indian/Reunion"
+				echo "Appuyez sur ENTRÉE pour saisir un autre fuseau horaire."
+				read FAIL;
+				unset TZSELECTRESULT
+				continue
+			else
+				# On installe le fichier '/etc/localtime' :
+				ln -sf ../usr/share/zoneinfo/${TZSELECTRESULT} /etc/localtime
+				
+				# On propose le temps local ou universel coordonné (UTC) :
+				while [ 0 ]; do
+					if [ "${INSTALLDEBUG}" = "" ]; then
+						clear
+					fi
+					echo -e "\033[1;32mChoix du type d'horloge système.\033[0;0m"
+					echo ""
+					echo "Désirez-vous une horloge systèm en temps local (« localtime ») ou bien en"
+					echo "temps universel coordonné (« UTC ») ? Votre horloge matérielle doit"
+					echo "correspondre à l'horloge système idéalement. La commande 'hwclock --show'"
+					echo "vous montrera l'heure de votre horloge matérielle."
+					echo "'UTC' est préférable, mais 'localtime' peut éviter des incompatibilités avec"
+					echo "d'autres systèmes (vieillissants)."
+					echo ""
+					echo "1 : UTC       - Temps universel coordonné (recommandé)"
+					echo "2 : localtime - Temps local"
+					echo ""
+					echo -n "Votre choix : "
+					read UTCORNOT;
+					case "$UTCORNOT" in
+					"1")
+						HWCLOCKTYPE="UTC"
+									;;
+					"2")
+						HWCLOCKTYPE="localtime"
+					;;
+					*)
+						echo "Veuillez entrer un numéro valide (entre 1 et 2)."
+						sleep 2
+						continue
+					esac
+					
+					# On crée le fichier '/etc/hardwareclock' :
+					echo "# /etc/hardwareclock : fichier de configuration de l'horloge matérielle." > /etc/hardwareclock
+					echo "${HWCLOCKTYPE}" >> /etc/hardwareclock
+					break
+				done
+
+			break
+			fi
+		fi
+	done
+fi
 
 # C'est fini.
