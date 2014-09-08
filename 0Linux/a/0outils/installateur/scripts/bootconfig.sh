@@ -85,7 +85,7 @@ else
 			
 			# On déduit le périphérique à amorcer.
 			# Si '/boot' est sur une partition séparée, c'est elle qu'on doit activer :
-			if grep '/boot' ${SETUPROOT}/etc/fstab; then
+			if grep -q '/boot' ${SETUPROOT}/etc/fstab; then
 				BOOTPART="$(mount | grep '/boot' | crunch | cut -d' ' -f1)"
 			
 			# Sinon, on en déduit que c'est la partition racine qu'on doit activer :
@@ -94,7 +94,7 @@ else
 			fi
 			
 			# On rend la partition '/' ou '/boot' active/bootable/amorçable en GPT ou MBR :
-			parted ${BOOTPART} set boot on 2>/dev/null || true
+			parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') boot on 2>/dev/null || true
 			
 			# On déduit l'UUID de la racine :
 			ROOTFSUUID=$(blkid -p -s UUID -o value $(cat $TMP/partition_racine))
