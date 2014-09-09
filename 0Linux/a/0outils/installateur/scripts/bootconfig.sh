@@ -93,8 +93,16 @@ else
 				BOOTPART="$(cat $TMP/partition_racine)"
 			fi
 			
+			# Le type de la table de partition du périphérique concerné :
+			BOOTPTTYPE=$(blkid -p -s PTTYPE -o value $(echo ${BOOTPART} | tr -d '[0-9]'))
+			
 			# On rend la partition '/' ou '/boot' active/bootable/amorçable pour BIOS, en GPT ou MBR :
-			parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
+			if [ "${BOTTPTTYPE}" = "gpt" ]; then
+				parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
+			else
+				parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
+				parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') boot on 2>/dev/null || true
+			fi
 			
 			# On déduit l'UUID de la racine :
 			ROOTFSUUID=$(blkid -p -s UUID -o value $(cat $TMP/partition_racine))
@@ -122,22 +130,17 @@ else
 				break
 			else
 				
-				# Le périphérique à amorcer : :
-				BOOTDEVICE="$(cat $TMP/partition_racine | crunch | tr -d [0-9])"
-				
-				# Le type de la table de partition :
-				BOOTPTTYPE=$(blkid -p -s PTTYPE -o value ${BOOTDEVICE})
-				
-				# On écrase le MBR sans aucun scrupule, selon la table de partitions trouvée :
+				# Le type de secteur à copier dans l'amorce, selon la table de partitions trouvée :
 				if [ "${BOOTPTTYPE}" = "gpt" ]; then
 					MBRBIN=gptmbr.bin
 				else
 					MBRBIN=mbr.bin
 				fi
+				
+				# On écrase le secteur d'amorçage avec Extlinux :
 				cat /usr/share/syslinux/${MBRBIN} > ${BOOTDEVICE}
 				
 				# Comme le MBR est occupé par Extlinux, on en profite pour ajouter d'autres « OS ».
-				
 				# On ajoute un éventuel système Windows :
 				if [ "$(fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | \
 					grep -v $(cat $TMP/choix_media) 2>/dev/null | wc -l)" -gt "0" ]; then
