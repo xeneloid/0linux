@@ -93,8 +93,8 @@ else
 				BOOTPART="$(cat $TMP/partition_racine)"
 			fi
 			
-			# On rend la partition '/' ou '/boot' active/bootable/amorçable en GPT ou MBR :
-			parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') boot on 2>/dev/null || true
+			# On rend la partition '/' ou '/boot' active/bootable/amorçable pour BIOS, en GPT ou MBR :
+			parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
 			
 			# On déduit l'UUID de la racine :
 			ROOTFSUUID=$(blkid -p -s UUID -o value $(cat $TMP/partition_racine))
