@@ -30,17 +30,18 @@ while [ 0 ]; do
 	echo "Veuillez choisir un dépôt distant pour télécharger les paquets de 0Linux."
 	echo "Les dépôts officiels sont listés ci-dessous."
 	echo ""
-	echo "Entrez le code du dépôt ou bien saisissez l'URL du dépôt désiré si vous"
-	echo "avez une adresse alternative ou un dépôt personnel hébergé ailleurs."
+	echo "Entrez le code du dépôt officiel de 0Linux désiré parmi la liste suivante."
+	echo "Vous pouvez également saisir l'URL d'un dépôt personnel hébergé ailleurs."
 	echo "Cette URL doit pointer sur le répertoire contenant la version de 0Linux"
-	echo "visée (« epsilon », « eta », etc.). Il est appelé traditionnellement"
+	echo "désirée (« eta », « theta », etc.). Il est appelé traditionnellement"
 	echo "« paquets » sur les dépôts officiels."
-	echo "Consultez le page des téléchargements sur le site de 0Linux afin de savoir"
-	echo "si des restrictions s'appliquent à certains serveurs."
 	echo "Appuyez sur ENTRÉE pour ignorer cette étape."
 	echo ""
 	echo "1 : IGH/CNRS  - http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets (recommandé)"
-	echo "2 : TUXFAMILY - http://download.tuxfamily.org/0linux/pub/paquets"
+	echo "2 : LIP6      - http://www-ftp.lip6.fr/pub/linux/distributions/0linux/paquets"
+	echo "3 : LAYERJET  - http://mirror.layerjet.com/0linux/paquets"
+	echo "4 : REDATOMIK - http://0linux.redatomik.org/paquets"
+	echo "5 : MOOO      - http://darknekros.mooo.com/0linux/paquets"
 	echo "http://votre/url/paquets"
 	echo ""
 	echo -n "Votre choix : "
@@ -51,7 +52,19 @@ while [ 0 ]; do
 		break
 	;;
 	"2")
-		echo "http://download.tuxfamily.org/0linux/pub/paquets" > $TMP/choix_media
+		echo "http://www-ftp.lip6.fr/pub/linux/distributions/0linux/paquets" > $TMP/choix_media
+		break
+	;;
+	"3")
+		echo "http://mirror.layerjet.com/0linux/paquets" > $TMP/choix_media
+		break
+	;;
+	"4")
+		echo "http://0linux.redatomik.org/paquets" > $TMP/choix_media
+		break
+	;;
+	"5")
+		echo "http://darknekros.mooo.com/0linux/paquets" > $TMP/choix_media
 		break
 	;;
 	"")
@@ -59,7 +72,7 @@ while [ 0 ]; do
 	;;
 	*)
 		if [ "$(echo ${REPONSEDEPOT} | grep -E '^ftp:|^http:')" = "" ]; then
-			echo "Veuillez entrer une URL valide (« ftp:// » ou « http:// »)."
+			echo "Veuillez entrer une URL valide (« ftp://... » ou « http://... »)."
 			sleep 2
 			unset REPONSEDEPOT
 			continue

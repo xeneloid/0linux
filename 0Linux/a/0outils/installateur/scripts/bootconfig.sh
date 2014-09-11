@@ -98,10 +98,10 @@ else
 			
 			# On rend la partition '/' ou '/boot' active/bootable/amorçable pour BIOS, en GPT ou MBR :
 			if [ "${BOTTPTTYPE}" = "gpt" ]; then
-				parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
+				parted --script $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
 			else
-				parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
-				parted $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') boot on 2>/dev/null || true
+				parted --script $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
+				parted --script $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') boot on 2>/dev/null || true
 			fi
 			
 			# On déduit l'UUID de la racine :
@@ -132,74 +132,76 @@ else
 				
 				# Le type de secteur à copier dans l'amorce, selon la table de partitions trouvée :
 				if [ "${BOOTPTTYPE}" = "gpt" ]; then
-					MBRBIN=gptmbr.bin
+					MBRBIN="gptmbr.bin"
 				else
-					MBRBIN=mbr.bin
+					MBRBIN="mbr.bin"
 				fi
 				
 				# On écrase le secteur d'amorçage avec Extlinux :
-				cat /usr/share/syslinux/${MBRBIN} > ${BOOTDEVICE}
+				cat /usr/share/syslinux/${MBRBIN} > $(echo ${BOOTPART} | tr -d '[0-9]')
 				
 				# Comme le MBR est occupé par Extlinux, on en profite pour ajouter d'autres « OS ».
 				# On ajoute un éventuel système Windows :
-				if [ "$(fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | \
-					grep -v $(cat $TMP/choix_media) 2>/dev/null | wc -l)" -gt "0" ]; then
-					if [ "${INSTALLDEBUG}" = "" ]; then
-						clear
-					fi
-					echo -e "\033[1;32mPartitions DOS/Windows détectées.\033[0;0m"
-					echo ""
-					echo "Vous disposez de partitions de type DOS/Windows."
-					echo "Voulez-vous ajouter les informations concernant DOS/Windows à Extlinux"
-					echo "afin de pouvoir amorcer ce type de système ? Entrez la partition DOS/Windows"
-					echo "souhaitée figurant dans la liste suivante ou appuyez sur ENTRÉE pour ignorer :"
-					echo "Exemples : /dev/sda2 ; /dev/sdb4 : /dev/sdf5 ; etc."
-					echo ""
-					
-					# On affiche les partitions FAT/NTFS sauf l'éventuelle clé USB montée pour
-					# l'installation :
-					fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | crunch | cut -d' ' -f1 | grep -v $(cat $TMP/choix_media) 2>/dev/null
-					echo ""
-					echo -n "Votre choix : "
-					read WINBOOT;
-					if [ "${WINBOOT}" = "" ]; then
-						
-						# On ne fait rien :
-						break
-					else
-						
-						# On fait confiance à la réponse de l'utilisateur et on détecte quel disque est
-						# utilisé. On en teste 6 :
-						WHICHDISK="$(echo ${WINBOOT} | crunch | tr -d '/dev/sd' | tr -d [0-9])"
-						
-						if [ "${WHICHDISK}" = "a" ]; then
-							WINDISK="0"
-						elif [ "${WHICHDISK}" = "b" ]; then
-							WINDISK="1"
-						elif [ "${WHICHDISK}" = "c" ]; then
-							WINDISK="2"
-						elif [ "${WHICHDISK}" = "d" ]; then
-							WINDISK="3"
-						elif [ "${WHICHDISK}" = "e" ]; then
-							WINDISK="4"
-						elif [ "${WHICHDISK}" = "f" ]; then
-							WINDISK="5"
-						else
-							WINDISK=""
-							echo "Erreur : impossible d'identifier la partition ou réponse"
-							echo "erronée. La prise en charge de DOS/Windows sera ignorée."
-							sleep 2
+				if [ ! "${BOOTPTTYPE}" = "gpt" ]; then
+					if [ "$(fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | \
+						grep -v $(cat $TMP/choix_media) 2>/dev/null | wc -l)" -gt "0" ]; then
+						if [ "${INSTALLDEBUG}" = "" ]; then
+							clear
 						fi
+						echo -e "\033[1;32mPartitions DOS/Windows détectées.\033[0;0m"
+						echo ""
+						echo "Vous disposez de partitions de type DOS/Windows."
+						echo "Voulez-vous ajouter les informations concernant DOS/Windows à Extlinux"
+						echo "afin de pouvoir amorcer ce type de système ? Entrez la partition DOS/Windows"
+						echo "souhaitée figurant dans la liste suivante ou appuyez sur ENTRÉE pour ignorer :"
+						echo "Exemples : /dev/sda2 ; /dev/sdb4 : /dev/sdf5 ; etc."
+						echo ""
+						
+						# On affiche les partitions FAT/NTFS sauf l'éventuelle clé USB montée pour
+						# l'installation :
+						fdisk -l | grep -i -E 'Win9|NTFS|W95 F|FAT' | grep -v tendue | crunch | cut -d' ' -f1 | grep -v $(cat $TMP/choix_media) 2>/dev/null
+						echo ""
+						echo -n "Votre choix : "
+						read WINBOOT;
+						if [ "${WINBOOT}" = "" ]; then
 							
-						# On remplit le fichier de config' pour Windows:
-						if [ ! "${WINDISK}" = "" ]; then
-							echo "" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
-							echo "# Windows :" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
-							echo "LABEL windows" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
-							echo "	MENU LABEL Windows" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
-							echo "	KERNEL chain.c32" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
-							echo "	APPEND hd${WINDISK} $(echo ${WINBOOT} | crunch | sed 's/\/dev\/sd.//')" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
-							echo "" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+							# On ne fait rien :
+							break
+						else
+							
+							# On fait confiance à la réponse de l'utilisateur et on détecte quel disque est
+							# utilisé. On en teste 6 :
+							WHICHDISK="$(echo ${WINBOOT} | crunch | tr -d '/dev/sd' | tr -d [0-9])"
+							
+							if [ "${WHICHDISK}" = "a" ]; then
+								WINDISK="0"
+							elif [ "${WHICHDISK}" = "b" ]; then
+								WINDISK="1"
+							elif [ "${WHICHDISK}" = "c" ]; then
+								WINDISK="2"
+							elif [ "${WHICHDISK}" = "d" ]; then
+								WINDISK="3"
+							elif [ "${WHICHDISK}" = "e" ]; then
+								WINDISK="4"
+							elif [ "${WHICHDISK}" = "f" ]; then
+								WINDISK="5"
+							else
+								WINDISK=""
+								echo "Erreur : impossible d'identifier la partition ou réponse"
+								echo "erronée. La prise en charge de DOS/Windows sera ignorée."
+								sleep 2
+							fi
+								
+							# On remplit le fichier de config' pour Windows:
+							if [ ! "${WINDISK}" = "" ]; then
+								echo "" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+								echo "# Windows :" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+								echo "LABEL windows" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+								echo "	MENU LABEL Windows" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+								echo "	KERNEL chain.c32" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+								echo "	APPEND hd${WINDISK} $(echo ${WINBOOT} | crunch | sed 's/\/dev\/sd.//')" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+								echo "" >> ${SETUPROOT}/boot/extlinux/extlinux.conf
+							fi
 						fi
 					fi
 				fi
