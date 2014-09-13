@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.10.8
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=2.10.9
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Client de messagerie instantanée multi-protocole"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -29,8 +27,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On supprime le fichier 'perllocal.mod', qui se trouve en outre dans '/usr/lib'... :
-rm -rf ${PKG}/usr/lib
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	rm -rf ${PKG}/usr/lib
+fi
 
 installer_doc
 creer_post_installation
