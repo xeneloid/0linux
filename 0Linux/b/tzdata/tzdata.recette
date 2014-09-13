@@ -46,7 +46,7 @@ done
 ./zic -y ./yearistype -d ${PKG}/usr/share/zoneinfo -p America/New_York
 
 # On copie les listes :
-cp iso3166.tab zone.tab ${PKG}/usr/share/zoneinfo
+cp iso3166.tab zone.tab zone1970.tab ${PKG}/usr/share/zoneinfo
 chmod 444 ${PKG}/usr/share/zoneinfo/{iso3166,zone}.tab
 
 # On copie les binaires :
