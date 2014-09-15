@@ -68,6 +68,17 @@ busybox ln -sf          libthread_db.so.1 usr/libARCH/libthread_db.so
 busybox ln -sf         libutil-VERSION.so usr/libARCH/libutil.so.1
 busybox ln -sf               libutil.so.1 usr/libARCH/libutil.so
 
+# On crée les liens ld-lsb*.so* -> ld-linux*.so* pour simuler un système compatible LSB :
+if [ -r usr/libARCH/ld-linux-x86-64.so.2 ]; then
+	busybox ln -sf ld-linux-x86-64.so.2 usr/libARCH/ld-lsb-x86-64.so.2
+	busybox ln -sf ld-linux-x86-64.so.2 usr/libARCH/ld-lsb-x86-64.so.3
+fi
+
+if [ -r usr/lib/ld-linux.so.2 ]; then
+	busybox ln -sf ld-linux.so.2 usr/lib/ld-lsb.so.2
+	busybox ln -sf ld-linux.so.2 usr/lib/ld-lsb.so.3
+fi
+
 # On met à jour l'éditeur de liens :
 ldconfig -r . 2>/dev/null
 

@@ -13,7 +13,7 @@ cflags
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/var/{db,run}/nscd
 
-# On ne compile pas les fuseaux horaires, un paquet s'en charge :
+# On ne compile pas les fuseaux horaires, le paquet 'tzdata' s'en charge :
 sed -i 's/localedata timezone rt/localedata rt/' Makeconfig
 
 # On active la parallélisation :
