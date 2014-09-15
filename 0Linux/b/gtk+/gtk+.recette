@@ -146,6 +146,15 @@ gtk-fallback-icon-theme = gnome
 
 EOF
 
+# On spécifie un thème d'icône par défaut sans rien écraser :
+cat > ${PKG}/etc/gtk-3.0/settings.ini.0nouveau << "EOF"
+[Settings]
+gtk-icon-theme-name = gnome
+gtk-theme-name = Adwaita
+gtk-fallback-icon-theme = gnome
+
+EOF
+
 # On crée un fichier service pour pour mettre à jour les modules GTK+ :
 mkdir -p ${PKG}/etc/rc.d
 cat > ${PKG}/etc/rc.d/rc.gtk+ << "EOF"
@@ -154,12 +163,12 @@ cat > ${PKG}/etc/rc.d/rc.gtk+ << "EOF"
 gtk_start() {
 	# Prise en charge du multilib pour x86_64 :
 	if [ "$(uname -m)" = "x86_64" ]; then
-		gtk-query-immodules-2.0-32 --update-cache 2>/dev/null
-		gtk-query-immodules-2.0-64 --update-cache 2>/dev/null
-		gtk-query-immodules-3.0    --update-cache 2>/dev/null
+		gtk-query-immodules-2.0-32 --update-cache &>/dev/null 2>&1
+		gtk-query-immodules-2.0-64 --update-cache &>/dev/null 2>&1
+		gtk-query-immodules-3.0    --update-cache &>/dev/null 2>&1
 	else
-		gtk-query-immodules-2.0    --update-cache 2>/dev/null
-		gtk-query-immodules-3.0    --update-cache 2>/dev/null
+		gtk-query-immodules-2.0    --update-cache &>/dev/null 2>&1
+		gtk-query-immodules-3.0    --update-cache &>/dev/null 2>&1
 	fi
 }
 
@@ -191,7 +200,7 @@ cat >> ${PKG}/post-install.sh << "EOF"
 
 # On nettoie le cache et on régénère les modules GTK+ :
 if [ -x etc/rc.d/rc.gtk+ ]; then
-	chroot . /etc/rc.d/rc.gtk+ restart
+	chroot . /etc/rc.d/rc.gtk+ restart &>/dev/null 2>&1
 fi
 
 EOF
