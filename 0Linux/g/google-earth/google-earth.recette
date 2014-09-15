@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=7.1.2.2041
+WGET=http://dl.google.com/dl/earth/client/current/$NAMESRC-stable_current_i386.deb
+DESC="Logiciel 3D d'exploration géographique et spatiale de Google"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On copie tout dans le paquet :
+cp -ar * ${PKG}/
+
+# On place le raccourci bureau :
+mv ${PKG}/opt/google/earth/free/google-earth.desktop ${PKG}/usr/share/applications/google-earth.desktop
+
+# On copie les icônes :
+for icon in 16 22 24 32 48 64 128 256; do
+	install -D ${PKG}/opt/google/earth/free/product_logo_${icon}.png ${PKG}/usr/share/icons/hicolor/${icon}x${icon}/apps/${NAMESRC}.png
+done
+
+# On crée le fichier de définition des types MIME pour Google Earth :
+mkdir -p ${PKG}/usr/share/mime/packages
+cat > ${PKG}/usr/share/mime/packages/google-earth-mimetypes.xml << "EOF"
+<?xml version="1.0"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+  <mime-type type="application/vnd.google-earth.kml+xml">
+    <comment>Keyhole Markup Language data</comment>
+    <glob pattern="*.kml"/>
+  </mime-type>
+
+  <mime-type type="application/vnd.google-earth.kmz">
+    <comment>Keyhole Markup Language archive</comment>
+    <glob pattern="*.kmz"/>
+  </mime-type>
+
+  <mime-type type="application/keyhole">
+    <comment>Keyhole Markup Language data</comment>
+  </mime-type>
+
+  <mime-type type="application/earthviewer">
+    <comment>Keyhole Markup Language data</comment>
+  </mime-type>
+</mime-info>
+
+EOF
+
+# On nettoie la tâche pour 'cron' spécifique à Debian/Ubuntu :
+rm -rf ${PKG}/etc
+
+installer_doc
+
+# On complète la documentation :
+mv $PKG/opt/google/earth/free/gpl.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
