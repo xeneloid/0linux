@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.02.108
+VERSION=2.02.111
 WGET=ftp://sources.redhat.com/pub/lvm2/releases/LVM2.${VERSION}.tgz
 DESC="Outils de gestion de volumes logiques « LVM »"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On retire une règle udev invalide :
-sed -i 's@ACTION=="add", ENV{STARTUP}!="1", NAME="", GOTO="dm_end"@#&@' udev/10-dm.rules.in
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -22,15 +19,25 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-readline \
-	--enable-pkgconfig \
+	--enable-applib \
 	--enable-cmdlib \
-	--enable-fsadm \
 	--enable-dmeventd \
+	--enable-fsadm \
+	--enable-pkgconfig \
+	--enable-readline \
+	--enable-realtime \
+	--enable-udev_rules \
+	--enable-udev_sync \
+	--with-clvmd-pidfile=/run/lvm/clvmd.pid \
+	--with-cmirrord-pidfile=/run/lvm/cmirrord.pid \
+	--with-default-locking-dir=/run/lock/lvm \
+	--with-default-run-dir=/run/lvm \
 	--with-device-uid=0 \
 	--with-device-gid=6 \
-	--with-device-mode=0664 \
-	--with-udev-prefix=/usr \
+	--with-device-mode=0660 \
+	--with-dmeventd-pidfile=/run/lvm/dmeventd.pid \
+	--with-lvm1=internal \
+	--with-udevdir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
 	--with-usrlibdir=/usr/lib${LIBDIRSUFFIX} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
