@@ -34,7 +34,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée le fichier service :
+# On crée le fichier service sans l'activer (conflit avec 'rc.wicd' et 'rc.reseau') :
 mkdir -p ${PKG}/etc/rc.d
 cat > ${PKG}/etc/rc.d/rc.networkmanager << "EOF"
 #!/usr/bin/env bash
@@ -82,7 +82,6 @@ case "$1" in
 esac
 
 EOF
-chmod 755 ${PKG}/etc/rc.d/rc.networkmanager
 
 # On crée le fichier de configuration sans rien écraser :
 cat > ${PKG}/etc/NetworkManager/NetworkManager.conf.0nouveau << "EOF"
