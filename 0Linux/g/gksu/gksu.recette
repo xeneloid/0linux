@@ -2,11 +2,39 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.0.2git
-WGET=http://ftp.igh.cnrs.frpub/os/linux/0linux/archives_sources/gksu/gksu-polkit-$VERSION.tar.xz
+WGET=(
+      http://ftp.igh.cnrs.frpub/os/linux/0linux/archives_sources/gksu/gksu-polkit-$VERSION.tar.xz
+      http://people.debian.org/~kov/gksu/$NAMESRC-2.0.2.tar.gz
+     )
 DESC="Outil d'authentification graphique basé sur 'polkit'"
 
 telecharger_sources
-preparer_sources
+
+# On compile le traditionnel 'gksu' :
+preparer_sources $NAMESRC-2.0.2.tar.gz
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-nautilus-extension \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la doc dans un répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMESRC}-2.0.2
+
+# On compile maintenant 'gksu-polkit' :
+preparer_sources gksu-polkit-$VERSION.tar.xz
 cflags
 
 # On corrige la politique d'authentification pour que les utilisateurs
