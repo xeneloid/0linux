@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.5
-EXT=tar.gz
-WGET=http://www.infodrom.org/projects/$NAMESRC/download/$NAMESRC-$VERSION.$EXT
-DESC="Outils de traçage des évènements système"
-
+WGET=http://www.infodrom.org/projects/$NAMESRC/download/$NAMESRC-$VERSION.tar.gz
+DESC="Outils de journalisation et de traçage des évènements système"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -21,8 +19,8 @@ mkdir -p ${PKG}/etc/{logrotate.d,rc.d}
 mkdir -p ${PKG}/var/log
 
 # On copie les binaires :
-cp -a syslogd ${PKG}/usr/sbin
-cp -a klogd ${PKG}/usr/sbin
+cp -a syslogd ${PKG}/usr/sbin/
+cp -a klogd ${PKG}/usr/sbin/
 chmod 755 ${PKG}/usr/sbin/{syslogd,klogd}
 
 # ...et les manuels :
@@ -32,9 +30,18 @@ cp -a *.8 ${PKG}/usr/man/man8
 # On crée tous les fichiers journaux sans en écraser de plus anciens :
 touch ${PKG}/var/log/{cron,debug,maillog,messages,secure,syslog}.0nouveau
 
-# On place les scripts aux emplacements appropriés sans écraser une ancienne config' :
+# On place la configuration sans écraser une ancienne config' :
 cp -a $CWD/syslog.conf ${PKG}/etc/syslog.conf.0nouveau
-cp -a $CWD/syslog ${PKG}/etc/logrotate.d/syslog.0nouveau
+
+cat > ${PKG}/etc/logrotate.d/syslog.0nouveau << "EOF"
+/var/log/cron /var/log/debug /var/log/maillog /var/log/messages /var/log/secure /var/log/spooler /var/log/syslog {
+	sharedscripts
+	postrotate
+	/bin/kill -HUP $(cat /var/run/syslogd.pid 2>/dev/null) 2>/dev/null || true
+	endscript
+}
+
+EOF
 
 # On crée le fichier service :
 mkdir -p ${PKG}/etc/rc.d
