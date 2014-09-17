@@ -13,7 +13,7 @@ cflags
 sed -i '/#include <fcntl.h>/ a\
 #include <unistd.h>' src/eventloop-integration.cpp
 
-# Compilation avec ajout de drapeaux manquants :
+# Compilation avec ajout de drapeaux manquants et en évitant une dépendance sur 'efl' :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 LDFLAGS+=" -lexpat -lpthread" \
 ./configure \
@@ -24,6 +24,7 @@ LDFLAGS+=" -lexpat -lpthread" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-ecore \
 	--enable-glib \
 	--build=${PKGARCH}-0linux-linux-gnu
 
