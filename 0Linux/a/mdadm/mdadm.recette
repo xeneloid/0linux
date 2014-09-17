@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.3
-EXT=tar.xz
-WGET=https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=3.3.1
+WGET=https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.tar.cz
 DESC="Outils de gestion de volumes RAID logiciels"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On évite de quitter sur des avertissements traités comme des erreurs par GCC :
+sed -i 's@-Werror@@g' Makefile
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
