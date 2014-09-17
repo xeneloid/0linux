@@ -46,10 +46,7 @@ fi
 
 # On monte le chroot :
 echo "Montage de '$1' sous '${CHROOTDIR}'..."
-echo "mkdir ${CHROOTDIR}"
 mkdir -v ${CHROOTDIR}
-
-echo "mount ${1} ${CHROOTDIR}"
 mount -v ${1} ${CHROOTDIR}
 
 # On monte les systèmes de fichiers virtuels :
@@ -60,16 +57,13 @@ mount -v --bind /sys ${CHROOTDIR}/sys
 mount -v --bind /dev ${CHROOTDIR}/dev
 mount -v --bind /run ${CHROOTDIR}/run
 
-echo "Si tout s'est bien passé, vous pouvez maintenant entrer dans votre système"
-echo "0Linux en invoquant :"
-echo ""
-echo "	chroot ${CHROOTDIR}"
-echo ""
-echo "Vous le quitterez avec \"exit\". Pensez ensuite à démonter les systèmes de"
-echo "fichiers virtuels puis à démonter '${CHROOTDIR}' avant de redémarrer :"
-echo ""
-echo "	umount ${CHROOTDIR}/dev ${CHROOTDIR}/proc ${CHROOTDIR}/sys ${CHROOTDIR}/run"
-echo "	umount ${CHROOTDIR}"
-echo ""
+# On chroot :
+echo "chroot ${CHROOTDIR}..."
+sleep 1
+chroot ${CHROOTDIR}
+
+# On démonte à la sortie du chroot :
+umount -v ${CHROOTDIR}/dev ${CHROOTDIR}/proc ${CHROOTDIR}/sys ${CHROOTDIR}/run || true
+umount -v ${CHROOTDIR} || true
 
 # C'est fini.
