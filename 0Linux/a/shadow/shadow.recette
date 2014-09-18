@@ -9,6 +9,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige le comportement de 'su -c' pour root, trop restrictif :
+cat $CWD/shadow.CVE-2005-4890_relax.patch | patch -p1
+
 # On empêche l'installation de 'groups', 'coreutils' en fournit déjà une version :
 sed -i 's/groups$(EXEEXT) //' src/Makefile.in
 find man -name Makefile.in -exec sed -i 's/groups\.1 / /' {} \;
