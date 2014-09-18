@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.03_pre18
+VERSION=6.03_pre20
 WGET=http://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$(echo $VERSION | sed 's@_pre.*@@')/$NAMESRC-$(echo $VERSION | sed 's@_pre@-pre@').tar.xz
 DESC="La collection de chargeurs d'amorçage Syslinux"
 
