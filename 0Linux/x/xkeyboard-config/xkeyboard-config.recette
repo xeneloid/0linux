@@ -19,17 +19,20 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--with-xkb-base=/etc/X11/xkb \
-	--with-xkb-rules-symlink=xfree86,xorg \
+	--with-xkb-base=/usr/share/X11/xkb \
+	--with-xkb-rules-symlink=xorg \
 	--enable-compat-rules \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On crée un lien de '/usr/share/X11/xkb' vers '/etc/X11/xkb' :
-mkdir -p ${PKG}/usr/share/X11
-ln -sf ../../../../etc/X11/xkb ${PKG}/usr/share/X11/xkb 
+# Ce répertoire est nécessaire :
+mkdir -p ${PKG}/var/lib/xkb
+
+# On crée un lien de compatibilité :
+mkdir -p ${PKG}/etc/X11
+ln -sf ../../usr/share/X11/xkb ${PKG}/etc/X11/
 
 installer_doc
 
