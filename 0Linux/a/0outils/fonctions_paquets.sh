@@ -437,9 +437,11 @@ configure_make_makeinstall() {
 	# On compile :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" make -j${JOBS} || make
 	
-	# On installe en déduisant le mot-clé du répertoire d'installation :
+	# On installe en déduisant le mot-clé du répertoire d'installation (pas terrible,
+	# mais pratique) :
 	if grep -q "INSTALL_ROOT" Makefile; then   DESTPKGDIR="INSTALL_ROOT"; fi
 	if grep -q "install_prefix" Makefile; then DESTPKGDIR="install_prefix"; fi
+	if grep -q "ROOTDIR" Makefile; then        DESTPKGDIR="ROOTDIR"; fi
 	if grep -q "DESTDIR" Makefile; then        DESTPKGDIR="DESTDIR"; fi
 	fakeroot make install ${DESTPKGDIR}=${PKG}
 }

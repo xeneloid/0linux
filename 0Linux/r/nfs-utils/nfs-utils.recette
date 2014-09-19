@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.2.8
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/nfs/$NAMESRC-$VERSION.$EXT
+VERSION=1.3.0
+WGET=http://prdownloads.sourceforge.net/nfs/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils de partage NFS"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,12 +15,13 @@ mkdir -p ${PKG}/etc/exports.d
 mkdir -p -m 555 ${PKG}/var/lib/nfs/rpc_pipefs
 mkdir ${PKG}/var/lib/nfs/v4recovery
 
+# On corrige le comportement lorsque '/etc/mtab' est un liens symbolique vers '/proc/mounts' :
+cat $CWD/nfs-utils.mtab.patch | patch -p1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
-	--bindir=/usr/bin \
-	--sbindir=/usr/sbin \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -46,11 +45,52 @@ fakeroot make install DESTDIR=${PKG}
 #/usr/sbin/exportfs -a
 #/usr/sbin/rpc.mountd
 #/usr/sbin/rpc.statd
-#
-## On monte les volumes NFS :
-#echo "Montage des systèmes de fichiers distants NFS..."
-#mount -F -a -t nfs,nfs4
 
+# On crée le fichier service, désactivé par défaut  :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.nfsd << "EOF"
+#!/usr/bin/env bash
+
+nfsd_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage des démons NFS..."
+	exportfs -ar
+	rpc.nfsd 8
+	rpc.mountd
+	rpc.statd
+}
+
+nfsd_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt des démons NFS..."
+	killall rpc.mountd
+	killall rpc.nfsd
+	sleep 1
+	exportfs -au
+}
+
+case "$1" in
+	'start')
+		nfsd_start
+	;;
+	
+	'stop')
+		nfsd_stop
+	;;
+	
+	'restart')
+		nfsd_stop
+		sleep 1
+		nfsd_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 {start|stop|restart}"
+		exit 1
+	;;
+
+esac
+
+EOF
+      
 installer_doc
 creer_post_installation
 stripper

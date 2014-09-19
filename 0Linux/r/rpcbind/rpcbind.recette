@@ -37,7 +37,7 @@ cat > ${PKG}/etc/rc.d/rc.rpcbind << "EOF"
 #!/usr/bin/env bash
 
 rpcbind_start() {
-	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de RPCBind.."
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de RPCBind..."
 	rpcbind
 }
 
