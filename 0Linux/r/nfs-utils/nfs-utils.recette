@@ -37,14 +37,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# À FAIRE. Les binaires à appeler dans l'ordre semblent être pour NFSv3 + NFSv4 .
-# RPC Bind doit être lancé à un certain stade, à étudier :
-#/usr/sbin/blkmapd
-#/usr/sbin/rpc.idmapd
-#/usr/sbin/rpc.nfsd
-#/usr/sbin/exportfs -a
-#/usr/sbin/rpc.mountd
-#/usr/sbin/rpc.statd
+# À FAIRE : ajouter /usr/sbin/blkmapd ?
 
 # On crée le fichier service, désactivé par défaut  :
 mkdir -p ${PKG}/etc/rc.d
@@ -63,6 +56,7 @@ nfsd_stop() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt des démons NFS..."
 	killall rpc.mountd
 	killall rpc.nfsd
+	[ -x /usr/sbin/rpc.rquotad ] && /usr/sbin/rpc.rquotad
 	sleep 1
 	exportfs -au
 }
@@ -90,7 +84,7 @@ case "$1" in
 esac
 
 EOF
-      
+
 installer_doc
 creer_post_installation
 stripper
