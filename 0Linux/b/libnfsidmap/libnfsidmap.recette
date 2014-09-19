@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.25
-EXT=tar.gz
-WGET=http://www.citi.umich.edu/projects/nfsv4/linux/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://www.citi.umich.edu/projects/nfsv4/linux/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'identification réseau pour NFSv4"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -50,6 +48,12 @@ Nobody-User = nobody
 Nobody-Group = nobody
 
 EOF
+
+# On crée un lien générqiue pour x86_64 multilib :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mkdir -p ${PKG}/usr/lib
+	ln -sf ../lib${LIBDIRSUFFIX}/libnfsidmap ${PKG}/usr/lib/
+fi
 
 installer_doc
 creer_post_installation

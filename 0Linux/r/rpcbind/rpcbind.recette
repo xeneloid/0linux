@@ -1,24 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.2.0
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=0.2.1
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Remplaçant de portmap pour le transport réseau RPC sur divers protocoles"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On crée les répertoires d'accueil :
-mkdir -p ${PKG}/usr/man/man8
-
-# On met à jour le code des développeurs :
-cat $CWD/rpcbind-0.2.1-rc4.patch | patch -p1
-
-# On régénère les outils de construction :
-autoreconf -vifs
+# On corrige le nom de l'hôte :
+sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c &&
+sed -i "/error = getaddrinfo/s:rpcbind:sunrpc:" src/rpcinfo.c
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -31,17 +24,51 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-warmstarts \
+	--with-rpcuser=root \
 	--with-statedir=/run \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On place un manuel manquant :
-cp -a man/rpcinfo.8 ${PKG}/usr/man/man8/
+# On crée le fichier service, désactivé par défaut  :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.rpcbind << "EOF"
+#!/usr/bin/env bash
 
-# On crée le fichier service  :
-# À FAIRE : écrire le rc.rpcbind, lancer AVANT 'rc.nfsd' dans 'rc.reseau'
+rpcbind_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de RPCBind.."
+	rpcbind
+}
+
+rpcbind_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de RPCBind..."
+	killall rpcbind
+}
+
+case "$1" in
+	'start')
+		rpcbind_start
+	;;
+	
+	'stop')
+		rpcbind_stop
+	;;
+	
+	'restart')
+		rpcbind_stop
+		sleep 1
+		rpcbind_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 {start|stop|restart}"
+		exit 1
+	;;
+
+esac
+
+EOF
 
 installer_doc
 creer_post_installation
