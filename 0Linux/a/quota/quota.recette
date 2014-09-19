@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=4.01
+WGET=http://prdownloads.sourceforge.net/linuxquota/$NAMESRC-$VERSION.tar.gz
+DESC="Outils de gestion des quotas sous Linux"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+configure_make_makeinstall
+
+# Ces fichiers sont en conflit avec 'glibc' :
+rm -f ${PKG}/usr/include/rpcsvc/rquota.{h,x}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
