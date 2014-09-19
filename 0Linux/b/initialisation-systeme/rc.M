@@ -52,12 +52,6 @@ if [ -x /etc/rc.d/rc.reseau ]; then
 	/etc/rc.d/rc.reseau start
 fi
 
-# Montage du reste des systèmes de fichiers :
-mount -v -F -a | grep -v "already mounted"
-
-# Nettoyage du système après le montage de systèmes de fichiers, superflu compris :
-rm -f /var/lock/* /tmp/.X*lock /tmp/core /core /tmp/hunt* 2> /dev/null
-
 # Correction des permissions au cas où :
 chmod 755 /
 chmod 1777 /tmp /var/lock /var/tmp
@@ -190,5 +184,11 @@ fi
 if [ -x /etc/rc.d/rc.local ]; then
 	/etc/rc.d/rc.local
 fi
+
+# Montage du reste des systèmes de fichiers, maintenant qu'on a réseau, NFS, Samba, etc. :
+mount -v -F -a | grep -v "already mounted"
+
+# Nettoyage du système après le montage de systèmes de fichiers, superflu compris :
+rm -f /var/lock/* /tmp/.X*lock /tmp/core /core /tmp/hunt* 2> /dev/null
 
 # C'est fini.
