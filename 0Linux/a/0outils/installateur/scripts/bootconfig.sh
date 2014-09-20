@@ -100,6 +100,7 @@ else
 			if [ "${BOTTPTTYPE}" = "gpt" ]; then
 				parted --script $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
 			else
+				parted --script $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') legacy_boot on 2>/dev/null || true
 				parted --script $(echo ${BOOTPART} | tr -d '[0-9]') set $(echo ${BOOTPART} | tr -d '[a-z/]') boot on 2>/dev/null || true
 			fi
 			
