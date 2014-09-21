@@ -75,16 +75,16 @@ Noticeable features:
   - "Packages-subscriptions" allow to install large scale of packages (KDE,
     GIMP and all its plugins, a LAMP server, etc.)
   - System updates and package installation via the "0g" online tool. It
-    reolves dependencies.
-  - Init is BSD-style, just as Slackware is among others: /etc/rc.d/rc.*
+    resolves dependencies.
+  - Init is BSD-style, just as Slackware is, among others: /etc/rc.d/rc.*
   - All the 0Linux distro specific tools begin by "0" so you can find them
     easier by double-tabbing on the command line.
   - Kernel is built with a maximal set of options, features and modules. It is
     optimized for multimedia applications and low-latency computing.
-  - 0Linux 64 si a native "multilib" system : 32 and 64-bit apps can run and
-    compile on the same system without hassle.
+  - 0Linux 64 is a native "multilib" system : 32-bit and 64-bit apps can run and
+    build on the same system without hassle.
   - "Semi-rolling release" distribution. Upgrading is just a version string to
-    to change in /etc/os-release and a call to 0g.
+    change in /etc/os-release then a call to 0g.
   - Build scripts system available to rebuild all recipes or build them your
     own way.
 
@@ -96,7 +96,7 @@ Particular parts of the source code:
     http://0.tuxfamily.org/doku.php/documentation/gestion_des_paquets#arborescence_des_depots_a_partir_de_0linux_eta
   - Each package recipe is « multiarch » (tested on i686 and x86_64)
   - scripts/ contains everything to build and install packages or whole set of
-    packages. It allows to run a automatic build server, too.
+    packages. It allows to run a automated build server, too.
     
 0Linux is licensed under the terms of the CeCILL license,
 which is the French equivalent to the American GPL license.
