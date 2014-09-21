@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+NAMESRC=libintl-perl
+VERSION=1.23
+WGET=http://www.cpan.org/authors/id/G/GU/GUIDO/$NAMESRC-$VERSION.tar.gz
+DESC="Module d'internationalisation pour Perl"
+
+telecharger_sources
+preparer_sources
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+perl Makefile.PL INSTALLDIRS=vendor
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
