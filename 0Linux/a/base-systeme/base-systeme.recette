@@ -35,7 +35,7 @@ chmod 1710 ${PKG}/root
 chmod 1777 ${PKG}/{var/tmp,tmp}
 
 # Les scores des jeux doivent être totalement accessibles au groupe :
-chmod 0775 var/games
+chmod 0775 ${PKG}/var/games
 
 # Certains répertoires partagés critiques :
 chmod 1777 var/mail

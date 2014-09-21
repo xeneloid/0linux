@@ -4,6 +4,8 @@ perl-xml-parser
 perl-xml-simple
 perl-libsgmls
 perl-gettext
+perl-anyevent
+perl-event-execflow
 perl-gtk2-ex-formfactory
 perl-extutils-depends
 perl-extutils-pkgconfig
