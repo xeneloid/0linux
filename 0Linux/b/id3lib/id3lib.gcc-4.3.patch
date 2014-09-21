@@ -1,14 +1,13 @@
-diff -Naur id3lib-3.8.3-orig/configure id3lib-3.8.3/configure
---- id3lib-3.8.3-orig/configure      2008-05-24 23:39:36.000000000 -0400
-+++ id3lib-3.8.3/configure   2008-05-24 23:39:57.000000000 -0400
-@@ -10296,8 +10296,7 @@
- 
- for ac_header in \
+diff -Naur id3lib-3.8.3-orig/configure.in id3lib-3.8.3/configure.in
+--- id3lib-3.8.3-orig/configure.in	2008-03-05 18:03:25.000000000 -0600
++++ id3lib-3.8.3/configure.in	2008-03-05 18:15:42.000000000 -0600
+@@ -227,7 +227,6 @@
+ )
+ AC_CHECK_HEADERS(               \
    string                        \
 -  iomanip.h                     \
- 
- do
- as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
+   ,,AC_MSG_ERROR([Missing a vital header file for id3lib])
+ )
  
 diff -Naur id3lib-3.8.3-orig/include/id3/id3lib_strings.h id3lib-3.8.3/include/id3/id3lib_strings.h
 --- id3lib-3.8.3-orig/include/id3/id3lib_strings.h	2008-03-05 18:19:46.000000000 -0600

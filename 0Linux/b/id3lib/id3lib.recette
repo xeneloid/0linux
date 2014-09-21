@@ -2,35 +2,32 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.8.3
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'accès aux informations des tags ID3"
 EXTRADEPS="cdparanoia lame"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources
 cflags
 
-# On corrige cette vieillerie (sécurité, GCC 4.3+ et UTF16) :
-cat $CWD/id3lib.CVE-2007-4460.patch | patch -p0
-cat $CWD/id3lib.gcc-4.3.patch | patch -p1
+# On corrige cette vieillerie (sécurité, GCC 4.3+, UTF16 et autres erreurs) :
+cat $CWD/id3lib.test_io.patch | patch -p1
+cat $CWD/id3lib.autoconf259.patch | patch -p1
+cat $CWD/id3lib.doxyinput.patch | patch -p1
 cat $CWD/id3lib.UTF16.patch | patch -p1
+cat $CWD/id3lib.gcc-4.3.patch | patch -p1
+cat $CWD/id3lib.nullpointer.patch | patch -p1
+cat $CWD/id3lib.CVE-2007-4460.patch | patch -p0
 
-# Compilation en complétant les LDFLAGS :
-LDFLAGS+="-lz" \
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--build=${PKGARCH}-0linux-linux-gnu
+# On régénère les outils de construction :
+sed -i 's:AM_CONFIG_HEADER:AC_CONFIG_HEADERS:' {.,zlib}/configure.in
+AT_M4DIR=${TMP}/m4 autoreconf -vif
 
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+# On complète les LDFLAGS :
+export LDFLAGS+=" -lz"
+
+# Compilation :
+configure_make_makeinstall
 
 installer_doc
 creer_post_installation
