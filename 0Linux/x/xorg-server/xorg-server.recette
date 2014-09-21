@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.16.0
+VERSION=1.16.1
 WGET=http://xorg.freedesktop.org/releases/individual/xserver/$NAMESRC-$VERSION.tar.bz2
 DESC="Le serveur graphique X11"
 
@@ -38,6 +38,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-kdrive-kbd \
 	--enable-kdrive-mouse \
 	--enable-record \
+	--enable-xcsecurity \
 	--enable-xephyr \
 	--enable-xfbdev \
 	--enable-xnest \
