@@ -4,7 +4,7 @@
 VERSION=0.98.11
 WGET=http://www.exit1.org/$NAMESRC/dist/$NAMESRC-$VERSION.tar.gz
 DESC="Interface graphique à 'transcode' pour l'extraction de contenus sur DVD"
-EXTRADEPS="lsdvd transcode"
+EXTRADEPS="gtk2-perl perl-event-execflow perl-libintl-perl lsdvd transcode"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

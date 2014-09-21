@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+NAMESRC=Gtk2
+VERSION=1.2492
+WGET=http://prdownloads.sourceforge.net/gtk2-perl/$NAMESRC-$VERSION.tar.gz
+DESC="Interfaçage Perl pour GTK+ 2"
+EXTRADEPS="cairo-perl glib-perl pango-perl"
+
+telecharger_sources
+preparer_sources
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+PERL_MM_USE_DEFAULT=1 \
+perl Makefile.PL INSTALLDIRS=vendor
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
