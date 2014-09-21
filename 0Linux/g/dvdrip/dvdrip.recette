@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=0.98.11
+WGET=http://www.exit1.org/$NAMESRC/dist/$NAMESRC-$VERSION.tar.gz
+DESC="Interface graphique à 'transcode' pour l'extraction de contenus sur DVD"
+EXTRADEPS="lsdvd transcode"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+perl Makefile.PL \
+	PREFIX=/usr \
+	INSTALLDIRS=vendor \
+	INSTALLVENDORMAN1DIR=/usr/man/man1 \
+	INSTALLVENDORMAN3DIR=/usr/man/man3
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place l'icône :
+mkdir -p ${PKG}/usr/share/pixmaps
+cp $CWD/dvdrip.png ${PKG}/usr/share/pixmaps/
+
+# On crée le raccourci bureau :
+mkdir -p ${PKG}/usr/share/applications
+cat > ${PKG}/usr/share/applications/dvdrip.desktop << "EOF"
+[Desktop Entry]
+Version=1.0
+Name=dvd::rip
+GenericName=DVD copy program
+GenericName[fr]=Extracteur de contenus DVD
+Comment=A full featured DVD copy program
+Comment[fr]=Un outil complet d'extraction de contenus sur DVD
+Type=Application
+Exec=dvdrip
+Icon=dvdrip
+Categories=AudioVideo;Video;
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
