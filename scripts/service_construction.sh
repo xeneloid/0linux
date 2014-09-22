@@ -7,9 +7,8 @@
 #     des paquets correspondants avec 'construction.sh'
 #   - il lance ensuite 'trouver_binaires_casses.sh' pour vérifier l'intégrité
 #     de l'ensemble du système
-#   - Désactivé pour le moment : il génère le catalogue en ligne via 
-#     '../catalogue/catalogue.sh' des paquets fraîchement construits ainsi que
-#     leurs dépendances
+#   - il génère le catalogue en ligne des paquets fraîchement construits via
+#     '../catalogue/catalogue.sh', ainsi que de chacune de leurs dépendances
 #   - il génère enfin la base de données des paquets 'paquets.db' et envoie le
 #     tout sur le serveur spécifié avec le script '0mir'.
 #
@@ -63,7 +62,7 @@ traiter_filedattente() {
 			./construction.sh ${recette_demandee}
 			
 			# On envoie le paquet en cours à la file d'attente du catalogue pour le régénérer :
-			#echo "${recette_demandee}" >> ${FILEDATTENTECATALOGUE}
+			echo "${recette_demandee}" >> ${FILEDATTENTECATALOGUE}
 			
 			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
 			sed -i '1d' ${FILEDATTENTE}
@@ -83,10 +82,17 @@ traiter_filedattente_catalogue() {
 		if [ ! "${catalogue_demande}" = "" ]; then
 			
 			# On génère le catalogue du paquet et son index :
-			FORCECATALOGUE=oui ../catalogue/catalogue.sh ${catalogue_demande}
+			( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${catalogue_demande} )
 			
-			# Et le catalogue de chaque dépendance et chacun de leur index :
-			cat /usr/doc/${catalogue_demande}/0linux/*.dep | while read deppp; do
+			# Et le catalogue de chaque dépendance et chacun de leur index. On traite les paquets
+			# dégueus différemment :
+			if [ "${catalogue_demande}" = "catalyst" -o "${catalogue_demande}" = "nvidia" ]; 
+				RACINELOGS="/tmp/paquets_invasifs"
+			else
+				RACINELOGS=""
+			fi
+			
+			cat ${RACINELOGS}/usr/doc/${catalogue_demande}/0linux/*.dep | while read deppp; do
 				( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${deppp} )
 			done
 			
@@ -144,10 +150,10 @@ fi
 ./0mir
 
 ### Étape 4 : on régénère les catalogues maintenant que 'paquets.db' est à jour :
-#traiter_filedattente_catalogue
+traiter_filedattente_catalogue
 
 ### Étape 5 : on '0mir' à nouveau, spécifiquement pour envoyer le catalogue à jour :
-#./0mir
+./0mir
 
 # On peut supprimer le fichier du processus pour les prochaines fois :
 rm -f ${PIDFILE}
