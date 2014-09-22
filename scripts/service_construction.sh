@@ -86,7 +86,7 @@ traiter_filedattente_catalogue() {
 			
 			# Et le catalogue de chaque dépendance et chacun de leur index. On traite les paquets
 			# dégueus différemment :
-			if [ "${catalogue_demande}" = "catalyst" -o "${catalogue_demande}" = "nvidia" ]; 
+			if [ "${catalogue_demande}" = "catalyst" -o "${catalogue_demande}" = "nvidia" ]; then
 				RACINELOGS="/tmp/paquets_invasifs"
 			else
 				RACINELOGS=""
