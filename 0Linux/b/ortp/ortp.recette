@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.22.0
-EXT=tar.gz
-WGET=http://download-mirror.savannah.gnu.org/releases/linphone/$NAMESRC/sources/$NAMESRC-$VERSION.$EXT
+VERSION=0.23.0
+WGET=http://download-mirror.savannah.gnu.org/releases/linphone/$NAMESRC/sources/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques temps réel RTP"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige ce souci :
+# http://lists.gnu.org/archive/html/linphone-users/2014-02/msg00008.html
+sed -i 's|libzrtpcppcore|libzrtpcpp|g' configure{,.ac}
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -21,6 +23,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-broken-srtp \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
