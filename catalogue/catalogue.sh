@@ -76,7 +76,7 @@ scan() {
 		
 		# Rien trouvé ? On quitte :
 		if [ -z ${pkglog} ]; then
-			echo "Argument invalide : paquet ou journal de paquet inexistant."
+			echo "Argument invalide \"${arg}\": paquet ou journal de paquet inexistant."
 			echo ""
 			echo "Utilisation :"
 			echo "	catalogue.sh [PAQUETS, JOURNAUX DE PAQUETS]"
