@@ -14,6 +14,10 @@
 #
 # On peut « nourrir » soi-même la file d'attente pour forcer des constructions
 # de paquets en ajoutant du contenu à la file d'attente (1 paquet par ligne).
+#
+# Définir la variable CATALOGUENODEPS permet d'éviter de régénérer le catalogue
+# de chaque dépendance, pratique dans de rares cas (régération de tout le
+# catalogue, etc.).
 
 # Le fichier du processus :
 PIDFILE="/var/lock/service_construction.pid"
@@ -85,16 +89,18 @@ traiter_filedattente_catalogue() {
 			( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${catalogue_demande} )
 			
 			# Et le catalogue de chaque dépendance et chacun de leur index. On traite les paquets
-			# dégueus différemment :
-			if [ "${catalogue_demande}" = "catalyst" -o "${catalogue_demande}" = "nvidia" ]; then
-				RACINELOGS="/tmp/paquets_invasifs"
-			else
-				RACINELOGS=""
+			# dégueus différemment. $CATALOGUENODEPS ignore cette portion decode :
+			if [ -z ${CATALOGUENODEPS} ]; then
+				if [ "${catalogue_demande}" = "catalyst" -o "${catalogue_demande}" = "nvidia" ]; then
+					RACINELOGS="/tmp/paquets_invasifs"
+				else
+					RACINELOGS=""
+				fi
+				
+				cat ${RACINELOGS}/usr/doc/${catalogue_demande}/0linux/*.dep | while read deppp; do
+					( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${deppp} )
+				done
 			fi
-			
-			cat ${RACINELOGS}/usr/doc/${catalogue_demande}/0linux/*.dep | while read deppp; do
-				( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${deppp} )
-			done
 			
 			# On nettoie le(s) catalogue(s) demandé(s) (première ligne) de la file d'attente :
 			sed -i '1d' ${FILEDATTENTECATALOGUE}

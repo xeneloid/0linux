@@ -157,6 +157,29 @@ scan() {
 			
 		done > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep
 		
+		# On récupère les dépendants en scannant les autres journaux '*.dep' (on ignore
+		# le scan pour les paquets dégueus isolés comme 'nvidia' et 'catalyst') :
+		if [ ! "${PKGLOGDIR}" = "${UGLYPKGROOT}/${PKGLOGDIR}" ]; then
+			touch ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+			
+			for reqlog in /usr/doc/*/0linux/*.dep; do
+				if grep -E -q "^$(nom_court ${pkglog})$" ${reqlog}; then
+					
+					# L'emplacement de la dépendance, contenu dans 'paquets.db' :
+					reqcateg=$(afficher_champ_db emplacement ${reqlog})
+					
+					# On crée le champ "paquet url" pour créer chaque lien hypertexte :
+					echo "$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) ${CATALOGURL}/$(uname -m)/${reqcateg}/$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@'))" >> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+				fi
+			done
+			
+			# On trie :
+			sort -u ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby.tmp | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby
+			
+			# On nettoie :
+			rm -f ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby.tmp
+		fi
+		
 		# On génère le document txt2tags :
 		cat > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t << EOF
 Détails du paquet ${categ}$(basename ${pkglog}) pour 0Linux $(uname -m)
