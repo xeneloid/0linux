@@ -111,7 +111,7 @@ scan() {
 		
 		# Si le log en .txt est présent et que FORCECATLOGUE est vide, on ignore le scan :
 		if [ -z "${FORCECATALOGUE}" ]; then
-			if [ -r ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).txt ]; then
+			if [ -r ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).txt ]; then
 				echo "Catalogue '$(nom_court ${pkglog}).txt' ignoré car déjà présent."
 				continue
 			fi
@@ -127,35 +127,35 @@ scan() {
 		# On va créer des logs temporaires et les assembler plus tard dans un document txt2tags.
 		
 		# On récupère les entêtes (nom, taille, description...) :
-		spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | sed '/^EMPLACEMENT/d' > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).header
+		spacklist --directory="${PKGLOGDIR}" -v $(nom_court ${pkglog}) | sed '/^EMPLACEMENT/d' > ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).header
 		
 		# On récupère la liste nettoyée des fichiers installés :
-		touch ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
+		touch ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list.tmp
 		
 		spacklist --directory="${PKGLOGDIR}" -V $(nom_court ${pkglog}) | \
 			sed -e '/NOM DU PAQUET.*$/,/\.\//d' \
-			> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
+			> ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list.tmp
 		
 		# On ajoute la liste nettoyée des liens symboliques traités en post-installation :
 		spacklist --directory="${PKGPOSTDIR}" -v -p $(nom_court ${pkglog}) | \
 			sed -e 's@^/@@' -e '/------/d' -e '/^> /d' -e '/^\.\/$/d' \
-			>> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
+			>> ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list.tmp
 		
 		# On réunit le tout, qu'on trie dans l'ordre :
-		sort ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list
-		rm -f ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list.tmp
+		sort ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list.tmp > ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list
+		rm -f ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list.tmp
 		
 		# On récupère les dépendances en nettoyant le paquet concerné.
 		# Pour chaque dépendance :
 		for linedep in $(afficher_champ_db deps $(nom_court ${pkglog})); do
-			
-			# L'emplacement de la dépendance, contenu dans 'paquets.db' :
-			depcateg=$(afficher_champ_db emplacement ${linedep})
-			
-			# On crée le champ "paquet url" pour créer chaque lien hypertexte :
-			echo "${linedep} ${CATALOGURL}/$(uname -m)/${depcateg}${linedep}"
-			
-		done > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).dep
+			if [ ! "${linedep}" = "$(nom_court ${pkglog})" ]; then
+				# L'emplacement de la dépendance, contenu dans 'paquets.db' :
+				depcateg=$(afficher_champ_db emplacement ${linedep})
+				
+				# On crée le champ "paquet url" pour créer chaque lien hypertexte :
+				echo "${linedep} ${CATALOGURL}/$(uname -m)/${depcateg}${linedep}"
+			fi
+		done | sort > ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).dep
 		
 		# On récupère les dépendants en scannant les autres journaux '*.dep' (on ignore
 		# le scan pour les paquets dégueus isolés comme 'nvidia' et 'catalyst') :
@@ -164,24 +164,25 @@ scan() {
 			
 			for reqlog in /usr/doc/*/0linux/*.dep; do
 				if grep -E -q "^$(nom_court ${pkglog})$" ${reqlog}; then
-					
-					# L'emplacement de la dépendance, contenu dans 'paquets.db' :
-					reqcateg=$(afficher_champ_db emplacement ${reqlog})
-					
-					# On crée le champ "paquet url" pour créer chaque lien hypertexte :
-					echo "$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) ${CATALOGURL}/$(uname -m)/${reqcateg}/$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@'))" >> ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby.tmp
+					if [ ! "$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@'))" = "$(nom_court ${pkglog})" ]; then
+						
+						# L'emplacement du dépendant, contenu dans 'paquets.db' :
+						reqcateg=$(afficher_champ_db emplacement $(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')))
+						
+						echo "$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@')) ${CATALOGURL}/$(uname -m)/${reqcateg}$(nom_court $(echo ${reqlog} | sed 's@\.dep$@@'))" >> ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby.tmp
+					fi
 				fi
 			done
 			
 			# On trie :
-			sort -u ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby.tmp | sed "/$(nom_court ${pkglog})\.txt$/d" > ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby
+			sort -u ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby.tmp > ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby
 			
 			# On nettoie :
 			rm -f ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby.tmp
 		fi
 		
 		# On génère le document txt2tags :
-		cat > ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).t2t << EOF
+		cat > ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).t2t << EOF
 Détails du paquet ${categ}$(basename ${pkglog}) pour 0Linux $(uname -m)
 Équipe 0Linux <contact@0linux.org>
 Généré le %%mtime(%d/%m/%Y)
@@ -192,7 +193,7 @@ Généré le %%mtime(%d/%m/%Y)
 
 == Informations ==
 
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).header | sed -e 's@^@  - @' -e '/DESCRIPTION DU PAQUET/d' -e "s@^$(nom_court ${pkglog}):@@g")
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).header | sed -e 's@^@  - @' -e '/DESCRIPTION DU PAQUET/d' -e "s@^$(nom_court ${pkglog}):@@g")
 
 
 == Installation ==
@@ -215,12 +216,12 @@ $(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).header | sed -e 
 $(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
   
 || Dépendants |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).reqby 2>/dev/null | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby 2>/dev/null | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
 
 == Contenu ==
 
 || Fichiers installés  |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}/$(nom_court ${pkglog}).list | sed "s@\(^\).*\($\)@| \\\`\\\`\1&\2\\\`\\\`  |@")
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list | sed "s@\(^\).*\($\)@| \\\`\\\`\1&\2\\\`\\\`  |@")
 
 EOF
 		
