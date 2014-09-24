@@ -88,20 +88,6 @@ traiter_filedattente_catalogue() {
 			# On génère le catalogue du paquet et son index :
 			( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${catalogue_demande} )
 			
-			# Et le catalogue de chaque dépendance et chacun de leur index. On traite les paquets
-			# dégueus différemment. $CATALOGUENODEPS ignore cette portion decode :
-			if [ -z ${CATALOGUENODEPS} ]; then
-				if [ "${catalogue_demande}" = "catalyst" -o "${catalogue_demande}" = "nvidia" ]; then
-					RACINELOGS="/tmp/paquets_invasifs"
-				else
-					RACINELOGS=""
-				fi
-				
-				cat ${RACINELOGS}/usr/doc/${catalogue_demande}/0linux/*.dep | while read deppp; do
-					( cd ../catalogue ; FORCECATALOGUE=oui ../catalogue/catalogue.sh ${deppp} )
-				done
-			fi
-			
 			# On nettoie le(s) catalogue(s) demandé(s) (première ligne) de la file d'attente :
 			sed -i '1d' ${FILEDATTENTECATALOGUE}
 		fi
