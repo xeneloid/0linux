@@ -94,8 +94,8 @@ mv $PKG/etc/fppkg.cfg{,.0nouveau}
 mv $PKG/etc/fppkg/default{,.0nouveau}
 
 # On installe la doc
-cp -a $TMP/$NAMESRC-$VERSION.$FPARCH-linux/doc/* $PKG/usr/doc/$NAMETGZ-$VERSION
 mkdir -p $PKG/usr/doc/$NAMETGZ-$VERSION/{compiler,ide,rtl,tests,utils}
+cp -a $TMP/$NAMESRC-$VERSION.$FPARCH-linux/doc/* $PKG/usr/doc/$NAMETGZ-$VERSION
 cp -a compiler/{COPYING,README}.txt $PKG/usr/doc/$NAMETGZ-$VERSION/compiler
 cp -a ide/{README,TODO}.txt $PKG/usr/doc/$NAMETGZ-$VERSION/ide
 cp -a rtl/{COPYING.{FPC,txt},README.txt} $PKG/usr/doc/$NAMETGZ-$VERSION/rtl
