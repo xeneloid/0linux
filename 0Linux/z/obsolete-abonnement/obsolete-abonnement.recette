@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=13
+VERSION=14
 DESC="Paquets maarqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
@@ -52,6 +52,7 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	mplayer-codecs \
 	mysql \
 	ndiswrapper \
+	nepomuk-core nepomuk-widgets \
 	opengtl \
 	python3 \
 	raptor2 \
@@ -59,7 +60,8 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	syslog-ng \
 	systemd \
 	terminal \
-	udisks2
+	udisks2 \
+	virtuoso
 
 EOF
 chmod 755 ${PKG}/usr/bin/0ex.sh
