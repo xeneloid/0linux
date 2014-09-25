@@ -8,16 +8,12 @@
 #   - il lance ensuite 'trouver_binaires_casses.sh' pour vérifier l'intégrité
 #     de l'ensemble du système
 #   - il génère le catalogue en ligne des paquets fraîchement construits via
-#     '../catalogue/catalogue.sh', ainsi que de chacune de leurs dépendances
+#     '../catalogue/catalogue.sh'
 #   - il génère enfin la base de données des paquets 'paquets.db' et envoie le
 #     tout sur le serveur spécifié avec le script '0mir'.
 #
 # On peut « nourrir » soi-même la file d'attente pour forcer des constructions
 # de paquets en ajoutant du contenu à la file d'attente (1 paquet par ligne).
-#
-# Définir la variable CATALOGUENODEPS permet d'éviter de régénérer le catalogue
-# de chaque dépendance, pratique dans de rares cas (régération de tout le
-# catalogue, etc.).
 
 # Le fichier du processus :
 PIDFILE="/var/lock/service_construction.pid"
