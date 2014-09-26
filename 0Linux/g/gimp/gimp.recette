@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.8.10
-EXT=tar.bz2
-WGET=ftp://ftp.gimp.org/pub/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=2.8.14
+WGET=http://de-mirror.gimper.net/pub/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Le programme de manipulation et de retouche d'images GIMP"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -21,6 +19,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-libcurl \
+	--enable-mp \
+	--enable-gimp-console \
+	--enable-gimp-remote \
+	--enable-python \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
