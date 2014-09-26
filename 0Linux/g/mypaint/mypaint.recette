@@ -2,26 +2,24 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.0.0
-EXT=tar.xz
-WGET=http://download.gna.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://download.gna.org/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Logiciel de peinture numérique"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-scons
-
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" scons
 fakeroot scons prefix=${PKG}/usr install
 
 # On renomme le répertoire des bibliothèques :
-mv ${PKG}/usr/lib{,${LIBDIRSUFFIX}}
-
-# On reporte ce changement dans le « binaire » :
-sed -i "s@lib_compiled='lib/mypaint/'@lib_compiled='lib${LIBDIRSUFFIX}/mypaint/'@" ${PKG}/usr/bin/mypaint
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	mv ${PKG}/usr/lib{,${LIBDIRSUFFIX}}
+	
+	# On reporte ce changement dans le « binaire » :
+	sed -i "s@lib_compiled='lib/mypaint/'@lib_compiled='lib${LIBDIRSUFFIX}/mypaint/'@" ${PKG}/usr/bin/mypaint
+fi
 
 installer_doc
 creer_post_installation

@@ -3,7 +3,7 @@
 
 NAMESRC=amd-catalyst
 VERSION=14.4
-WGET=http://www2.ati.com/drivers/linux/${NAMESRC}-$(echo $VERSION | tr '.' '-')-linux-x86-x86-64.zip
+WGET=http://www2.ati.com/drivers/linux/${NAMESRC}-$(echo $VERSION | tr '.' '-')-rev2-linux-x86-x86-64-may6.zip
 DESC="Pilotes et bibliothèques graphiques fermés de AMD"
 
 # Pour commencer : AMD, FAITES QUELQUE CHOSE DE PROPRE POUR CHANGER.
@@ -44,6 +44,9 @@ cd ${NAMESRC}-${VERSION}
 # On applique des correctifs que les développeurs ont eu la flemme de
 # tester à priori :
 cat $CWD/catalyst.linux-3.14-current_euid.patch | patch -p1
+
+# Ce hack immonde permet de ne pas planter la compilation pour i686... :
+sed -i 'MODULE_LICENSE("Proprietary. (C) 2002 - ATI Technologies, Starnberg, GERMANY");@MODULE_LICENSE("GPL\0Proprietary. (C) 2002 - ATI Technologies, Starnberg, GERMANY");@' common//lib/modules/fglrx/build_mod/firegl_public.c
 
 # On vérifie les permissions des sources :
 find . \

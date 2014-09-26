@@ -7,14 +7,15 @@ siens et pose donc un problème d'intégrité du système s'il vient un jour
 
 En cas de désinstallation, il faudra donc impérativement :
 
-1) réinstaller les paquets suivants :
-	mesa
+1) réinstaller 'mesa' :
+	sudo spackrm mesa
+	sudo 0g mesa
 
 2) Modifier ou supprimer le fichier '/etc/X11/xorg.conf.d/catalyst.conf' ainsi
    que les fichiers qui blacklistent les pilotes libres, notamment 
    '/etc/modprobe.d/blacklist-ati-radeon.conf'
 
 3) Mettre à jour les dépendances des modules :
-	depmod -a
+	sudo depmod -a
 
 4) Rédemarrer ;)
