@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=14
-DESC="Paquets maarqués comme obsolètes avec outil de désinstallation interactif"
+VERSION=15
+DESC="Paquets marqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
 
@@ -14,7 +14,7 @@ chmod 0755 ${PKG}/usr/sbin/*
 # On crée le script demandant à désinstaller tous les paquets obsolètes trouvés :
 mkdir -p ${PKG}/usr/bin
 cat > ${PKG}/usr/bin/0ex.sh << "EOF"
-!#/bin/sh
+#!/bin/sh
 # On demande à désinstaller les paquets obsolètes trouvés :
 0ex \
 	clearlooks \

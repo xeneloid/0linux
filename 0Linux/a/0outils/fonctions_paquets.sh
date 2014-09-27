@@ -832,19 +832,29 @@ empaqueter() {
 	# On place la description en la créant via 'spackdesc -' :
 	echo "${DESC}" | spackdesc --package="${NAMETGZ}" - > ${PKG}/about.txt
 	
-	# On décompresse et on recompresse en 'xz' tous les manuels en ignorant les liens matériels :
+	# On décompresse tous les manuels :
 	if [ -d ${PKG}/usr/man ]; then
-		find ${PKG}/usr/man -type f -name "*.gz"  -exec gzip  -d --force {} \;
-		find ${PKG}/usr/man -type f -name "*.bz2" -exec bzip2 -d --force {} \;
-		find ${PKG}/usr/man -type f -links 1 -name "*.*"   -exec xz      {} \;
+		find ${PKG}/usr/man -type f -name "*.bz2"  -exec bzip2 -d --force {} \;
+		find ${PKG}/usr/man -type f -name "*.gz"   -exec gzip  -d --force {} \;
+		find ${PKG}/usr/man -type f -name "*.lzma" -exec lzma  -d --force {} \;
 		
 		# On renomme tous les liens comportant une extension et on renomme 
-		# la cible de chaque lien pour y mettre la bonne extension :
-		for manext in gz bz2 lzma; do
+		# la cible de chaque lien :
+		for manext in bz2 gz lzma; do
 			for manpage in $(find ${PKG}/usr/man -type l -name "*.${manext}") ; do
-				ln -sv $(echo $(readlink ${manpage} | sed "s@\.${manext}@.xz@")) $(echo ${manpage} | sed "s@\.${manext}@.xz@")
+				ln -sv $(echo $(readlink ${manpage} | sed "s@\.${manext}@@")) $(echo ${manpage} | sed "s@\.${manext}@@")
 				rm -f ${manpage}
 			done
+		done
+		
+		# on recompresse en 'xz' tous les manuels :
+		find ${PKG}/usr/man -type f -name "*.*" -exec xz {} \;
+		
+		# Maintenant que tous les liens sont propres, on renomme tous les liens
+		# et leur cible en ajoutant l'extension '.xz' :
+		for manpage in $(find ${PKG}/usr/man -type l) ; do
+			ln -sv $(echo $(readlink ${manpage} | sed 's@$@.xz@')) $(echo ${manpage} | sed 's@$@.xz@')
+			rm -f ${manpage}
 		done
 	fi
 	
