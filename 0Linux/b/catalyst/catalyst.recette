@@ -45,9 +45,6 @@ cd ${NAMESRC}-${VERSION}
 # tester à priori :
 cat $CWD/catalyst.linux-3.14-current_euid.patch | patch -p1
 
-# Ce hack immonde permet de ne pas planter la compilation pour i686... :
-sed -i 's@MODULE_LICENSE("Proprietary\. (C) 2002 - ATI Technologies, Starnberg, GERMANY");@MODULE_LICENSE("GPL\0Proprietary. (C) 2002 - ATI Technologies, Starnberg, GERMANY");@' common/lib/modules/fglrx/build_mod/firegl_public.c
-
 # On vérifie les permissions des sources :
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
