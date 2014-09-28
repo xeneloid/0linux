@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=12
+VERSION=13
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-firmware            alsa-lib \
@@ -135,7 +135,7 @@ mdadm                   media-player-info        mediastreamer \
 mjpegtools              mkvtoolnix               mlt \
 mozjs \
 mpc                     mpfr                     mplayer \
-mplayer-codecs          mplayer-skins            mtdev \
+mplayer-skins           mtdev \
 mtr                     murrine                  murrine-themes \
 musepack                mutagen                  nano \
 ncurses                 neon                     net-snmp \
