@@ -136,7 +136,7 @@ for param in $@; do
 		elif [ "${param}" = "tout-completer" ]; then
 			for recette in $(find ../0Linux -type f -name "*.recette" | sort); do
 				CHECKPKGDIR="$(find ${PKGREPO}/${PKGARCH:-$(uname -m)}/ -type d -name "$(basename ${recette} .recette)")"
-				if [ "$(find ${CHECKPKGDIR} -type f -name *.spack)" = "" ]; then
+				if [ "$(find ${CHECKPKGDIR} -type f -name "$(basename ${recette} .recette)*.spack")" = "" ]; then
 					compiler_installer ${recette}
 				fi
 			done 
