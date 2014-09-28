@@ -43,8 +43,8 @@ rm -rf ${PKG}/usr/test
 PYTHONLIB=$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
 	sed 's#/site-packages##')
 mkdir -p ${PKG}/${PYTHONLIB}
-cp -ar ${PKG}/usr/lib${LIBDIRSUFFIX}/python/* ${PKG}/${PYTHONLIB}
-rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/python
+cp -ar ${PKG}/usr/lib*/python/* ${PKG}/${PYTHONLIB}
+rm -rf ${PKG}/usr/lib*/python
 
 installer_doc
 creer_post_installation
