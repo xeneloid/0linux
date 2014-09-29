@@ -83,7 +83,8 @@ gnome-calculator \
 gnome-photos \
 gtk-vnc \
 vinagre \
-rhythmbox"
+rhythmbox \
+gnote"
 
 cflags
 

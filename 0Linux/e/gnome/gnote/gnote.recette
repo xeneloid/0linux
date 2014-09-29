@@ -3,7 +3,7 @@
 
 VERSION=3.14.0
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
-DESC="Gestionnaire de photos pour GNOME"
+DESC="Application de prise de notes pour GNOME"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -20,6 +20,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-scrollkeeper \
+	--disable-schemas-compile \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
