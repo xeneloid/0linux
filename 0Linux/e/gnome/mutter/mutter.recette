@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.12.2
+VERSION=3.14.02.2
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Gestionnaire de fenêtres de GNOME"
 
@@ -21,6 +21,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-shemas-compile \
+	--enable-compile-warnings=minimum \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
