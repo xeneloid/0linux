@@ -22,6 +22,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-egl-backend \
 	--enable-evdev-input \
 	--enable-introspection \
+	--enable-wayland-backend \
+	--enable-wayland-compositor \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
