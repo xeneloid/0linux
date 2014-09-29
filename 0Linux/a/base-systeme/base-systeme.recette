@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.3.3
+VERSION=5.3.4
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
 
@@ -38,8 +38,8 @@ chmod 1777 ${PKG}/{var/tmp,tmp}
 chmod 0775 ${PKG}/var/games
 
 # Certains répertoires partagés critiques :
-chmod 1777 var/mail
-chmod 1777 run/lock
+chmod 1777 ${PKG}/var/mail
+chmod 1777 ${PKG}/run/lock
 
 # La hiérarchie pour les paquets compilés par recettes :
 chmod -R 777 ${PKG}/usr/local/paquets
