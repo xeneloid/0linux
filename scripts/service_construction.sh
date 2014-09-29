@@ -37,6 +37,9 @@ fi
 # On vérifie si un '.pid' existe (le script tourne déjà) :
 [ -r ${PIDFILE} ] && exit 0
 
+# On vérifie si un 'construction.sh' n'est pas déjà en cours :
+[ "$(ps axc | grep 'service_construction')" = "" ] && exit 0
+
 # On est toujours là ? OK, on crée donc le fichier du processus : 
 echo "$$" > ${PIDFILE}
 
