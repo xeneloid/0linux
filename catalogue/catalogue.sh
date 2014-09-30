@@ -290,6 +290,7 @@ EOF
 			echo "Génération de l'index pour la catégorie '${SUBINDEXNAME}/'..." 
 			
 			# On nettoie l'index associé à la catégorie du paquet demandé, qu'on va régénérer :
+			mkdir -p ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}
 			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.txt
 			
 			# On remplit une liste. Pour chaque paquet de la catégorie :
