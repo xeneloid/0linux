@@ -43,7 +43,7 @@ afficher_champ_db() {
 	[ "$1" = "emplacement" ] && IDCHAMP="3"
 	[ "$1" = "taille" ] && IDCHAMP="4"
 	[ "$1" = "deps" ] && IDCHAMP="5-"
-	grep -E "^${2}[[:blank:]]" ${PKGREPO}/$(uname -m)/paquets.db | cut -d' ' -f${IDCHAMP}
+	grep -E "^${2}[+]*[[:blank:]]" ${PKGREPO}/$(uname -m)/paquets.db | cut -d' ' -f${IDCHAMP}
 }
 
 # Scanne les paquets fournis.
