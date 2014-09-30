@@ -312,7 +312,7 @@ EOF
 			[ "${SUBINDEXNAME}" = "xfce" ] && CATDESC="mate : L'environnement de bureau Xfce et ses programmes associés."
 			
 			# On n'a plus qu'à créer le document txt2tags :
-			cat > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.t2t << EOF
+			cat > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t << EOF
 Paquets de la sous-catégorie ${CATDESC}
 Équipe 0Linux <contact@0linux.org>
 Généré le %%mtime(%d/%m/%Y)
