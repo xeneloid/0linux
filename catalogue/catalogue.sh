@@ -279,40 +279,40 @@ EOF
 			
 			# On nettoie :
 			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/*.index
-		fi
-		
-		# On fait de même pour générer les index de 'e/' (KDE, Xfce, GNOME, etc.) :
-		# L'index concerné :
-		INDEXNAME="$(echo ${categ} | cut -d'/' -f1)"
-		
-		if [ "${INDEXNAME}" = "e" ]; then
-			SUBINDEXNAME="$(echo ${categ} | cut -d'/' -f2)"
-			echo "Génération de l'index pour la catégorie '${SUBINDEXNAME}/'..." 
 			
-			# On nettoie l'index associé à la catégorie du paquet demandé, qu'on va régénérer :
-			mkdir -p ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}
-			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.txt
 			
-			# On remplit une liste. Pour chaque paquet de la catégorie :
-			for categpaquet in $(find ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME} -type f -name "*.txt"); do
+			# On fait de même pour générer les index de 'e/' (KDE, Xfce, GNOME, etc.) :
+			# L'index concerné :
+			INDEXNAME="$(echo ${categ} | cut -d'/' -f1)"
+			
+			if [ "${INDEXNAME}" = "e" ]; then
+				SUBINDEXNAME="$(echo ${categ} | cut -d'/' -f2)"
+				echo "Génération de l'index pour la catégorie '${SUBINDEXNAME}/'..." 
 				
-				# On crée les champs "paquet url" pour créer chaque entrée dans l'index:
-				echo "$(echo $(basename ${categpaquet}) | sed 's@\.txt$@@g') ${CATALOGURL}/$(uname -m)/$(echo ${categpaquet} | sed -e  "s@^${CATALOGDIR}/$(uname -m)/@@" -e 's@\.txt$@@g')"
-			done | sort > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.index
-			
-			CATDESC="${SUBINDEXNAME}"
-			[ "${SUBINDEXNAME}" = "enlightenment" ] && CATDESC="enlightenemnt : l'environnement graphique Enlightenment ou « E »."
-			[ "${SUBINDEXNAME}" = "fluxbox" ] && CATDESC="fluxbox : le gestionnaire de fenêtres Fluxbox et ses programmes associés."
-			[ "${SUBINDEXNAME}" = "gnome" ] && CATDESC="gnome : L'environnement de bureau GNOME et ses programmes associés."
-			[ "${SUBINDEXNAME}" = "kde" ] && CATDESC="kde : L'environnement de bureau KDE et ses programmes associés."
-			[ "${SUBINDEXNAME}" = "mate" ] && CATDESC="mate : L'environnement de bureau MATE et ses programmes associés."
-			[ "${SUBINDEXNAME}" = "openbox" ] && CATDESC="openbox : le gestionnaire de fenêtres Openbox et ses programmes associés."
-			[ "${SUBINDEXNAME}" = "razor-qt" ] && CATDESC="raor-qt : L'environnement de bureau Razor-Qt et ses programmes associés."
-			[ "${SUBINDEXNAME}" = "xbmc" ] && CATDESC="xbmc : L'environnement « media center » XBMC et ses programmes associés."
-			[ "${SUBINDEXNAME}" = "xfce" ] && CATDESC="mate : L'environnement de bureau Xfce et ses programmes associés."
-			
-			# On n'a plus qu'à créer le document txt2tags :
-			cat > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t << EOF
+				# On nettoie l'index associé à la catégorie du paquet demandé, qu'on va régénérer :
+				mkdir -p ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}
+				rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.txt
+				
+				# On remplit une liste. Pour chaque paquet de la catégorie :
+				for categpaquet in $(find ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME} -type f -name "*.txt"); do
+					
+					# On crée les champs "paquet url" pour créer chaque entrée dans l'index:
+					echo "$(echo $(basename ${categpaquet}) | sed 's@\.txt$@@g') ${CATALOGURL}/$(uname -m)/$(echo ${categpaquet} | sed -e  "s@^${CATALOGDIR}/$(uname -m)/@@" -e 's@\.txt$@@g')"
+				done | sort > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.index
+				
+				CATDESC="${SUBINDEXNAME}"
+				[ "${SUBINDEXNAME}" = "enlightenment" ] && CATDESC="enlightenemnt : l'environnement graphique Enlightenment ou « E »."
+				[ "${SUBINDEXNAME}" = "fluxbox" ] && CATDESC="fluxbox : le gestionnaire de fenêtres Fluxbox et ses programmes associés."
+				[ "${SUBINDEXNAME}" = "gnome" ] && CATDESC="gnome : L'environnement de bureau GNOME et ses programmes associés."
+				[ "${SUBINDEXNAME}" = "kde" ] && CATDESC="kde : L'environnement de bureau KDE et ses programmes associés."
+				[ "${SUBINDEXNAME}" = "mate" ] && CATDESC="mate : L'environnement de bureau MATE et ses programmes associés."
+				[ "${SUBINDEXNAME}" = "openbox" ] && CATDESC="openbox : le gestionnaire de fenêtres Openbox et ses programmes associés."
+				[ "${SUBINDEXNAME}" = "razor-qt" ] && CATDESC="raor-qt : L'environnement de bureau Razor-Qt et ses programmes associés."
+				[ "${SUBINDEXNAME}" = "xbmc" ] && CATDESC="xbmc : L'environnement « media center » XBMC et ses programmes associés."
+				[ "${SUBINDEXNAME}" = "xfce" ] && CATDESC="mate : L'environnement de bureau Xfce et ses programmes associés."
+				
+				# On n'a plus qu'à créer le document txt2tags :
+				cat > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t << EOF
 Paquets de la sous-catégorie ${CATDESC}
 Équipe 0Linux <contact@0linux.org>
 Généré le %%mtime(%d/%m/%Y)
@@ -323,14 +323,15 @@ Généré le %%mtime(%d/%m/%Y)
 $(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index  | sed -e 's@\(^.*\)\(.*$\)@| [\1\2]  | @' -e '/| \[.*/s/\+/_/2g')
 
 EOF
-			
-			# On génère la sortie finale :
-			#txt2tags -q -t xhtml -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.html ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.t2t
-			txt2tags -q -t doku -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.txt ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t
-			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t
-			
-			# On nettoie :
-			rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/*.index
+				
+				# On génère la sortie finale :
+				#txt2tags -q -t xhtml -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.html ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.t2t
+				txt2tags -q -t doku -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.txt ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t
+				rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t
+				
+				# On nettoie :
+				rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/*.index
+			fi
 		fi
 	done
 }
