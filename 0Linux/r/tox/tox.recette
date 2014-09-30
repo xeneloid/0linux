@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=627e4d3aa
+WGET=git://github.com/irungentoo/toxcore.git
+DESC="Plateforme complète et sécurisée de messagerie instantanée similaire à Skype"
+
+telecharger_sources
+preparer_sources
+cflags
+configure_make_makeinstall
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

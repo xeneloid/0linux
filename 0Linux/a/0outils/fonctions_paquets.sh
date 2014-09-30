@@ -421,6 +421,11 @@ cflags() {
 # Procédure d'installation standard configure ; make ; fakeroot make install :
 configure_make_makeinstall() {
 	
+	# On essaie de génerer un 'configure' s'il est absent :
+	if [ ! -r ./configure ]; then
+		[ -r ./autogen.sh ] && chmod +x ./autogen.sh && ./autogen.sh --prefix=/usr
+	fi
+	
 	# On déduit les options disponibles dans le script 'configure' :
 	CONFIGURE_OPTIONS="--prefix=/usr"
 	if grep -q "sysconfdir" configure; then CONFIGURE_OPTIONS+=" --sysconfdir=/etc"; fi
