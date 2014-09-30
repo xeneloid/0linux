@@ -287,7 +287,7 @@ EOF
 			
 			if [ "${INDEXNAME}" = "e" ]; then
 				SUBINDEXNAME="$(echo ${categ} | cut -d'/' -f2)"
-				echo "Génération de l'index pour la catégorie '${SUBINDEXNAME}/'..." 
+				echo "Génération de l'index pour la sous-catégorie '${SUBINDEXNAME}/'..." 
 				
 				# On nettoie l'index associé à la catégorie du paquet demandé, qu'on va régénérer :
 				mkdir -p ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}
@@ -320,12 +320,12 @@ Généré le %%mtime(%d/%m/%Y)
 %!encoding: UTF-8
 
 || Nom  |
-$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index  | sed -e 's@\(^.*\)\(.*$\)@| [\1\2]  | @' -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.index  | sed -e 's@\(^.*\)\(.*$\)@| [\1\2]  | @' -e '/| \[.*/s/\+/_/2g')
 
 EOF
 				
 				# On génère la sortie finale :
-				#txt2tags -q -t xhtml -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.html ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.t2t
+				#txt2tags -q -t xhtml -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.html ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t
 				txt2tags -q -t doku -o ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.txt ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t
 				rm -f ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.t2t
 				
