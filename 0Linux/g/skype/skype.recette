@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.2.0.13
+VERSION=4.3.0.37
 WGET=http://download.skype.com/linux/$NAMESRC-$VERSION.tar.bz2
 DESC="Programme pair-à-pair de transmission voix/vidéo sur IP"
+EXTRADEPS="apulse"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -15,18 +16,15 @@ mkdir -p ${PKG}/etc/dbus-1/system.d
 mkdir -p ${PKG}/usr/bin
 mkdir -p ${PKG}/usr/share/{applications,pixmaps,skype}
 
-# On corrige le binaire pour que le service cesse de couper arbitrairement :
-bspatch skype skype-patched $CWD/skype-4.3.0.37-verno.patch
-
 # On copie le binaire :
-cp -a skype-patched ${PKG}/usr/bin/skype
+cp skype ${PKG}/usr/bin/skype
 chmod 0755 ${PKG}/usr/bin/skype
 
 # On copie les ressources, avatars et sons :
 cp -a {avatars,lang,sounds} ${PKG}/usr/share/skype
 
-# On copie le raccourci :
-cat skype.desktop > $PKG/usr/share/applications/skype.desktop
+# On copie le raccourci en forçant Skype à utiliser 'apulse' pour émuler PulseAudio:
+cat skype.desktop | sed 's@Exec=.*@Exec=env PULSE_LATENCY_MSEC=60 apulse skype %U@' > ${PKG}/usr/share/applications/skype.desktop
 
 # On copie l'icôe :
 cat icons/SkypeBlue_48x48.png > ${PKG}/usr/share/pixmaps/skype.png
