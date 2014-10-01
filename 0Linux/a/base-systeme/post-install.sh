@@ -75,6 +75,7 @@ basegid=(
 		"sudo:88"
 		"pop:90"
 		"scanner:93"
+		"input:97"
 		"nogroup:99"
 		"users:100"
 		"console:101"
@@ -215,6 +216,7 @@ power:x:84:root
 netdev:x:86:root
 pop:x:90:pop
 scanner:x:93:root
+input:x:97:
 nobody:x:98:nobody
 nogroup:x:99:
 users:x:100:
