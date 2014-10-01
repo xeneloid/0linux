@@ -268,7 +268,7 @@ Généré le %%mtime(%d/%m/%Y)
 %!encoding: UTF-8
 
 || Nom  |
-$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index  | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@' -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index  | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
 
 
 EOF
