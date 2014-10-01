@@ -152,8 +152,9 @@ scan() {
 				# L'emplacement de la dépendance, contenu dans 'paquets.db' :
 				depcateg=$(afficher_champ_db emplacement ${linedep})
 				
-				# On crée le champ "paquet url" pour créer chaque lien hypertexte :
-				echo "${linedep} ${CATALOGURL}/$(uname -m)/${depcateg}${linedep}"
+				# On crée le champ "paquet url" pour créer chaque lien hypertexte
+				# (les "+" sont des "_" dans les URL sous dokuwiki) :
+				echo "${linedep} $(echo ${CATALOGURL}/$(uname -m)/${depcateg}${linedep} | sed -e 's/\+/_/g')"
 			fi
 		done | sort > ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).dep
 		
@@ -213,10 +214,10 @@ $(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).header | sed -e '
 == Interactions inter-paquets ==
 
 || Dépendances |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@")
   
 || Dépendants |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby 2>/dev/null | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby 2>/dev/null | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@")
 
 == Contenu ==
 
@@ -245,8 +246,9 @@ EOF
 			# On remplit une liste. Pour chaque paquet de la catégorie :
 			for categpaquet in $(find ${CATALOGDIR}/$(uname -m)/${INDEXNAME} -type f -name "*.txt"); do
 				
-				# On crée les champs "paquet url" pour créer chaque entrée dans l'index:
-				echo "$(echo $(basename ${categpaquet}) | sed 's@\.txt$@@g') ${CATALOGURL}/$(uname -m)/$(echo ${categpaquet} | sed -e  "s@^${CATALOGDIR}/$(uname -m)/@@" -e 's@\.txt$@@g')"
+				# On crée les champs "paquet url" pour créer chaque entrée dans
+				# l'index (les "+" sont des "_" dans les URL sous dokuwiki) :
+				echo "$(echo $(basename ${categpaquet}) | sed 's@\.txt$@@g') ${CATALOGURL}/$(uname -m)/$(echo ${categpaquet} | sed -e  "s@^${CATALOGDIR}/$(uname -m)/@@" -e 's@\.txt$@@g' -e 's/\+/_/g')"
 			done | sort > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index
 			
 			[ "${INDEXNAME}" = "a" ] && CATDESC="a : Applications exécutables en console n'entrant dans aucune autre catégorie."
@@ -268,7 +270,7 @@ Généré le %%mtime(%d/%m/%Y)
 %!encoding: UTF-8
 
 || Nom  |
-$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index  | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index  | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@")
 
 
 EOF
@@ -297,8 +299,9 @@ EOF
 				# On remplit une liste. Pour chaque paquet de la catégorie :
 				for categpaquet in $(find ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME} -type f -name "*.txt"); do
 					
-					# On crée les champs "paquet url" pour créer chaque entrée dans l'index:
-					echo "$(echo $(basename ${categpaquet}) | sed 's@\.txt$@@g') ${CATALOGURL}/$(uname -m)/$(echo ${categpaquet} | sed -e  "s@^${CATALOGDIR}/$(uname -m)/@@" -e 's@\.txt$@@g')"
+					# On crée les champs "paquet url" pour créer chaque entrée
+					# dans l'index (les "+" sont des "_" dans les URL sous dokuwiki) :
+					echo "$(echo $(basename ${categpaquet}) | sed 's@\.txt$@@g') ${CATALOGURL}/$(uname -m)/$(echo ${categpaquet} | sed -e  "s@^${CATALOGDIR}/$(uname -m)/@@" -e 's@\.txt$@@g' -e 's/\+/_/g' )"
 				done | sort > ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.index
 				
 				CATDESC="${SUBINDEXNAME}"
@@ -321,7 +324,7 @@ Généré le %%mtime(%d/%m/%Y)
 %!encoding: UTF-8
 
 || Nom  |
-$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.index  | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@' -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.index  | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@')
 
 EOF
 				
