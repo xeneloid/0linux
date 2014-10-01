@@ -213,15 +213,15 @@ $(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).header | sed -e '
 == Interactions inter-paquets ==
 
 || Dépendances |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).dep | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
   
 || Dépendants |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby 2>/dev/null | sed -e "s@\(^\).*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).reqby 2>/dev/null | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@" -e '/| \[.*/s/\+/_/2g')
 
 == Contenu ==
 
 || Fichiers installés  |
-$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list | sed "s@\(^\).*\($\)@| \\\`\\\`\1&\2\\\`\\\`  |@")
+$(cat ${CATALOGDIR}/$(uname -m)/${categ}$(nom_court ${pkglog}).list | sed "s@\(^\).*[+]*.*\($\)@| \\\`\\\`\1&\2\\\`\\\`  |@")
 
 EOF
 		
@@ -268,7 +268,8 @@ Généré le %%mtime(%d/%m/%Y)
 %!encoding: UTF-8
 
 || Nom  |
-$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index  | sed -e 's@\(^.*\)\(.*$\)@| [\1\2]  | @' -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/start.index  | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@' -e '/| \[.*/s/\+/_/2g')
+
 
 EOF
 			
@@ -320,7 +321,7 @@ Généré le %%mtime(%d/%m/%Y)
 %!encoding: UTF-8
 
 || Nom  |
-$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.index  | sed -e 's@\(^.*\)\(.*$\)@| [\1\2]  | @' -e '/| \[.*/s/\+/_/2g')
+$(cat ${CATALOGDIR}/$(uname -m)/${INDEXNAME}/${SUBINDEXNAME}/start.index  | sed -e "s@\(^\).*[+]*.*\($\)@| [\1&\2]  |@' -e '/| \[.*/s/\+/_/2g')
 
 EOF
 				
