@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.2
+VERSION=4.3
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Interpréteur (shell) compatible sh"
 
@@ -10,7 +10,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On applique tous les correctifs des mainteneurs :
-for patch in $CWD/patches/bash??-???; do
+for patch in $CWD/patches/bash$(echo $VERSION | cut -d'.' -f1-2 | tr -d '.')-*; do
 	cat ${patch} | patch -p0
 done
 
@@ -38,7 +38,7 @@ mv ${PKG}/usr/bin/bash{,.nouveau}
 rm -f ${PKG}/usr/bin/bashbug ${PKG}/usr/man/man1/bashbug.1
 
 # On ajoute 2 manuels manquants :
-cp doc/{builtins,rbash}.1 ${PKG}/usr/man/man1
+cp doc/{builtins,rbash}.1 ${PKG}/usr/man/man1/
 
 installer_doc
 creer_post_installation

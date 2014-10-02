@@ -1,21 +1,24 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.2
-EXT=tar.gz
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=6.3
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèque d'édition de ligne de commande"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 	cflags i686
+	
+	# On applique tous les correctifs des mainteneurs :
+	for patch in $CWD/patches/readline$(echo $VERSION | cut -d'.' -f1-2 | tr -d '.')-*; do
+		cat ${patch} | patch -p0
+	done
 	
 	# On évite le comportement de renommage en ".old" des anciennes bibliothèques
 	# pouvant causer des bogues avec 'ldconfig' :
@@ -26,30 +29,14 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	sed -i 's:^SHLIB_LIBS=:SHLIB_LIBS=-lncursesw:' support/shobj-conf
 	
 	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--enable-multibyte \
-		--with-curses \
-		--build=${PKGARCH}-0linux-linux-gnu
-	
-	make -j${JOBS} || make
-	fakeroot make install DESTDIR=${PKG}
+	configure_make_makeinstall
 fi
 
-# On refait la préparation des sources, il peut rester des déchets de la
-# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # On applique tous les correctifs des mainteneurs :
-for patch in $CWD/patches/readline??-???; do
+for patch in $CWD/patches/readline$(echo $VERSION | cut -d'.' -f1-2 | tr -d '.')-*; do
 	cat ${patch} | patch -p0
 done
 
@@ -62,26 +49,12 @@ sed -i '/{OLDSUFF}/c:' support/shlib-install
 sed -i 's:^SHLIB_LIBS=:SHLIB_LIBS=-lncursesw:' support/shobj-conf
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-multibyte \
-	--with-curses \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+configure_make_makeinstall
 
 installer_doc
 
 # On complète la documentation :
-cp -a doc/*.ps doc/*.pdf doc/*.html doc/*.dvi ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a doc/*.ps doc/*.pdf doc/*.html doc/*.dvi ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
 creer_post_installation
 stripper
