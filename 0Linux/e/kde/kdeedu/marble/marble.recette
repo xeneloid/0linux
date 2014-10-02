@@ -23,13 +23,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-cd ../
-
-# On déplace ça :
-if [ ! "${LIBDIRSUFFIX}" = "" ]; then
-	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
-	mv ${PKG}/usr/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
-fi
 
 installer_doc
 creer_post_installation
