@@ -24,7 +24,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On supprime et on remplace les sources embarquées de 'clang' :
 	rm -rf tools/clang
-	tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.tar.gz -C tools/
+	tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.${EXT} -C tools/
 	
 	# On renomme sans la version :
 	mv tools/{cfe-${VERSION}.src,clang}
@@ -71,7 +71,7 @@ cflags
 
 # On supprime et on remplace les sources embarquées de 'clang' :
 rm -rf tools/clang
-tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.tar.gz -C tools/
+tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.${EXT} -C tools/
 
 # On renomme sans la version :
 mv tools/{cfe-${VERSION}.src,clang}
@@ -167,7 +167,7 @@ cp -a tools/clang/{docs,*.txt} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang/ || tr
 mv ${PKG}/usr/docs/llvm/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 # On supprime les archives redondantes :
-rm -f ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/*.tar.gz
+rm -f ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/*.tar.*
 rm -rf ${PKG}/usr/docs
 
 creer_post_installation
