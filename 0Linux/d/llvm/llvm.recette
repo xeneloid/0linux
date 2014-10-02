@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.5.0
-EXT=tar.gz
+EXT=tar.xz
 WGET=(http://llvm.org/releases/${VERSION}/${NAMESRC}-${VERSION}.src.${EXT}
       http://llvm.org/releases/${VERSION}/cfe-${VERSION}.src.${EXT}
      )
