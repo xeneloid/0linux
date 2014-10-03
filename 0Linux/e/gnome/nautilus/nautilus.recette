@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.12.2
+VERSION=3.14.0
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Gestionnaire de fichiers de GNOME"
 
@@ -16,7 +16,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/nautilus \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \

@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.12.2
+VERSION=3.14.0
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Client VNC pour GNOME"
 
 telecharger_sources
-
-# On compile d'abord pour GTK+2 :
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-PYTHON=/usr/bin/python2 \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
