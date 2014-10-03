@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.14.0
+VERSION=3.14.1
 EXT=tar.xz
 WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.24.$EXT
       http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
      )
 DESC="Suite d'outils pour la création d'interfaces graphiques"
+EXTRADEPS="adwaita-icon-theme icon-naming-utils"
 
 telecharger_sources
 cflags
