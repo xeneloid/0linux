@@ -29,6 +29,13 @@ FILEDATTENTECATALOGUE="/tmp/catalogue_en_attente.tmp"
 # entre autres.
 PKGREPO=${PKGREPO:-/usr/local/paquets}
 
+# Emplacement où on compile et on empaquète. Utilisée dans 'fonctions_paquets.sh'
+# également, à définir en variable d'environnement ou à laisser telle quelle :
+MARMITE=${MARMITE:-/tmp/0-marmite}
+
+# ...et où on stocke les journaux de compilation :
+MARMITELOGS=${MARMITELOGS:-${MARMITE}/logs}
+
 # On supprime un éventuel déchet '.pid' restant :
 if [ "$(ps axc | grep 'service_construction')" = "" ]; then
 	rm -f ${PIDFILE}
@@ -64,8 +71,11 @@ traiter_filedattente() {
 			# le système avec leurs doublons) :
 			./construction.sh ${recette_demandee}
 			
-			# On envoie le paquet en cours à la file d'attente du catalogue pour le régénérer :
-			echo "${recette_demandee}" >> ${FILEDATTENTECATALOGUE}
+			# On envoie le paquet en cours à la file d'attente du catalogue pour le régénérer
+			# si le log est absent (l'empaquetage a réussi) :
+			if [ ! -r ${MARMITELOGS}/${recette_demandee}.log ]; then
+				echo "${recette_demandee}" >> ${FILEDATTENTECATALOGUE}
+			fi
 			
 			# On nettoie le(s) paquet(s) demandé(s) (première ligne) de la file d'attente :
 			sed -i '1d' ${FILEDATTENTE}
