@@ -14,7 +14,7 @@ for patch in $CWD/patches/bash$(echo $VERSION | cut -d'.' -f1-2 | tr -d '.')-*; 
 	cat ${patch} | patch -p0
 done
 
-# Compilation :
+# Compilation sua la libreadline interne :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -24,7 +24,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--htmldir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--with-installed-readline=/usr/lib${LIBDIRSUFFIX} \
 	--without-bash-malloc \
 	--build=${PKGARCH}-0linux-linux-gnu
 
