@@ -4,6 +4,7 @@
 VERSION=0.6.0
 WGET=http://download.enlightenment.org/rel/apps/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Client BitTorrent basé sur libtorrent et les EFL"
+EXTRADEPS="libtorrent-rasterbar python-efl"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
