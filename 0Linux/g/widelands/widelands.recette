@@ -2,35 +2,26 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=18
-EXT=tar.bz2
-WGET=https://launchpad.net/$NAMESRC/build$VERSION/build-$VERSION/+download/$NAMESRC-build$VERSION-src.$EXT
+WGET=https://launchpad.net/$NAMESRC/build$VERSION/build-$VERSION/+download/$NAMESRC-build$VERSION-src.tar.bz2
 DESC="Jeu mêlant stratégie et rôle dans un contexte médiéval"
-########################################
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Ne pas utiliser les versions statiques des bibliothèques Boost
+# Ne pas utiliser les versions statiques des bibliothèques Boost :
 sed -i "s|Boost_USE_STATIC_LIBS   ON|Boost_USE_STATIC_LIBS   OFF|" CMakeLists.txt
 
-# Correction d'une mauvaise déclaration des répertoires de donnée
+# Correction d'une mauvaise déclaration des répertoires de données :
 old="std::string(INSTALL_PREFIX) + '/' + INSTALL_DATADIR"
-sed -i "s|INSTALL_PREFIX \"/\" INSTALL_DATADIR|INSTALL_DATADIR|" \
-  src/wlapplication.cc
-sed -i "s|$old|std::string(INSTALL_DATADIR)|" \
-  src/wlapplication.cc
+sed -i "s|INSTALL_PREFIX \"/\" INSTALL_DATADIR|INSTALL_DATADIR|" src/wlapplication.cc
+sed -i "s|$old|std::string(INSTALL_DATADIR)|" src/wlapplication.cc
 
 # Compilation :
 mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
-	-D CMAKE_SKIP_RPATH=OFF \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D WL_INSTALL_PREFIX=/usr \
 	-D WL_INSTALL_DATADIR=/usr/share/widelands \

@@ -3,7 +3,7 @@
 
 VERSION=4
 DESC="L'environnement graphique Enlightenment"
-EXTRADEPS="enlightenment efl evas_generic_loaders emotion_generic_players elementary terminology epour expedite exquisite rage"
+EXTRADEPS="enlightenment efl evas_generic_loaders emotion_generic_players elementary terminology python-efl epour expedite exquisite rage"
 
 cflags
 
