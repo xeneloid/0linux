@@ -45,6 +45,9 @@ cd ${NAMESRC}-${VERSION}
 # tester à priori :
 cat $CWD/catalyst.linux-3.14-current_euid.patch | patch -p1
 
+# On contourne salement la mention sur la licence pour éviter un bogue sous i686 :
+cat $CWD/catalyst.gpl_symbol.patch | patch -p1
+
 # On vérifie les permissions des sources :
 find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
