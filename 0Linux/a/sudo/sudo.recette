@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.7
+VERSION=1.8.11
 WGET=http://www.sudo.ws/$NAMESRC/dist/$NAMESRC-$VERSION.tar.gz
 DESC="Outil de gestion de privilèges utilisateurs"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige l'inclusion problématique de 'shadow' :
+cat $CWD/sudo.shadow.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -47,8 +50,8 @@ cat >> ${PKG}/post-install.sh << "EOF"
 # On s'assure des permissions :
 chmod 4711 usr/bin/sudo
 chmod 0755 usr/sbin/visudo
-chmod 0440 /etc/sudoers 2>/dev/null
 chmod 0640 /etc/sudoers.0nouveau 2>/dev/null
+chmod 0440 /etc/sudoers 2>/dev/null
 
 EOF
 
