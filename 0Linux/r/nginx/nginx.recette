@@ -110,7 +110,7 @@ done
 
 # On crée le fichier service, désactivé par défaut :
 mkdir -p ${PKG}/etc/rc.d
-cat > ${PKG}/etc/rc.d/rc.httpd << "EOF"
+cat > ${PKG}/etc/rc.d/rc.nginx << "EOF"
 #!/usr/bin/env bash
 
 nginx_start() {
