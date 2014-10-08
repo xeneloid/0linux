@@ -1,14 +1,49 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.8.0
-EXT=tar.xz
-WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=3.10.1
+WGET=(
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.30.5/$NAMESRC-2.30.5.tar.bz2
+     )
 DESC="Spécifications des menus de GNOME"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile 'gnome-menus' 2.x :
+preparer_sources $NAMESRC-2.30.5.tar.bz2
+cflags
+
+# On supprime les entrées d emenus concernant le paramétrage de KDE, peu à propos dans GNOME :
+cat $CWD/gnome-menus.ignore_kde_standalone.patch | patch -p0
+
+# On corrige le comportement à l'ouverture des entrées du menu :
+cat $CWD/gnome-menus.applications-merged.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On renomme ce raccourci trop générique :
+mv ${PKG}/etc/xdg/menus/{,gnome-}applications.menu
+
+# On place la documentation dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.30.5
+
+# On compile 'gnome-menus' :
+preparer_sources $NAMESRC-$VERSION.tar.xz
 cflags
 
 # On corrige un nom de fichier erroné :

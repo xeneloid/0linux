@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.20.11
+WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
+DESC="Gestionnaire de connexion de GNOME"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Cette version de GDM est la dernière à prendre en charge l'absence de PAM.
+# Sa seule présence explique les nombreuse bibliothèques de GNOME 2.x présentes
+# dans 0Linux.
+# GNOME3 requiert gnome-shell (sous peine de message avec un smiley qui fait la
+# gueule), lequel requiert GDM, lequel requiert PAM depuis belle lurette.
+# Merci GNOME d'avoir fait de ma vie un enfer.
+
+# On corrige pour les 'glibc' plus récentes (merci à SlackBuilds.org):
+cat $CWD/gdm.crypt.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-scrollkeeper \
+	--enable-authentication-scheme=shadow \
+	--enable-console-helper=no \
+	--enable-ipv6=yes \
+	--with-dmconfdir=/usr/share/xsessions \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} SUSPEND_COMMAND=/usr/sbin/pm-suspend || make SUSPEND_COMMAND=/usr/sbin/pm-suspend
+fakeroot make install SUSPEND_COMMAND=/usr/sbin/pm-suspend DESTDIR=${PKG}
+
+# On prend garde à ne pas écraser d'anciennes configurationw :
+mv ${PKG}/etc/gdm/custom.conf{,.0nouveau}
+mv ${PKG}/etc/gdm/Xsession{,.0nouveau}
+mv ${PKG}/etc/gdm/Init/Default{,.0nouveau}
+mv ${PKG}/etc/gdm/PreSession/Default{,.0nouveau}
+mv ${PKG}/etc/gdm/PostSession/Default{,.0nouveau}
+mv ${PKG}/etc/gdm/XKeepsCrashing{,.0nouveau}
+mv ${PKG}/etc/gdm/locale.alias{,.0nouveau}
+mv ${PKG}/etc/gdm/modules/factory-AccessDwellMouseEvents{,.0nouveau}
+mv ${PKG}/etc/gdm/modules/AccessDwellMouseEvents{,.0nouveau}
+mv ${PKG}/etc/gdm/modules/factory-AccessKeyMouseEvents{,.0nouveau}
+mv ${PKG}/etc/gdm/modules/AccessKeyMouseEvents{,.0nouveau}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

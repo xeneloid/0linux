@@ -2,11 +2,42 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.14.0
-WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
+WGET=(
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.32.1/$NAMESRC-2.32.1.tar.bz2
+     )
 DESC="Bibliothèques communes du bureau GNOME"
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On compile 'gnome-desktop' 2.x :
+preparer_sources $NAMESRC-2.32.1.tar.bz2
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-desktop-docs \
+	--disable-deprecations \
+	--with-gnome-distributor="0Linux" \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On place la documentation dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.32.1
+
+# On compile 'gnome-desktop' :
+preparer_sources $NAMESRC-$VERSION.tar.xz
 cflags
 
 # Compilation :
