@@ -4,7 +4,7 @@
 VERSION=3.12.2
 WGET=(
       http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
-      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.30.5/$NAMESRC-2.30.3.tar.bz2
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.30/$NAMESRC-2.30.3.tar.bz2
      )
 DESC="Bibliothèques d'accès aux données météorologiques"
 
