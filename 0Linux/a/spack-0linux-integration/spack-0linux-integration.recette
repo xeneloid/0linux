@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1
+DESC="Intégration Freedesktop et types MIME pour les paquets Spack"
+
+cflags
+
+# On crée un nouveau type MIME pour les fichiers '.spack' :
+mkdir -p ${PKG}/usr/share/{applications,mime/packages}
+
+cat > ${PKG}/usr/share/mime/packages/spackadd.xml << "EOF"
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/spack">
+    <comment>Spack package</comment>
+    <glob pattern="*.spack"/>
+  </mime-type>
+</mime-info>
+
+EOF
+
+# On intègre Spack aux bureaux avec ce raccourci :
+cat > ${PKG}/usr/share/applications/spackadd.desktop << "EOF"
+[Desktop Entry]
+Terminal=true
+Icon=package-x-generic
+Type=Application
+Categories=System
+Exec=gksu spackadd %f
+MimeType=application/spack;
+Name=spackadd package installer
+Name[fr]=Installateur de paquets spackadd
+Comment=Install a Spack package with spackadd
+Comment[fr]=Installer un paquet Spack avec spackadd
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
