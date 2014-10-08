@@ -4,7 +4,7 @@
 VERSION=3.8.1
 WGET=(
       http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
-      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.32.1/$NAMESRC-2.32.1.tar.bz2
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.32/$NAMESRC-2.32.1.tar.bz2
      )
 DESC="Le panneau de GNOME"
 
