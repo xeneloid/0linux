@@ -14,7 +14,7 @@ mkdir -p build
 cd build
 
 # Compilation :
-LDFLAGS+="-lortp" \
+LDFLAGS+=" -lortp" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
