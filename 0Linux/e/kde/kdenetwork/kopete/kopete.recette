@@ -3,7 +3,7 @@
 
 VERSION=4.14.1
 WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.tar.xz
-DESC="Système de messagerie instantanné multiprotocole pour KDE"
+DESC="Système de messagerie instantanée multiprotocole pour KDE"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -14,22 +14,19 @@ mkdir -p build
 cd build
 
 # Compilation :
-LDFLAGS+=" -lortp" \
+LDFLAGS+=" -lortp " \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-cmake -D CMAKE_BUILD_TYPE=Release \
-	-D CMAKE_SKIP_RPATH=ON \
+cmake \
+	-D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D KDE4_BUILD_TESTS=FALSE \
+	-D KLEOPATRA_INCLUDE_DIR=/usr/include/kleo \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
-	-D KLEOPATRA_INCLUDE_DIR=/usr/include/kleo \
-	-D KLEOPATRA_LIBRARIES=/usr/lib64/libkleo.so \
-	-D KdepimLibs_DIR=/usr/lib64/cmake/KdepimLibs \
-	./ ../
+	..
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-cd ../
 
 installer_doc
 creer_post_installation
