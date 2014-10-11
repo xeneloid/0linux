@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.16.1
+VERSION=3.16.5
 
 # Le nommage des versions « .0 » est incohérent :
 if [ "$(echo $VERSION | cut -d'.' -f3)" = "" ]; then
-	WGET=ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2).tar.xz
+	WGET=https://www.kernel.org/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2).tar.xz
 	MINVERSION=".0"
 else
-	WGET=ftp://ftp.free.fr/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.tar.xz
+	WGET=https://www.kernel.org/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.tar.xz
 	MINVERSION=""
 fi
+
 DESC="Le noyau Linux avec ses modules, ses firmwares, ses entêtes et son code source complet"
 EXTRADEPS="bc make"
 
@@ -30,9 +31,8 @@ make headers_install INSTALL_HDR_PATH=${PKG}/usr
 # On supprime les fichiers inutiles :
 find ${PKG}/usr \( -name .install -o -name ..install.cmd \) -delete
 
-# On corrige le nom du répertoire asm/ en asm-x86/ et on ajoute un lien :
-mv ${PKG}/usr/include/asm{,-x86}
-ln -sf asm-x86 ${PKG}/usr/include/asm
+# On crée ce lien, parfois nécessaire :
+[ ! -r ${PKG}/usr/include/asm-x86 ] && ln -sf asm ${PKG}/usr/include/asm-x86
 
 # On copie la configuration du noyau selon le nommage 'config-$VERSION-$PKGARCH' :
 cat $CWD/config-${VERSION}-${PKGARCH} > .config
