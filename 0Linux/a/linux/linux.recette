@@ -11,7 +11,6 @@ else
 	WGET=https://www.kernel.org/pub/linux/kernel/v$(echo $VERSION | cut -d'.' -f1).x/$NAMESRC-$VERSION.tar.xz
 	MINVERSION=""
 fi
-
 DESC="Le noyau Linux avec ses modules, ses firmwares, ses entêtes et son code source complet"
 EXTRADEPS="bc make"
 
@@ -31,8 +30,9 @@ make headers_install INSTALL_HDR_PATH=${PKG}/usr
 # On supprime les fichiers inutiles :
 find ${PKG}/usr \( -name .install -o -name ..install.cmd \) -delete
 
-# On crée ce lien, parfois nécessaire :
-[ ! -r ${PKG}/usr/include/asm-x86 ] && ln -sf asm ${PKG}/usr/include/asm-x86
+# On crée ces liens, parfois nécessaires :
+ln -sf asm-generic ${PKG}/usr/include/asm
+ln -sf asm-generic ${PKG}/usr/include/asm-x86
 
 # On copie la configuration du noyau selon le nommage 'config-$VERSION-$PKGARCH' :
 cat $CWD/config-${VERSION}-${PKGARCH} > .config
