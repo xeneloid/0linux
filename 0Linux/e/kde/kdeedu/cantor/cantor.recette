@@ -3,7 +3,7 @@
 
 VERSION=4.14.1
 WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.tar.xz
-DESC="Interface KDE pour les suites de mathématique avancées"
+DESC="Interface KDE pour les suites mathématiques avancées"
 EXTRADEPS="kalgebra r"
 
 telecharger_sources
@@ -16,17 +16,16 @@ cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-cmake -D CMAKE_BUILD_TYPE=Release \
-	-D CMAKE_SKIP_RPATH=ON \
+cmake \
+	-D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D SYSCONF_INSTALL_DIR=/etc/kde \
-	./ ../
+	../
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-cd ../
 
 installer_doc
 creer_post_installation

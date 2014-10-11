@@ -9,13 +9,34 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# ON vide les drapeaux d'optimisation pour s'affranchir de -fPIC dans certains cas.
+unset CFLAGS CXXFLAGS
+
 # Compilation :
-XCFLAGS+=" -DLUAJIT_ENABLE_LUA52COMPAT -dl ${FLAGS}" CXXFLAGS="${FLAGS}" \
+XCFLAGS+=" -DLUAJIT_ENABLE_LUA52COMPAT -dl " \
+HOST_CC=${CC} \
+STATIC_CC=${CC} \
+DYNAMIC_CC="${CC} -fPIC" \
+TARGET_AR="ar rcus" \
+TARGET_LD=${CC} \
 make -j${JOBS} PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} || \
-XCFLAGS+=" -DLUAJIT_ENABLE_LUA52COMPAT -dl ${FLAGS}" CXXFLAGS="${FLAGS}" \
+XCFLAGS+=" -DLUAJIT_ENABLE_LUA52COMPAT -dl " \
+HOST_CC=${CC} \
+STATIC_CC=${CC} \
+DYNAMIC_CC="${CC} -fPIC" \
+TARGET_AR="ar rcus" \
+TARGET_LD=${CC} \
 make PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX}
 
+XCFLAGS+=" -DLUAJIT_ENABLE_LUA52COMPAT -dl ${FLAGS}" CXXFLAGS="${FLAGS}" \
+HOST_CC=${CC} \
+STATIC_CC=${CC} \
+DYNAMIC_CC="${CC} -fPIC" \
+TARGET_AR="ar rcus" \
+TARGET_LD=${CC} \
 fakeroot make install PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} DESTDIR=${PKG}
+
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/*.a
 
 installer_doc
 creer_post_installation
