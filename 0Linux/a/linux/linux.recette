@@ -30,10 +30,6 @@ make headers_install INSTALL_HDR_PATH=${PKG}/usr
 # On supprime les fichiers inutiles :
 find ${PKG}/usr \( -name .install -o -name ..install.cmd \) -delete
 
-# On crée ces liens, parfois nécessaires :
-ln -sf asm-generic ${PKG}/usr/include/asm
-ln -sf asm-generic ${PKG}/usr/include/asm-x86
-
 # On copie la configuration du noyau selon le nommage 'config-$VERSION-$PKGARCH' :
 cat $CWD/config-${VERSION}-${PKGARCH} > .config
 
