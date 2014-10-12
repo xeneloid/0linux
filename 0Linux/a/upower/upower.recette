@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.99.1
+VERSION=0.9.23
 WGET=http://upower.freedesktop.org/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques d'abstraction pour la gestion de l'énergie"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On maximise la compatibilité :
+sed -i -e 's|Cflags: |&-DUPOWER_ENABLE_DEPRECATED |' upower-glib.pc.in
+
+# On s'affranchit de logind (et donc de systemd...) :
+sed -i 's@#define LOGIND_AVAILABLE.*@#define LOGIND_AVAILABLE() (FALSE)@' src/linux/up-backend.c
+
+# On corrige le niveau de batterie qui peut parfois dépasser les 100% 
+# qu'une erreur de segmentation :
+cat $CWD/upower.overfull_battery.patch | patch -p1
+cat $CWD/upower.fix-segfault.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -16,10 +27,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/upower \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-deprecated \
 	--with-udevrulesdir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
 	--build=${PKGARCH}-0linux-linux-gnu
 
