@@ -11,10 +11,46 @@ DESC="Outils de gestion de l'énergie"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-configure_make_makeinstall
+
+# On empêche le vidage du journal des évènements :
+sed -i 's@exec > "$1" 2>&1@exec >> "$1" 2>\&1@' pm/pm-functions.in
+
+# On corrige des comportements problématqiues connus :
+cat $CWD/pm-utils.fix-intel-audio-powersave-hook.patch | patch -p1
+cat $CWD/pm-utils.bluetooth-sync.patch | patch -p1
+cat $CWD/pm-utils.disable-sata-alpm.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sbin=/usr/bin \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 # On décompresse les « quirks » vidéo où il faut :
 tar xf ${PKGSOURCES}/${NAMETGZ}/pm-quirks-20100619.$EXT -C ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/
+
+# 'networkmanager' s ebase sur les règles udev, on supprime :
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/sleep.d/55NetworkManager
+
+# Ces « hooks » posent problème, on les supprime :
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/power.d/{harddrive,disable_wol}
+
+# Ces « hooks » ont tendance à faire consommer plus que moins, merci Slackware :
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/power.d/journal-commit
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/power.d/readahead
+
+# HAL est une vieillerie, on supprime :
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/power.d/hal-cd-polling
 
 installer_doc
 creer_post_installation
