@@ -27,6 +27,13 @@ mkdir -p ${PKG}/{boot,etc/rc.d,usr/src}
 # Extraction des en-têtes du noyau :
 make headers_install INSTALL_HDR_PATH=${PKG}/usr
 
+# On corrige le nom du répertoire 'asm' en 'asm-x86' le cas échéant et on ajoute
+# un lien :
+if [ "${PKGARCH}" = "i686" -o "${PKGARCH}" = "x86_64" ]; then
+	mv ${PKG}/usr/include/asm{,-x86}
+	ln -sf asm-x86 ${PKG}/usr/include/asm
+fi
+
 # On supprime les fichiers inutiles :
 find ${PKG}/usr \( -name .install -o -name ..install.cmd \) -delete
 
