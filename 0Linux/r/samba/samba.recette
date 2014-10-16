@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.1.11
+VERSION=4.1.12
 WGET=http://ftp.samba.org/pub/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Clients et serveurs Samba pour les protocoles SMB, CIFS et Active Directory"
 
@@ -10,7 +10,9 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On crée les répertoires d'accueil :
-mkdir -p ${PKG}/etc/samba
+mkdir -p ${PKG}/etc/samba/private
+mkdir -p ${PKG}/var/cache/samba
+mkdir -p ${PKG}/var/log/samba
 mkdir -p ${PKG}/var/spool/samba
 
 # Compilation avec 'libtirpc' :
@@ -48,6 +50,13 @@ fakeroot make install DESTDIR=${PKG}
 
 # On place le fichier de configuration d'exemple :
 cp -a examples/smb.conf.default ${PKG}/etc/samba/
+
+# On install le script 'smbprint':
+install -m0744 packaging/printing/smbprint ${PKG}/usr/bin/smbprint
+
+# On crée un fichier 'lmhosts' par défaut pour la boucle locale en prenant
+# garde à ne rien écraser :
+echo "127.0.0.1	localhost" > ${PKG}/etc/samba/lmhosts.0nouveau
 
 # On crée le fichier service :
 mkdir -p ${PKG}/etc/rc.d
