@@ -2,14 +2,17 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.8.3
-EXT=tar.bz2
-WGET=http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+WGET=http://archive.xfce.org/src/panel-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Greffon météo pour Xfce"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige le comportement, les couleurs, les icônes, la nouvelle API, etc. :
+cat $CWD/xfce4-weather-plugin.color-parsing.patch | patch -p1
+cat $CWD/xfce4-weather-plugin.make-plugin-ready.patch | patch -p1
+cat $CWD/xfce4-weather-plugin.switch-to-met-no.patch | patch -p1
 
 # On modifie lu numéro de licence, maintenant invalide (et commerciale) :
 sed -i -e 's/^#define PARTNER_ID.*/#define PARTNER_ID "1003666583"/' \
@@ -27,6 +30,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-upower \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

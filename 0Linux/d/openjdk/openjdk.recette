@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.0u65_2.5.1
+VERSION=1.7.0u71_2.5.3
 WGET=(
       http://icedtea.classpath.org/download/source/icedtea-$(echo $VERSION | cut -d'_' -f2).tar.gz
       http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/corba.tar.bz2
@@ -47,13 +47,9 @@ fi
 
 # On définit ces variables pour s'adapter ua système de construction :
 export ALT_FREETYPE_LIB_PATH=/usr/lib${LIBDIRSUFFIX}
-export ALT_PARALLEL_COMPILE_JOBS="${JOBS}"
-export BUILD_NUMBER=$JAVABLD
-export HOTSPOT_BUILD_JOBS="${ALT_PARALLEL_COMPILE_JOBS}"
 export LC_ALL=C LANG=C # Indispensable pour openjdk !
 export OS_VARIANT_NAME="0Linux"
 export OS_VARIANT_VERSION=$(grep -E '^VERSION=' /etc/os-release | cut -d'=' -f2)
-export DISTRIBUTION_BOOT_PATCHES=""
 export JAVA_HOME="/usr/lib${LIBDIRSUFFIX}/jdk" # compatible OpenJDK + Oracle JDK
 
 # Compilation :
@@ -74,7 +70,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-jdk-src-zip=${PKGSOURCES}/${NAMETGZ}/jdk-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
 	--with-langtools-src-zip=${PKGSOURCES}/${NAMETGZ}/langtools-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
 	--with-openjdk-src-zip=${PKGSOURCES}/${NAMETGZ}/openjdk-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
-	--with-parallel-jobs=${HOTSPOT_BUILD_JOBS} \
+	--with-parallel-jobs=${JOBS} \
 	--with-pkgversion=0Linux \
 	--build=${PKGARCH}-0linux-linux-gnu
 
