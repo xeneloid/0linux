@@ -17,7 +17,7 @@ mkdir -p ${PKG}/var/spool/samba
 
 # Compilation avec 'libtirpc' :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-LDFLAGS+="-ltirpc" \
+LDFLAGS+=" -ltirpc " \
 ./configure \
 	--enable-fhs \
 	--prefix=/usr \
