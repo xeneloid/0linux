@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+x#!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.13.3
+VERSION=4.14.2
 WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.tar.xz
-DESC="Gestion des activitées dans l'espace de travail Plasma de KDE"
+DESC="Plugin de création de graphiques intéractifs"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
