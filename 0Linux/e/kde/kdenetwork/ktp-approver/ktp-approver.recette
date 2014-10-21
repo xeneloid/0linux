@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.8.1
+VERSION=0.9.0
 WGET=ftp://ftp.kde.org/pub/kde/stable/kde-telepathy/$VERSION/src/ktp-approver-$VERSION.tar.bz2
 DESC="Système de demande de confirmations pour Telepathy pour KDE"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.8.1
+VERSION=0.9.0
 WGET=ftp://ftp.kde.org/pub/kde/stable/kde-telepathy/$VERSION/src/ktp-accounts-kcm-$VERSION.tar.bz2
 DESC="Dialogue de configuration des comptes pour Telepathy pour KDE"
 

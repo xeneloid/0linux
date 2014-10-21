@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.8.1
+VERSION=0.9.0
 WGET=ftp://ftp.kde.org/pub/kde/stable/kde-telepathy/$VERSION/src/ktp-text-ui-$VERSION.tar.bz2
 DESC="Fenêtres de discution de Telepathy pour KDE"
 
