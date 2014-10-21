@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=21
+VERSION=22
 WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Informations communes sur les lecteurs de média"
 
@@ -10,7 +10,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Corrige une règle udev erronée :
-cat $CWD/udev_errors.patch | patch -p1
+#cat $CWD/udev_errors.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
