@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.14.1
+VERSION=4.14.2
 WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/kdelibs-$VERSION.tar.xz
 DESC="Bibliothèques communes de l'environnement et des applications KDE"
 EXTRADEPS="oxygen-icons media-player-info shared-desktop-ontologies upower ca-certificates polkit-qt docbook-xml"
