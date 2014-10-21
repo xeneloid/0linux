@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=15
+VERSION=16
 DESC="Paquets marqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
@@ -39,6 +39,7 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	gtk3mm \
 	iwlwifi-ucode \
 	js185 \
+	kactivities \
 	kdeadmin \
 	kdenetwork \
 	kdesdk \
@@ -117,10 +118,12 @@ gtk2mm: fusionné dans 'gtkmm'
 gtk3mm: fusionné dans 'gtkmm'
 iwlwifi-ucode: remplacé par 'linux-firmware'
 js185: remplacé par 'mozjs'
-kdeadmin: supprimé dans la distribution de KDE
-kdenetwork: supprimé dans la distribution de KDE
-kdesdk: supprimé dans la distribution de KDE
-kdetoys: supprimé dans la distribution de KDE
+kactivities: fusionné dans 'kdelibs' et 'kde-runtime'
+kdeadmin: supprimé dans la distribution de KDE (splitté)
+kdenetwork: supprimé dans la distribution de KDE (splitté)
+kdnssd: obsolète
+kdesdk: supprimé dans la distribution de KDE (splitté)
+kdetoys: supprimé dans la distribution de KDE (splitté)
 kwallet: remplacé par 'kwalletmanager'
 lcms2: fusionné dans 'lcms'
 libqtgtl: lié à 'opengtl', projet mort
@@ -129,6 +132,7 @@ libutemper: corrigé en 'libutempter'
 mplayer-codecs: obsolète
 mysql: remplacé par 'mariadb'
 ndiswrapper: supprimé, inutile
+nepomuk*: remplacé par 'baloo*'
 opengtl: projet mort
 python3: fusionné dans 'python'
 raptor2: fusionné dans  'raptor'
@@ -136,6 +140,7 @@ syslog-ng: remplacé par 'syslog'
 systemd: banni de 0Linux :)
 terminal: remplacé apr 'xfce4-terminal'
 udisks2: fusionné dans 'udisks'
+virtuoso: dépendence de 'nepomuk', supprimé
 
 EOF
 
