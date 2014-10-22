@@ -369,7 +369,7 @@ cflags() {
 		FLAGS="-m32 -O2 -march=i686 -pipe"
 		LIBDIRSUFFIX=""
 		export USE_ARCH=32 # Utilisé uniquement en multilib
-		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+		export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# x86 64 bits :
@@ -379,7 +379,7 @@ cflags() {
 		FLAGS="-O2 -fPIC -pipe"
 		LIBDIRSUFFIX="64"
 		export USE_ARCH=64 # Utilisé uniquement en multilib
-		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+		export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# ARM v7-a :
@@ -388,7 +388,7 @@ cflags() {
 		export CXX="g++"
 		FLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16 -pipe"
 		LIBDIRSUFFIX=""
-		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+		export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	
 	# Tout le reste :
@@ -397,7 +397,7 @@ cflags() {
 		export CXX="g++"
 		FLAGS="-O2 -pipe"
 		LIBDIRSUFFIX=""
-		export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+		export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} "
 		export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	fi
 	

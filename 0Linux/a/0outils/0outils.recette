@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=13.1.1
+VERSION=13.1.2
 DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
 
 cflags # on appelle cflags() car elle contient la détection de l'architecture.
@@ -65,7 +65,7 @@ export CC="gcc"
 export CXX="g++"
 FLAGS="-O2 -pipe"
 LIBDIRSUFFIX=""
-export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}"
+export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} "
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 
 EOF
@@ -78,7 +78,7 @@ export LDFLAGS="-m32" # Utilisé uniquement en multilib
 FLAGS="-m32 -O2 -march=i686 -pipe"
 LIBDIRSUFFIX=""
 export USE_ARCH=32 # Utilisé uniquement en multilib
-export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 
 EOF
@@ -90,7 +90,7 @@ export CXX="g++"
 FLAGS="-O2 -fPIC -pipe"
 LIBDIRSUFFIX="64"
 export USE_ARCH=64 # Utilisé uniquement en multilib
-export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 
 EOF
@@ -103,7 +103,7 @@ export CC="gcc"
 export CXX="g++"
 FLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16 -pipe"
 LIBDIRSUFFIX=""
-export LDFLAGS="-L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common"
+export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 
 EOF
