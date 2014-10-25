@@ -1,9 +1,9 @@
-x#!/usr/bin/env bash
+#!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=4.14.2
 WGET=ftp://ftp.kde.org/pub/kde/stable/$VERSION/src/$NAMESRC-$VERSION.tar.xz
-DESC="Plugin de création de graphiques intéractifs"
+DESC="Greffon de création de graphiques interactifs"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
