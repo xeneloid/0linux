@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.03_pre20
-WGET=http://www.kernel.org/pub/linux/utils/boot/syslinux/Testing/$(echo $VERSION | sed 's@_pre.*@@')/$NAMESRC-$(echo $VERSION | sed 's@_pre@-pre@').tar.xz
+VERSION=6.03
+WGET=http://www.kernel.org/pub/linux/utils/boot/syslinux/$NAMESRC-$VERSION.tar.xz
 DESC="La collection de chargeurs d'amorçage Syslinux"
 
 telecharger_sources
@@ -29,8 +29,8 @@ cp -ra $CWD/extlinux ${PKG}/boot/
 cp -ar ${PKG}/usr/share/syslinux/{*.c32,efi32,efi64} ${PKG}/boot/extlinux/
 chmod +x $(find ${PKG}/boot/extlinux -type f -name "*.c32")
 
-# On copie l'initrd dans '/boot' pour pouvoir démarrer via un LABEL ou un UUID:
-cp $CWD/initrd ${PKG}/boot/
+# On copie l'initrd dans '/boot' pour pouvoir démarrer via un LABEL ou un UUID :
+[ -r $CWD/initrd-$(uname -m) ] && cp $CWD/initrd-$(uname -m) ${PKG}/boot/initrd
 
 # On convertit l'encodage de 'extlinux.conf'
 iconv -f UTF-8 -t CP850 ${PKG}/boot/extlinux/extlinux.conf > ${PKG}/boot/extlinux/extlinux.conf-cp850
