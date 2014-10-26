@@ -23,7 +23,7 @@ echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Initialisation du systè
 # '/dev' est censé être déjà monté en devtmpfs par le noyau (ou l'initrd).
 # On monte les systèmes de fichiers virtuels. On conserve l'option '-n' au cas
 # où '/etc/mtab' serait toujours un fichier (on est peut-être en lecture seule)
-# et non un lien qymbolique vers '/proc/mounts'. D'abord '/proc' :
+# et non un lien symbolique vers '/proc/mounts'. D'abord '/proc' :
 mount -v -n -t proc   proc   /proc 2>/dev/null
 
 # Mode débogage :
@@ -58,14 +58,32 @@ if [ -x /etc/rc.d/rc.locale ]; then
 fi
 
 # On lance très tôt le module 'loop' :
-modprobe -v loop 2>/dev/null
+modprobe -v loop
 
 # On lance Udev :
 if [ -x /etc/rc.d/rc.udev ]; then
 	/etc/rc.d/rc.udev start
 fi
 
-# On active la partition d'échange (« swap ») :
+# Chargement de la disposition des touches du clavier :
+if [ -x /etc/rc.d/rc.clavier ]; then
+	/etc/rc.d/rc.clavier start
+fi
+
+# On détecte les éventuels volumes LVM (créés par 'vgscan', 'vgcreate' 'pvcreate', etc.) :
+if [ -r /etc/lvmtab -o -d /etc/lvm/backup ]; then
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Initialisation des volumes LVM..."
+	
+	# Si dev-mapper est introuvable, on tente de charger le module ad-hoc :
+	if ! grep -wq device-mapper /proc/devices; then
+		modprobe -v dm-mod
+	fi
+	
+	# On scanne les groupes de volumes et on le srend accessibles au noyau :
+	vgscan --mknodes --ignorelockingfailure && vgchange -ay --ignorelockingfailure
+fi
+
+# On active les partitions d'échange (« swap ») :
 swapon -av
 
 # On règle l'horloge système selon l'horloge matérielle :
@@ -75,11 +93,6 @@ if [ -x /sbin/hwclock ]; then
 	else
 		hwclock --localtime --hctosys
 	fi
-fi
-
-# Chargement de la disposition des touches du clavier :
-if [ -x /etc/rc.d/rc.clavier ]; then
-	/etc/rc.d/rc.clavier start
 fi
 
 # On vérifie si la racine est montée en lecture seule ou non :
@@ -130,7 +143,8 @@ else
 fi
 
 # On est maintenant en lecture-écriture, mais '/etc/mtab' est vide ou erroné si
-# c'est encore un fichier régulier et non un lien :
+# c'est encore un fichier régulier et non un lien vers '/proc/mounts' (par
+# défaut depuis 0Linux theta) :
 if [ -f /etc/mtab ]; then
 	rm -f /etc/mtab /etc/mtab~ /etc/mtab.tmp
 	touch /etc/mtab
