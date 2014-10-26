@@ -10,8 +10,7 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Calligra cause une erreur avec 'ccache' (« ccache: FATAL: x_calloc: Could not
-# allocate 28 bytes »), on le désactive :
+# Calligra cause une erreur avec 'ccache', on le désactive :
 export CCACHE_DISABLE="1"
 
 # Vc ne fonctionne que sur x86_64 :
@@ -39,11 +38,9 @@ cmake \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	-D BUILD_active=OFF \
-	-D OKULAR_CORE_LIBRARY=/usr/lib${LIBDIRSUFFIX}/libokularcore.so \
 	-D OKULAR_INCLUDE_DIR=/usr/include/okular \
 	-D Okular_DIR=/usr/lib${LIBDIRSUFFIX}/cmake/Okular \
 	-D SPNAV_INCLUDE_DIR=/usr/include \
-	-D SPNAV_LIBRARY=/usr/lib${LIBDIRSUFFIX}/libspnav.so \
 	-D Vc_DIR=/usr/lib${LIBDIRSUFFIX}/cmake/Vc \
 	-D Vc_LIBRARIES=/usr/lib${LIBDIRSUFFIX}/libVc.a \
 	-D WITH_Pstoedit=ON \
@@ -52,7 +49,6 @@ cmake \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
 
 installer_doc
 creer_post_installation
