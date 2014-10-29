@@ -318,8 +318,8 @@ chown root.shadow etc/shadow* etc/gshadow* >/dev/null 2>&1
 chgrp ftp srv/ftp >/dev/null 2>&1
 chgrp games var/games >/dev/null 2>&1
 
-# La fonction de traitement des fichiers '*.0nouveau', normalement appelée
-# dans creer_post_installation() :
+# Les fonctions de traitement des fichiers '*.0nouveau' et des fichiers
+# services, normalement appelées dans creer_post_installation() :
 traiter_nouvelle_config() {
 	NEW="$1"
 	OLD="$(dirname $NEW)/$(basename $NEW .0nouveau)"
@@ -328,5 +328,28 @@ traiter_nouvelle_config() {
 		mv $NEW $OLD >/dev/null 2>&1 || busybox mv $NEW $OLD >/dev/null 2>&1 || true
 	elif [ "$(diff -abBEiw $OLD $NEW)" = "" ]; then
 		mv $NEW $OLD >/dev/null 2>&1 || busybox mv $NEW $OLD >/dev/null 2>&1 || true
+	fi
+}
+
+traiter_service() {
+	NEWSVCFILE="$1"
+	OLDSVCFILE="$(dirname $NEWSVCFILE)/$(basename $NEWSVCFILE .0nouveauservice)"
+	
+	if [ -e ${OLDSVCFILE} ]; then
+		
+		# On copie temporairement le service déjà installé en préservant les permissions :
+		cp -a ${OLDSVCFILE}{,.tmp} || busybox cp -a ${OLDSVCFILE}{,.tmp} || true
+		
+		# On injecte le contenu du nouveau fichier service dans le temporaire (qui a les bonnes permissions) :
+		cat ${NEWSVCFILE} > ${OLDSVCFILE}.tmp || busybox cat ${NEWSVCFILE} > ${OLDSVCFILE}.tmp || true
+		
+		# On renomme le temporaire pour écraser l'ancien, les permissions sont alors OK :
+		mv ${OLDSVCFILE}{.tmp,} >/dev/null 2>&1 || busybox mv ${OLDSVCFILE}{.tmp,} >/dev/null 2>&1 || true
+		
+		# On supprime le '.0nouveauservice' ('rm -f' dans BusyBox a un comportement parfois différent) :
+		rm -f ${NEWSVCFILE} || busybox rm ${NEWSVCFILE} >/dev/null 2>&1 || true
+	else
+		# Si l'ancien n'existe pas, on renomme d'office le '.0nouveauservice' :
+		mv ${NEWSVCFILE} ${OLDSVCFILE}
 	fi
 }

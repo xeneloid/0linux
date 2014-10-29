@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.4
+VERSION=5.4.1
 DESC="Structure de base du système"
 EXTRADEPS="busybox"
 
@@ -95,7 +95,7 @@ for configuration in $CWD/etc/*; do
 	cp -a ${configuration} ${PKG}/etc/$(basename ${configuration}).0nouveau
 done
 
-# on écrase ceux-ci, qui doivent toujours être à jour :
+# On écrase ceux-ci, qui doivent toujours être à jour :
 for f in issue \
 issue.net \
 motd \
@@ -109,6 +109,23 @@ termcap-BSD \
 termcap-Linux; do
 	mv ${PKG}/etc/${f}{.0nouveau,}
 done
+
+# On crée un fichier sous '/etc/profile.d' pour étendre le PATH des
+# utilisateurs :
+cat > ${PKG}/etc/profile.d/path_etendu_a_sbin.sh << "EOF"
+#!/bin/sh
+# On étend le PATH des utilisateurs aux binaires de /*sbin :
+if [ ! "$(id -u)" = "0" ]; then
+	PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
+fi
+
+export PATH
+
+EOF
+
+# On rend exécutable par défaut (néanmoins les permissions seront conservées 
+# en post-installation si elles sont changées par l'admin) :
+chmod +x ${PKG}/etc/profile.d/path_etendu_a_sbin.sh
 
 # On s'assure de la présence d'un fichier 'termcap' par défaut (on prend celui de Linux) :
 cp -a ${PKG}/etc/termcap{-Linux,}
@@ -312,6 +329,17 @@ sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/post-install.sh
 # On ajoute en post-installation tous les fichiers '*.0nouveau' qu'on trouve pour les passer à traiter_nouvelle_config() :
 for fichier_post in $(find ${PKG} -type f -name "*.0nouveau"); do
 	echo "traiter_nouvelle_config $(echo ${fichier_post} | sed "s@${PKG}/@@")" >> ${PKG}/post-install.sh
+done
+
+# On ajoute en post-installation tous les fichiers profiles et services qu'on
+# trouve pour les passer à traiter_service() et préserver les permissions :
+for fichier_post in $(find ${PKG}/etc/profile.d -type f -name "*.*sh"); do
+	echo "traiter_service $(echo ${fichier_post} | sed "s@${PKG}/@@")" >> ${PKG}/post-install.sh
+done
+
+# On exécute les fichiers profils qui peuvent l'être :
+for fichier_post in $(find ${PKG}/etc/profile.d -type f -name "*.*sh"); do
+	echo "[ -x $(echo ${fichier_post} | sed "s@${PKG}/@@") ] && $(echo ${fichier_post} | sed "s@${PKG}/@@")" >> ${PKG}/post-install.sh
 done
 
 empaqueter
