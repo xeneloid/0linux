@@ -18,16 +18,9 @@ if [ ! -r "$HOME/.inputrc" ]; then
 	export INPUTRC=/etc/inputrc
 fi
 
-# On positionne la variable $PATH par défaut du système :
-PATH="/usr/local/bin:/usr/bin:/bin"
-
-# Pour root, on s'assure d'ajouter au $PATH les répertoires /usr/local/sbin, 
-# /usr/sbin et /sbin car ils peuvent manquer :
-if [ "`id -u`" = "0" ]; then
-	if [ "$(echo $PATH | grep /usr/local/sbin)" = "" ]; then
-		PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
-	fi
-fi
+# On positionne la variable $PATH par défaut du système; /*sbin sont
+# accessibles aux utilisateurs dorénavant, suite aux nombreuses demandes :
+PATH="/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin"
 
 # On positionne par défaut la variable $TERM à 'linux' si elle est inconnue :
 if [ "$TERM" = "" -o "$TERM" = "unknown" ]; then
