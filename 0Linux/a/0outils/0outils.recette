@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=13.1.2
+VERSION=13.2
 DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
 
 cflags # on appelle cflags() car elle contient la détection de l'architecture.
@@ -53,11 +53,14 @@ txt2tags -t man -o ${PKG}/usr/man/man8/0g.8 $CWD/0g-man.t2t
 
 # On crée le fichier des drapeaux d'optimisation par défaut :
 cat > ${PKG}/etc/0outils/drapeaux.conf << "EOF"
+#!/bin/sh
+
 # N'éditez pas ce fichier, il sera écrasé par toute mise à niveau de '0outils'.
 # Éditez plutôt l'un des fichiers '/etc/0outils/drapeaux-<architecture>.conf', 
-# qui eux conservent vos préférences, ou bien copiez ce fichier dans
-# '~/.0outils/drapeaux.conf' ou '~/.0outils/drapeaux-<architecture>.conf' , qui
-# surcharge les variables de '/etc/0outils/*'.
+# qui eux conservent vos préférences, ou bien copiez ce fichier dans votre
+# '~/.0outils/drapeaux.conf' (ou '~/.0outils/drapeaux-<architecture>.conf'), 
+# pour surcharger les variables des fichiers de '/etc/0outils/*' via un utilisateur
+# normal (recommandé).
 # Cf. http://0.tuxfamily.org/doku.php/documentation/methode_de_creation_des_paquets_pour_0linux_native#cflags
 
 # Les drapeaux d'optimisation globaux par défaut :
@@ -71,6 +74,9 @@ export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 EOF
 
 cat > ${PKG}/etc/0outils/drapeaux-i686.conf.0nouveau << "EOF"
+#!/bin/sh
+
+# Cf. http://0.tuxfamily.org/doku.php/documentation/methode_de_creation_des_paquets_pour_0linux_native#cflags
 # Les drapeaux d'optimisation globaux par défaut pour i686 :
 export CC="gcc -m32"
 export CXX="g++ -m32"
@@ -84,6 +90,9 @@ export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 EOF
 
 cat > ${PKG}/etc/0outils/drapeaux-x86_64.conf.0nouveau << "EOF"
+#!/bin/sh
+
+# Cf. http://0.tuxfamily.org/doku.php/documentation/methode_de_creation_des_paquets_pour_0linux_native#cflags
 # Les drapeaux d'optimisation globaux par défaut pour x86_64 :
 export CC="gcc"
 export CXX="g++"
@@ -98,6 +107,7 @@ EOF
 cat > ${PKG}/etc/0outils/drapeaux-arm.conf.0nouveau << "EOF"	
 #!/bin/sh
 
+# Cf. http://0.tuxfamily.org/doku.php/documentation/methode_de_creation_des_paquets_pour_0linux_native#cflags
 # Les drapeaux d'optimisation globaux par défaut pour ARM (ici v7-a minimum) :
 export CC="gcc"
 export CXX="g++"

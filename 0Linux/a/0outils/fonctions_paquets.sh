@@ -523,9 +523,10 @@ traiter_service() {
 
 EOF
 		
-		# On ajoute le traitement des services à la post-installation.
+		# On ajoute le traitement des services à la post-installation ainsi que les fichiers
+		# profils :
 		# On ignore les fichiers d''initialisation-systeme', qui ne doivent pas changer :
-		for fichier_rcd in $(find ${PKG}/etc/rc.d -type f -name "rc.*" -a \
+		for fichier_rcd in $(find ${PKG}/etc/{rc.d,profile.d} -type f -name "rc.*" -o -name "*.*sh" -a \
 			\! -name "*.0nouveau" -a \
 			\! -name "rc.4" -a \
 			\! -name "rc.6" -a \
@@ -577,7 +578,7 @@ EOF
 		
 		# Pour chaque script rencontré en '.*sh' :
 		for fichierprofil in $(find ${PKG}/etc/profile.d -type f -name "*.*sh"); do
-			echo "chroot . etc/profile.d/$(basename ${fichierprofil}) >/dev/null 2>&1" >> ${PKG}/post-install.sh
+			echo "chroot . [ -x etc/profile.d/$(basename ${fichierprofil}) ] && etc/profile.d/$(basename ${fichierprofil}) >/dev/null 2>&1" >> ${PKG}/post-install.sh
 		done
 	fi
 	
