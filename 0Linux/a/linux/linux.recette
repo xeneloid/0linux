@@ -18,11 +18,6 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# 'ccache' pose problème avec le noyau avec des messages du genre : 
-# « kernel/time/timekeeping_debug.o: file not recognized: Format de fichier non reconnu »
-# On le désactive d'office :
-export CCACHE_DISABLE="1"
-
 # On nettoie obligatoirement :
 make mrproper
 
@@ -32,14 +27,7 @@ mkdir -p ${PKG}/{boot,etc/rc.d,usr/src}
 # Extraction des en-têtes du noyau :
 make headers_install INSTALL_HDR_PATH=${PKG}/usr
 
-# On corrige le nom du répertoire 'asm' en 'asm-x86' le cas échéant et on ajoute
-# un lien :
-if [ "${PKGARCH}" = "i686" -o "${PKGARCH}" = "x86_64" ]; then
-	mv ${PKG}/usr/include/asm{,-x86}
-	ln -sf asm-x86 ${PKG}/usr/include/asm
-fi
-
-# On supprime les fichiers inutiles :
+# On supprime les fichiers inutiles réservés aux développeurs du noyau :
 find ${PKG}/usr \( -name .install -o -name ..install.cmd \) -delete
 
 # On copie la configuration du noyau selon le nommage 'config-$VERSION-$PKGARCH' :
@@ -81,6 +69,7 @@ mkdir -p ${PKG}/usr/src/${NAMESRC}-${VERSION}
 cp Module.symvers ${PKG}/usr/src/${NAMESRC}-${VERSION}
 cp -a scripts     ${PKG}/usr/src/${NAMESRC}-${VERSION}
 
+# On remet les sources dans leur état d'origine :
 make mrproper
 
 # On copie toutes les sources et on crée le lien symbolique générique 'linux' :
