@@ -111,7 +111,7 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources $NAMESRC-4.8.6.tar.gz
+preparer_sources
 cflags
 
 # On corrige un problème identifié dans l'analyse des entêtes de 'boost' :
@@ -120,7 +120,7 @@ cat $CWD/qt.boost.patch | patch -p1
 # On corrige un problème identifié avec CUPS depuis le bureau KDE :
 cat $CWD/qt.cups.patch | patch -p1
 
-# On corrige un plantage lors du chargement de GIFS cassés :
+# On corrige un plantage lors du chargement de GIF cassés :
 cat $CWD/qt.CVE-2014-0190.patch | patch -p1
 
 # On corrige les chemins de X11 codés en dur :
@@ -234,7 +234,7 @@ for icone in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
 done
 
 # On place la doc dans un répertoire à part :
-installer_doc ${NAMETGZ}-$VERSION
+installer_doc
 
 # On fait comme Slackware, c'est propre et complet :
 
