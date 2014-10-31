@@ -70,7 +70,7 @@ done
 
 # On renomme les binaires pour éviter tout conflit avec Qt 4 :
 for b in ${PKG}/usr/bin/*; do
-	mv ${b}-qt5
+	mv ${b}{,-qt5}
 done
 
 # On ajoute les raccourcis bureau :
