@@ -1,3 +1,4 @@
+#!/bin/sh
 # /etc/profile: ce fichier contient tous les paramètres par défaut utilisés
 # par les interpréteurs (shells) de type « Bourne » et assimilés.
 
@@ -18,11 +19,16 @@ if [ ! -r "$HOME/.inputrc" ]; then
 	export INPUTRC=/etc/inputrc
 fi
 
-# On positionne la variable $PATH par défaut du système; /*sbin sont
-# accessibles aux utilisateurs dorénavant, suite aux nombreuses demandes :
-PATH="/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin"
+# On positionne la variable $PATH par défaut du système :
+PATH="/usr/local/bin:/usr/bin:/bin"
 
-# On positionne par défaut la variable $TERM à 'linux' si elle est inconnue :
+# Pour root, on s'assure d'ajouter au $PATH les répertoires '/usr/local/sbin', 
+# '/usr/sbin' et '/sbin' :
+if [ "`id -u`" = "0" ]; then
+	PATH="/usr/local/sbin:/usr/sbin:/sbin:${PATH}"
+fi
+
+# On positionne par défaut la variable $TERM à 'linux' si elle est vide :
 if [ "$TERM" = "" -o "$TERM" = "unknown" ]; then
 	TERM=linux
 fi
@@ -55,8 +61,8 @@ export HOSTNAME LANG LC_ALL LESS LESSOPEN MANPATH MINICOM PATH PS1 PS2 TERM
 # On spécifie le masque par défaut lors des créations de fichiers :
 umask 022
 
-# On exécute tout script se terminant en « .sh » trouvé dans '/etc/profile.d' :
-for profilescript in /etc/profile.d/*.sh ; do
+# On exécute tout script se terminant en « .*sh » trouvé dans '/etc/profile.d' :
+for profilescript in /etc/profile.d/*.*sh ; do
 	if [ -x $profilescript ]; then
 		. $profilescript
 	fi

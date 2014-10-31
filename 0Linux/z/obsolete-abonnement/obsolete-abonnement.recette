@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=16
+VERSION=17
 DESC="Paquets marqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
@@ -39,7 +39,6 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	gtk3mm \
 	iwlwifi-ucode \
 	js185 \
-	kactivities \
 	kdeadmin \
 	kdenetwork \
 	kdesdk \
@@ -53,7 +52,8 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	mplayer-codecs \
 	mysql \
 	ndiswrapper \
-	nepomuk-core nepomuk-widgets \
+	nepomuk-core \
+	nepomuk-widgets \
 	opengtl \
 	python3 \
 	raptor2 \
@@ -118,7 +118,6 @@ gtk2mm: fusionné dans 'gtkmm'
 gtk3mm: fusionné dans 'gtkmm'
 iwlwifi-ucode: remplacé par 'linux-firmware'
 js185: remplacé par 'mozjs'
-kactivities: fusionné dans 'kdelibs' et 'kde-runtime'
 kdeadmin: supprimé dans la distribution de KDE (splitté)
 kdenetwork: supprimé dans la distribution de KDE (splitté)
 kdnssd: obsolète
@@ -132,7 +131,8 @@ libutemper: corrigé en 'libutempter'
 mplayer-codecs: obsolète
 mysql: remplacé par 'mariadb'
 ndiswrapper: supprimé, inutile
-nepomuk*: remplacé par 'baloo*'
+nepomuk-core: remplacé par 'baloo*'
+nepomuk-widgets: remplacé par 'baloo*'
 opengtl: projet mort
 python3: fusionné dans 'python'
 raptor2: fusionné dans  'raptor'
