@@ -20,10 +20,10 @@ sed -i -e "/^libdir /s:/usr/lib:/usr/lib${LIBDIRSUFFIX}:" \
 	Makefile
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-LDFLAGS+="-lutil" \
+LDFLAGS+=" -lutil " \
 make -j${JOBS} || 
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	LDFLAGS+="-lutil" \
+	LDFLAGS+=" -lutil " \
 	make
 
 fakeroot make install DESTDIR=${PKG}
