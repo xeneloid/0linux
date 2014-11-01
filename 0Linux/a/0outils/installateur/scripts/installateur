@@ -21,6 +21,9 @@ crunch() {
 rm -f $TMP/{choix_partitions,choix_partitions_fat,choix_media,choix_swap}
 rm -f $TMP/{fstab,formatages,partition_racine}
 
+# On active tout éventuel volume LVM précédemment créé :
+vgchange -ay --ignorelockingfailure &>/dev/null 2>&1 || true
+
 # On vérifie qu'on n'est pas dans un mode spécial d'installation (mode automatique) :
 if [ -n "$1" ]; then
 	

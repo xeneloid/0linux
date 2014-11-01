@@ -34,6 +34,17 @@ if [ -x /etc/rc.d/rc.udev ]; then
 	. /etc/rc.d/rc.udev start
 fi
 
+# On active tout éventuel volume LVM :
+vgchange -ay --ignorelockingfailure &>/dev/null 2>&1 || true
+
+# On assemble les éventuel volumes RAID :
+mdadm -E -s > /etc/mdadm.conf
+mdadm -S -s
+mdadm -A -s
+
+# On conserve cette astuce de Slackware :
+fdisk -l /dev/md* &>/dev/null 2>&1 || true
+
 # On règle l'horloge système selon l'horloge matérielle :
 if [ -x /sbin/hwclock ]; then
 	if grep -wq "^UTC" /etc/hardwareclock ; then
