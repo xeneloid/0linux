@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.49
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+DESC="Un interpréteur, compilateur et débogueur ANSI pour Common Lisp"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-ffcall \
+	--with-readline \
+	src # !!
+
+# On passe dans 'src' et on force à créer un Makefile qui fonctionne :
+cd src
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./makemake \
+	--prefix=/usr \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-dynamic-libffi \
+	--with-ffcall \
+	--with-readline \
+	> Makefile
+
+make -j${JOBS} || make
+
+# On corrige une URL erronée dans le fichier généré :
+sed -i 's,http://www.lisp.org/HyperSpec/,http://www.lispworks.com/reference/HyperSpec/,g' config.lisp
+
+# On recompile (ouf !) :
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
