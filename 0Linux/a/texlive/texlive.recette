@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=20140525
+WGET=(
+      ftp://tug.org/historic/systems/$NAMESRC/$(echo $VERSION | cut -c 1-4)/$NAMESRC-$VERSION-source.tar.xz
+      ftp://tug.org/historic/systems/$NAMESRC/$(echo $VERSION | cut -c 1-4)/$NAMESRC-$VERSION-texmf.tar.xz
+      http://downloads.sourceforge.net/project/biblatex-biber/biblatex-biber/1.8/binaries/Linux/biber-linux_x86_32.tar.gz
+      http://downloads.sourceforge.net/project/biblatex-biber/biblatex-biber/1.8/binaries/Linux/biber-linux_x86_64.tar.gz
+     )
+DESC="TeXLive, la distribution complète pour TeX"
+
+telecharger_sources
+preparer_sources $NAMESRC-$VERSION-source.tar.xz
+cflags
+
+# On corrige l'édition de liens pour xdvik :
+cat ${CWD}/texlive.xaw3d.patch | patch -p1
+
+# On corrige quelques chemins dans la configuration :
+sed -i -e 's@TEXMFROOT = .*@TEXMFROOT = $SELFAUTODIR/share@' \
+	-e 's@TEXMFLOCALROOT = .*@TEXMFLOCAL = $TEXMFROOT/texmf-local@' \
+	texk/kpathsea/texmf.cnf
+
+# On compile dans un répertoire dédié :
+mkdir build && cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+../configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-missing \
+	--disable-native-texlive-build \
+	--enable-largefile \
+	--enable-shared \
+	--disable-xindy-docs \
+	--disable-xindy-rules \
+	--enable-xindy \
+	--with-banner-add=' 0Linux' \
+	--with-clisp-runtime=system \
+	--with-freetype2-libdir=/usr/lib \
+	--with-freetype2-include=/usr/include/freetype2 \
+	--with-system-cairo \
+	--with-system-freetype2 \
+	--with-system-harfbuzz \
+	--with-system-icu \
+	--with-system-libpng \
+	--with-system-pixman \
+	--with-system-poppler \
+	--with-system-t1lib \
+	--with-system-xpdf \
+	--with-system-zlib \
+	--with-x \
+	--with-xdvi-x-toolkit=xaw \
+	--without-etex \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée les liens symboliques génériques avec l'outil dédié, merci à SlackBuilds.org :
+PATH="$PATH:$PKG/usr/bin" \
+LD_LIBRARY_PATH=$PKG/usr/lib${LIBDIRSUFFIX}:$LD_LIBRARY_PATH \
+texlinks -f $PKG/usr/share/texmf-dist/web2c/fmtutil.cnf $PKG/usr/bin
+
+# On supprime le gestionnaire de paquets interne :
+rm -f ${PKG}/usr/bin/tlmgr
+
+# On installe maintenant les binaires de Biber pour x86 uniquement:
+if [ "${PKGARCH}" = "x86_64" ]; then
+	TEXARCH="64"
+elif [ "${PKGARCH}" = "i*86"  ]; then
+	TEXARCH="32"
+else
+	unset TEXARCH
+fi
+
+# On décompacte tout dans notre répertoire '/usr/bin' :
+[ -n ${TEXARCH} ] && tar xf ${PKGSOURCES}/${NAMETGZ}/biber-linux_x86_${TEXARCH}.tar.gz -C ${PKG}/usr/bin
+
+# On crée ces répertoires manquants :
+mkdir -p ${PKG}/usr/share/{texmf-config,texmf-var}
+
+# On décompacte la gigantesque archive des «texmf »et on copie le tout dans notre '/usr/share/texmf-dist' :
+cd ${TMP}
+tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-$VERSION-texmf.tar.xz
+cp -ar $NAMESRC-$VERSION-texmf/texmf-dist/* ${PKG}/usr/share/texmf-dist/
+
+# On nettoie ce monstre :
+rm -rf $NAMESRC-$VERSION-texmf
+
+# On s'assure des permissions (normalement c'est effectué par preparer_sources()) :
+find ${PKG}/usr/share \
+		\( \
+		-perm 777 -o \
+		-perm 775 -o \
+		-perm 711 -o \
+		-perm 555 -o \
+		-perm 511 \
+		\) \
+		-exec chmod 755 {} \; -o \
+		\( \
+		-perm 666 -o \
+		-perm 664 -o \
+		-perm 600 -o \
+		-perm 444 -o \
+		-perm 440 -o \
+		-perm 400 \
+		\) \
+		-exec chmod 644 {} \;
+
+# On corrige quelques chemins dans la configuration :
+sed -i -e 's@TEXMFROOT = .*@TEXMFROOT = $SELFAUTODIR/share@' \
+	-e 's@TEXMFLOCALROOT = .*@TEXMFLOCAL = $TEXMFROOT/texmf-local@' \
+	${PKG}/usr/share/texmf-dist/web2c/texmf.cnf
+
+# On a des manuels, on les déplace où il faut :
+for section in 1 5; do
+	mkdir -p ${PKG}/usr/man/man${section}
+	mv ${PKG}/usr/share/texmf-dist/doc/man/man${section}/*.${section} ${PKG}/usr/man/man${section}/
+done
+
+# On supprime le reste (des PDF entre autres) :
+rm -rf ${PKG}/usr/share/texmf-dist/doc/man
+
+# On met à jour la base de données avec tout ce qu'on vient d'installer :
+PATH="$PATH:$PKG/usr/bin" LD_LIBRARY_PATH="$PKG/usr/lib$LIBDIRSUFFIX" ${PKG}/usr/bin/texhash
+
+installer_doc
+
+# On crée un lien vers la documentation :
+ln -sf ../../share/texmf-dist/doc ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# On met à jour notre collection de paquets TeX :
+chroot . usr/bin/mktexlsr          &>/dev/null 2>&1 || true
+chroot . usr/bin/updmap-sys        &>/dev/null 2>&1 || true
+chroot . usr/bin/fmtutil-sys --all &>/dev/null 2>&1 || true
+chroot . usr/bin/texhash           &>/dev/null 2>&1 || true
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.
