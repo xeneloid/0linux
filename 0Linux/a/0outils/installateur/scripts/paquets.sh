@@ -98,7 +98,7 @@ else
 	echo "Ainsi, pour installer les abonnements recommandés, vous taperez :"
 	echo "	0g xorg-abonnement opt-abonnement"
 	echo ""
-	echo "Quelques abonnements populaires : kde-abonnement xfce-abonnmeent"
+	echo "Quelques abonnements populaires : kde-abonnement xfce-abonnement"
 	echo "gimp-abonnement mate-abonnement enlightenment-abonnement"
 	echo ""
 	echo -n "Appuyez sur ENTRÉE quand vous en avez terminé avec vos abonnements."

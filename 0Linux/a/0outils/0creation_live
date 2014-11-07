@@ -163,6 +163,7 @@ iptables \
 dosfstools \
 jfsutils \
 lvm2 \
+mdadm \
 fuse \
 ntfs-3g_ntfsprogs \
 squashfs \
