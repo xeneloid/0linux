@@ -6,8 +6,16 @@ cflags
 WGET=http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.tar.bz2
 DESC="Client de messagerie électronique de la fondation Mozilla"
 
+# On évite de prendre une archive 32 bits pour une 64 et vice versa :
+rm -f ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}.tar.bz2
+
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On renomme l'archive pour y ajouter l'architecture :
+mv ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}-${PKGARCH}.tar.bz2
+
+# Puis on l'extrait, plus de confusion possible :
+preparer_sources ${NAMESRC}-${VERSION}-${PKGARCH}.tar.bz2
 
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/bin
