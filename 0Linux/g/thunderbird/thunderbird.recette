@@ -12,7 +12,7 @@ rm -f ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}.tar.bz2
 telecharger_sources
 
 # On renomme l'archive pour y ajouter l'architecture :
-mv ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}-${PKGARCH}.tar.bz2
+mv ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}{,-${PKGARCH}}.tar.bz2
 
 # Puis on l'extrait, plus de confusion possible :
 preparer_sources ${NAMESRC}-${VERSION}-${PKGARCH}.tar.bz2
