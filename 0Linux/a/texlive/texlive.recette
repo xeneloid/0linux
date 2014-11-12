@@ -75,10 +75,10 @@ rm -f ${PKG}/usr/bin/tlmgr
 # On installe maintenant les binaires de Biber pour x86 uniquement:
 if [ "${PKGARCH}" = "x86_64" ]; then
 	TEXARCH="64"
-elif [ "${PKGARCH}" = "i*86"  ]; then
+elif [ "${PKGARCH}" = "i686"  ]; then
 	TEXARCH="32"
 else
-	unset TEXARCH
+	TEXARCH="32"
 fi
 
 # On décompacte tout dans notre répertoire '/usr/bin' :
