@@ -110,6 +110,8 @@ freeglut
 mesa-demos
 libtxc_dxtn
 libxshmfence
+libepoxy
+xorg-server
 glamor-egl
 appres
 bitmap
