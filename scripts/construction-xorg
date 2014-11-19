@@ -205,6 +205,7 @@ dejavu-fonts
 xfontsel
 libevdev
 libinput
+mtdev
 xf86-input-evdev
 xf86-input-joystick
 xf86-input-keyboard
