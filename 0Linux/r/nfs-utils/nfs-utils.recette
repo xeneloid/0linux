@@ -39,8 +39,66 @@ fakeroot make install DESTDIR=${PKG}
 
 # À FAIRE : ajouter /usr/sbin/blkmapd ?
 
-# On crée le fichier service, désactivé par défaut  :
+# Crée un fichier de configuration d'exportation NFS vide, le cas échéant :
+touch ${PKG}/etc/exports.0nouveau
+
+# On crée le fichier de service pour la gestion des extentions des systèmes de fichier NFS :
 mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.nfsc << "EOF"
+#!/bin/sh
+
+nfsc_start() {
+	if grep -wq rpc_pipefs /proc/filesystems 2> /dev/null ; then
+		if grep -vwq rpc_pipefs /proc/mounts 2> /dev/null ; then
+    			/sbin/mount -t rpc_pipefs sunrpc /var/lib/nfs/rpc_pipefs/ 2> /dev/null
+    		fi
+	fi
+	if [ -x /usr/sbin/rpc.idmapd ]; then
+    		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de rpc.idmapd"
+		/usr/sbin/rpc.idmapd
+	fi
+	if [ -x /usr/sbin/rpc.gssd ]; then
+    		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de rpc.gssd"
+		/usr/sbin/rpc.gssd
+	fi
+}
+
+nfsc_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de rpc.gssd"
+	killall rpc.gssd
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de rpc.idmapd"
+	killall rpc.idmapd
+	umount /var/lib/nfs/rpc_pipefs 2> /dev/null
+}
+
+case "$1" in
+	'start')
+		nfsc_start
+	;;
+	
+	'stop')
+		nfsc_stop
+	;;
+	
+	'restart')
+		nfsc_stop
+		sleep 1
+		nfsc_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+
+# Les démons clients sont activé par défaut :
+chmod +x ${PKG}/etc/rc.d/rc.nfsc
+
+# On crée le fichier service pour le serveur NFS, désactivé par défaut  :
 cat > ${PKG}/etc/rc.d/rc.nfsd << "EOF"
 #!/usr/bin/env bash
 
