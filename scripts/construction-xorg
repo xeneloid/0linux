@@ -106,6 +106,7 @@ wayland
 mesa
 glew
 glu
+freeglut
 mesa-demos
 libtxc_dxtn
 libxshmfence
