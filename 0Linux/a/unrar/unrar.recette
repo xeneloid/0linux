@@ -2,11 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=unrarsrc
-VERSION=5.1.2
-EXT=tar.gz
-WGET=http://www.rarlab.com/rar/$NAMESRC-$VERSION.$EXT
+VERSION=5.1.7
+WGET=http://www.rarlab.com/rar/$NAMESRC-$VERSION.tar.gz
 DESC="Décompresseur d'archives RAR"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -15,8 +13,10 @@ cflags
 # On crée le répertoire d'accueil :
 mkdir -p ${PKG}/usr/bin
 
+# On prend en compte nos flags :
+sed -i "s@\=-O2@=${FLAGS} -O3@g" makefile
+
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} -f makefile || make -f makefile
 
 # On installe le binaire :
