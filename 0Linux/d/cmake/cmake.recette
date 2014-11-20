@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.8.12.2
+VERSION=3.0.2
 EXT=tar.gz
 WGET=http://www.cmake.org/files/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
 DESC="Système de compilation multiplateforme"
@@ -10,9 +10,6 @@ DESC="Système de compilation multiplateforme"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On adapte le module aux dernières versions de 'freetype' concernant les entêtes:
-cat $CWD/cmake.FindFreetype.patch | patch -p0
 
 # Un répertoire dédié à la compilation est conseillé :
 mkdir build && cd build
@@ -36,9 +33,9 @@ ln -sf cmake-$(echo ${VERSION} | cut -d'.' -f1-2) ${PKG}/usr/share/cmake
 # On place les fichiers syntaxe pour 'vim' et 'emacs' :
 mkdir -p ${PKG}/usr/share/{emacs/site-lisp,vim/{indent,syntax}}
 
-cp Docs/cmake-indent.vim ${PKG}/usr/share/vim/indent/
-cp Docs/cmake-syntax.vim ${PKG}/usr/share/vim/syntax/
-cp Docs/cmake-mode.el ${PKG}/usr/share/emacs/site-lisp/
+cp Auxiliary/cmake-indent.vim ${PKG}/usr/share/vim/indent/
+cp Auxiliary/cmake-syntax.vim ${PKG}/usr/share/vim/syntax/
+cp Auxiliary/cmake-mode.el ${PKG}/usr/share/emacs/site-lisp/
   
 installer_doc
 creer_post_installation
