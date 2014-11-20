@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=7.4.2
-WGET=https://github.com/ivmai/$NAMESRC/archive/$NAMESRC-$(echo $VERSION | tr . _).zip
+WGET=https://github.com/ivmai/$NAMESRC/archive/$NAMESRC-$(echo $VERSION | tr . _).tar.gz
 DESC="Bibliothèques d'accès mémoire"
 
 telecharger_sources
