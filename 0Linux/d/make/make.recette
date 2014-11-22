@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.0
-EXT=tar.bz2
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=4.1
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Outil GNU pour la maintenance de programmes"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige un test sur l'UTF-8 : :
-cat $CWD/make.test-utf8.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
