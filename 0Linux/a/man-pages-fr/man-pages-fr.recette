@@ -4,7 +4,7 @@
 VERSION=3.62.1
 WGET=(
       http://alioth.debian.org/frs/download.php/file/4021/$NAMESRC-$(echo $VERSION | sed -e 's/\.?$/-/').tar.xz
-      http://ftp.fr.debian.org/debian/pool/main/m/manpages-fr-extra/manpages-fr-extra_20140506_all.deb
+      http://ftp.fr.debian.org/debian/pool/main/m/manpages-fr-extra/manpages-fr-extra_20141109_all.deb
      )
 DESC="Manuels francophones du système Linux"
 EXTRADEPS="man-db"
@@ -25,7 +25,7 @@ cp -ar man? ${PKG}/usr/man/fr
 installer_doc ${NAMETGZ}-${VERSION}/manpages-fr-extras
 
 # On installe les manuels supplémentaires de l'équipe debian-l10n-french :
-preparer_sources manpages-fr-extra_20140506_all.deb
+preparer_sources manpages-fr-extra_20141109_all.deb
 cflags
 
 # Installation des manuels en supprimant les manuels spécifiques à Debian :
