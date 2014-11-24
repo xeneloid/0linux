@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.0.20
+VERSION=3.0.26
 EXT=tar.xz
 WGET=http://www.daniel-baumann.ch/files/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Outils pour les systèmes de fichiers FAT/DOS"
