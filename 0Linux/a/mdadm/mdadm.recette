@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.3.1
-WGET=https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+VERSION=3.3.2
+WGET=https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de gestion de volumes RAID logiciels"
 
 telecharger_sources
