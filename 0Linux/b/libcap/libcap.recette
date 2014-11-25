@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.22
-EXT=tar.gz
-WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
+VERSION=2.24
+WGET=https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques POSIX.1e"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
