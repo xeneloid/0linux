@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.11
+VERSION=1.8.11p2
 WGET=http://www.sudo.ws/$NAMESRC/dist/$NAMESRC-$VERSION.tar.gz
 DESC="Outil de gestion de privilèges utilisateurs"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige l'inclusion problématique de 'shadow' :
-cat $CWD/sudo.shadow.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
