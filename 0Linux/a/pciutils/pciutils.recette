@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.2.0
-EXT=tar.xz
+VERSION=3.3.0
 WGET=(
-      ftp://ftp.kernel.org/pub/software/utils/$NAMESRC/$NAMESRC-$VERSION.$EXT
+      ftp://atrey.karlin.mff.cuni.cz/pub/linux/pci/$NAMESRC-$VERSION.tar.gz
       http://pci-ids.ucw.cz/v2.2/pci.ids
      )
 DESC="Outils pour matériel PCI"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-$VERSION.tar.gz # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation :
