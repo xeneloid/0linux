@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4
-EXT=tar.gz
-WGET=(http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}-1.19.$EXT
-      http://prdownloads.sourceforge.net/${NAMESRC}/${NAMESRC}2-${VERSION}.$EXT
+VERSION=2.6
+WGET=(http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}-1.19.tar.gz
+      http://prdownloads.sourceforge.net/${NAMESRC}/${NAMESRC}2-${VERSION}.tar.gz
      )
 DESC="Bibliothèques et moteur de gestion des couleurs"
 
 
 telecharger_sources
-preparer_sources ${NAMESRC}-1.19.$EXT
+preparer_sources ${NAMESRC}-1.19.tar.gz
 cflags
 
 # On compile les bibliothèques 32 bits da la 1.x pour le multilib sous x86_64 :
@@ -20,45 +19,22 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cflags i686
 	
 	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--build=${PKGARCH}-0linux-linux-gnu
+	configure_make_makeinstall
 	
-	make -j${JOBS} || make
-	fakeroot make install DESTDIR=${PKG}
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources ${NAMESRC}-1.19.$EXT
+preparer_sources ${NAMESRC}-1.19.tar.gz
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+configure_make_makeinstall
 
 # On place la doc dans un sous-répertoire :
 installer_doc ${NAMETGZ}-${VERSION}/lcms-1.19
 
-preparer_sources ${NAMESRC}2-${VERSION}.$EXT
+preparer_sources ${NAMESRC}2-${VERSION}.tar.gz
 
 # On compile les bibliothèques 32 bits da la 2.x pour le multilib sous x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -67,40 +43,17 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cflags i686
 	
 	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--build=${PKGARCH}-0linux-linux-gnu
+	configure_make_makeinstall
 	
-	make -j${JOBS} || make
-	fakeroot make install DESTDIR=${PKG}
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources ${NAMESRC}2-${VERSION}.$EXT
+preparer_sources ${NAMESRC}2-${VERSION}.tar.gz
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+configure_make_makeinstall
 
 installer_doc
 creer_post_installation
