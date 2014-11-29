@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.3.109
+VERSION=0.3.110
 EXT=tar.gz
 WGET=http://ftp.de.debian.org/debian/pool/main/liba/$NAMESRC/${NAMESRC}_${VERSION}.orig.${EXT}
 DESC="Bibliothèques pour la gestion asynchrone des entrées-sorties"
