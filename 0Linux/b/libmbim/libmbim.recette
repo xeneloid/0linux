@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.0
-EXT=tar.xz
-WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.10.0
+WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques pour le protocole de communication MBIM"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
