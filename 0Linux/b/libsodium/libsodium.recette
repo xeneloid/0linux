@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.0
+VERSION=1.0.1
 WGET=http://download.dnscrypt.org/$NAMESRC/releases/$NAMESRC-$VERSION.tar.gz
-DESC="Bibliothèques d echiffrement basées sur Native Client (NaCl)"
+DESC="Bibliothèques de chiffrement basées sur Native Client (NaCl)"
 
 telecharger_sources
 preparer_sources
