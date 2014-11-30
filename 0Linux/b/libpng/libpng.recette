@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.9
-EXT=tar.xz
-WGET=(http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
-      http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-1.2.50.$EXT
+VERSION=1.6.15
+WGET=(http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+      http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-1.2.52.tar.xz
       http://downloads.sourceforge.net/sourceforge/libpng-apng/libpng-$VERSION-apng.patch.gz
      )
 DESC="Bibliothèques graphiques « Portable Network Graphics »"
@@ -14,7 +13,7 @@ telecharger_sources
 cflags
 
 # On compile libpng 1.2 :
-preparer_sources $NAMESRC-1.2.50.$EXT
+preparer_sources $NAMESRC-1.2.52.tar.xz
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -40,7 +39,7 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources $NAMESRC-1.2.50.$EXT
+preparer_sources $NAMESRC-1.2.52.tar.xz
 cflags
 
 # Compilation :
@@ -59,10 +58,10 @@ make -j${JOBS} prefix=/usr LIBPATH=/usr/lib${LIBDIRSUFFIX}
 fakeroot make install prefix=/usr LIBPATH=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
 
 # On place la documentation dans un sous-répertoire dédié :
-installer_doc ${NAMETGZ}-${VERSION}/libpng-1.2.50
+installer_doc ${NAMETGZ}-${VERSION}/libpng-1.2.52
 
 # On compile libpng :
-preparer_sources
+preparer_sources $NAMESRC-$VERSION.tar.xz
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -97,7 +96,7 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources
+preparer_sources $NAMESRC-$VERSION.tar.xz
 cflags
 
 # On applique le correctif non-officiel pour le PNG animé :
