@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.6
-EXT=tar.xz
-WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMETGZ-$VERSION.$EXT
+VERSION=1.0.9
+WGET=https://github.com/lastfm/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Bibliothèques permettant d'interagir avec le site last.fm"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -21,6 +19,7 @@ cmake \
 	-DCMAKE_INSTALL_LIBDIR=/usr/lib${LIBDIRSUFFIX} \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DBUILD_TESTS=OFF \
+	-DBUILD_WITH_QT4=ON \
 	..
 
 make -j${JOBS} || make
