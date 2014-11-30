@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.4.7
-EXT=tar.xz
-WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.31.0/$NAMESRC-2.31.0.$EXT
-      http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=3.4.9
+WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.31.0/$NAMESRC-2.31.0.tar.xz
+      http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
      )
 DESC="Outils de construction de fenêtres"
 
@@ -12,7 +11,7 @@ DESC="Outils de construction de fenêtres"
 telecharger_sources
 
 # On compile libwnck 2.x :
-preparer_sources $NAMESRC-2.31.0.$EXT
+preparer_sources $NAMESRC-2.31.0.tar.xz
 cflags
 
 # Compilation :
@@ -34,7 +33,7 @@ fakeroot make install DESTDIR=${PKG}
 installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.31.0
 
 # On compile libwnck :
-preparer_sources
+preparer_sources $NAMESRC-$VERSION.tar.xz
 cflags
 
 # Compilation :
