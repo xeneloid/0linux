@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.0.4
-WGET=http://projects.gw-computing.net/attachments/download/79/$NAMESRC-$VERSION.tar.gz
+VERSION=3.0.5
+WGET=http://projects.gw-computing.net/attachments/download/467/$NAMESRC-$VERSION.tar.gz
 DESC="Version colorisée et améliorée de l'outil standard « df »"
 
 telecharger_sources
