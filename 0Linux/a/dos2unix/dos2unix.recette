@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.0.6
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+VERSION=7.1
+WGET=http://waterlan.home.xs4all.nl/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Permet la conversion des fins de ligne pour passer de DOS à Unix ou l'inverse"
 
 telecharger_sources
