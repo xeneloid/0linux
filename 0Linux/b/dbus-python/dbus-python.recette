@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.1.1
-EXT=tar.gz
-WGET=http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.2.0
+WGET=http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Interfaçage D-Bus - Python"
-
 
 telecharger_sources
 
