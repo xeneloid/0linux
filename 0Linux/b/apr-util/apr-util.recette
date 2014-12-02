@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.5.1
+VERSION=1.5.4
 WGET=http://apache.crihan.fr/dist/apr/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils pour APR"
 
