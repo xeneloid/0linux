@@ -1,19 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.93
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
-DESC="Bibliothèques d'accès aux CD-ROM et images CD"
+VERSION=10.2+0.93+1
+WGET=http://mirror-fr1.bbln.org/gnu/libcdio/$NAMESRC-$VERSION.tar.gz
+DESC="Extention « paranoia » pour libcdio"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On force l'installation des fichiers .pc :
-sed -i "s/libudf.pc$/& \$(paranoiapcs)/" Makefile.in
-
-# Résoud des problèmes de compatibilité :
-cat "$CWD/libcdio-0.83-linking.patch" | patch -Np1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -25,17 +19,17 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-vcd-info \
 	--enable-cpp-progs \
 	--disable-static \
+	--disable-example-progs \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# Corrige la configuration pour tenir compte de nos chemins d'installation :
-sed -i "/LIBCDIO_SOURCE_PATH/s|.*|/* #undef LIBCDIO_SOURCE_PATH */|" \
-    $PKG/usr/include/cdio/cdio_config.h
+# Liens de compatibilité pour les anciens ffmpeg et gstreamer :
+ln -s paranoia/cdda.h $PKG/usr/include/cdio/cdda.h
+ln -s paranoia/paranoia.h $PKG/usr/include/cdio/paranoia.h
 
 installer_doc
 creer_post_installation
