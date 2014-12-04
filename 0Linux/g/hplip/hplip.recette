@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.13.10
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=3.14.10
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Ensemble d'outils et de pilotes pour périphériques HP"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige les aparamètres 'udev', le propriétaire par défaut ainsi 
+# On corrige les paramètres 'udev', le propriétaire par défaut ainsi 
 # que le chemin des bibliothèques ::
 sed -i 's/SYSFS/ATTR/g' data/rules/*.rules
-sed -i 's%OWNER="lp"%OWNER="root"%g' data/rules/*.rules
 sed -i -e "s#usr/lib#usr/lib${LIBDIRSUFFIX}#g" configure
 
 # Compilation :
@@ -56,6 +53,14 @@ rm -rf ${PKG}/etc/xdg
 
 # Ce répertoire écrase le contenu d'autres paquets, on supprime :
 rm -rf ${PKG}/etc/sane.d
+
+# Merci, au revoir... :
+rm -rf ${PKG}/usr/lib/systemd
+
+# On nettoie :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	rm -rf ${PKG}/usr/lib
+fi
 
 installer_doc
 creer_post_installation
