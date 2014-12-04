@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.3
-EXT=tar.gz
-WGET=http://www.piksel.no/frei0r/releases/$NAMESRC-$VERSION.$EXT
+VERSION=1.4
+WGET=https://files.dyne.org/frei0r/releases/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques et greffons d'effets vidéo"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
