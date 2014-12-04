@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.0
+VERSION=0.9.1
 WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Outil de bannissement automatisé après plusieurs tentatives infructueuses d'authentification"
 EXTRADEPS="iptables pyinotify whois"
