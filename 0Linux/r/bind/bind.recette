@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=9.10.1
+WGET=(
+      ftp://ftp.isc.org/isc/${NAMESRC}$(echo $VERSION | cut -d'.' -f1)/$VERSION/$NAMESRC-$VERSION.tar.gz
+      http://www.internic.net/zones/named.root
+     )
+DESC="Le serveurs de noms de domaine BIND et ses outils dédiés"
+
+telecharger_sources
+preparer_sources $NAMESRC-$VERSION.tar.gz
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-threads \
+	--with-libtool \
+	--with-libxml2 \
+	--with-openssl \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée un lien générique :
+ln -sf named ${PKG}/usr/bin/lwresd
+
+# On crée ce répertoire nécessaire au bon fonctionnement de BIND :
+mkdir -p ${PKG}/var/run/named
+
+# On crée un fichier service, désactivé par défaut :
+mkdir -p ${PKG}/etc/rc.d
+
+cat > ${PKG}/etc/rc.d/rc.bind << "EOF"
+#!/usr/bin/env bash
+
+bind_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du serveur BIND..."
+	
+	# On charge les paramètres par défaut s'ils existent:
+	[ -r /etc/default/named ] && . /etc/default/named
+	[ -r /etc/default/rndc ] && . /etc/default/rndc
+	
+	if [ -x /usr/sbin/named ]; then
+		/usr/sbin/named $NAMED_OPTIONS
+	fi
+}
+
+bind_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt du serveur BIND..."
+	
+}
+
+case "$1" in
+	'start')
+		bind_start
+	;;
+	
+	'stop')
+		bind_stop
+	;;
+	
+	'restart')
+		bind_stop
+		sleep 1
+		bind_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	;;
+
+esac
+
+EOF
+
+# On crée un fichier de configuration pour fournir un simple serveur de
+# cache DNS en prenant garde à ne rien écraser:
+mkdir -p $PKG/var/named/cache-dns
+
+cat > ${PKG}/etc/named.conf.0nouveau << "EOF"
+options {
+	directory "/var/named";
+};
+
+// Un simple serveur de cache DNS.
+ 
+zone "." IN {
+	type hint;
+	file "cache-dns/named.root";
+};
+
+zone "localhost" IN {
+	type master;
+	file "cache-dns/localhost.zone";
+	allow-update { none; };
+};
+
+zone "0.0.127.in-addr.arpa" IN {
+	type master;
+	file "cache-dns/named.local";
+	allow-update { none; };
+};
+
+EOF
+
+# On crée la configuration par défaut pour le cache local :
+cat > ${PKG}/var/named/cache-dns/localhost.zone << "EOF"
+$TTL	86400
+$ORIGIN localhost.
+@			1D IN SOA	@ root (
+					42		; serial (d. adams)
+					3H		; refresh
+					15M		; retry
+					1W		; expiry
+					1D )		; minimum
+
+			1D IN NS	@
+			1D IN A		127.0.0.1
+
+EOF
+
+cat > ${PKG}/var/named/cache-dns/named.local << "EOF"
+$TTL	86400
+@       IN      SOA     localhost. root.localhost.  (
+                                      2011032500 ; Serial
+                                      28800      ; Refresh
+                                      14400      ; Retry
+                                      3600000    ; Expire
+                                      86400 )    ; Minimum
+              IN      NS      localhost.
+
+1       IN      PTR     localhost.
+
+EOF
+
+# On place le fichier de définitions des root servers :
+cp -a ${PKGSOURCES}/${NAMETGZ}/named.root ${PKG}/var/named/cache-dns/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
