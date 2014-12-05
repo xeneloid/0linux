@@ -10,8 +10,8 @@ DESC="Service de gestion de périphériques de stockage"
 telecharger_sources
 cflags
 
-# On compile la version 1.0.4 :
-preparer_sources $NAMESRC-1.0.4.tar.gz
+# On compile la version 1.0.5 :
+preparer_sources $NAMESRC-1.0.5.tar.gz
 
 # Ces chemins sont codés en dur... :
 sed -i -e "s@slashlibdir=/lib@slashlibdir=/usr/lib${LIBDIRSUFFIX}@" -e "s@slashsbindir=/sbin@slashsbindir=/usr/sbin@" configure
