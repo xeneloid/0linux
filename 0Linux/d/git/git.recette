@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.0.4
+VERSION=2.2.0
 EXT=tar.xz
 WGET=(https://www.kernel.org/pub/software/scm/git/$NAMESRC-$VERSION.$EXT
       https://www.kernel.org/pub/software/scm/git/$NAMESRC-manpages-$VERSION.$EXT
@@ -14,20 +14,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+configure_make_makeinstall
 
 # On nettoie les répertoires ayant trait à Perl :
 rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/perl5
