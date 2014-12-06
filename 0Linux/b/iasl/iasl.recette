@@ -2,11 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=acpica-unix
-VERSION=20121018
-EXT=tar.gz
-WGET=http://acpica.org/download/$NAMESRC-$VERSION.$EXT
+VERSION=20141107
+WGET=https://acpica.org/sites/acpica/files/$NAMESRC-$VERSION.tar.gz
 DESC="Compilateur ACPI"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
