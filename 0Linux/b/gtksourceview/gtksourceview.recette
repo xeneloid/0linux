@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.10.2
-EXT=tar.xz
+VERSION=3.14.2
 WGET=(http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/2.10/$NAMESRC-2.10.5.tar.bz2
-      http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+      http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
      )
 DESC="Outils d'analyse et de coloration syntaxique pour GTK+"
 
@@ -35,7 +34,7 @@ fakeroot make install DESTDIR=${PKG}
 installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.10.5
 
 # On compile maintenant la version de la recette :
-preparer_sources
+preparer_sources $NAMESRC-$VERSION.tar.xz
 cflags
 
 # Compilation :
