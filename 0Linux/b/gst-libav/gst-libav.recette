@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.3
+VERSION=1.4.4
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/gst-ffmpeg/gst-ffmpeg-0.10.13.tar.gz
       http://gstreamer.freedesktop.org/src/gst-libav/$NAMESRC-$VERSION.$EXT
@@ -17,6 +17,9 @@ preparer_sources gst-ffmpeg-0.10.13.tar.gz
 # On corrige une erreur sur x86 :
 cat $CWD/gst-libav.x86-error.patch | patch -p1
 
+# On refait le configure :
+NOCONFIGURE=1 ./autogen.sh
+
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -27,6 +30,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/gst-ffmpeg-0.10.13 \
+	--with-ffmpeg-extra-configure="--enable-runtime-cpudetect" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -48,9 +52,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-libav-extra-configure="--enable-runtime-cpudetect" \
 	--with-package-name="GStreamer Libav(0Linux)" \
 	--with-package-origin="http://0linux.org" \
 	--build=${PKGARCH}-0linux-linux-gnu
+
+# On corrige un bug dans le fichier libtool :
+sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
