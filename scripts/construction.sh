@@ -76,6 +76,7 @@ compiler_installer() {
 		for paquet_recalcitrant in efl \
 		evolution-data-server \
 		gnome-shell \
+		icu4c \
 		jack \
 		libvpx \
 		lvm2 \
