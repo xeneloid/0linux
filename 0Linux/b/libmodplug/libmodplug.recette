@@ -12,6 +12,10 @@ cflags
 # Compilation :
 configure_make_makeinstall
 
+# Corrige le fichier pkg-config :
+sed -i "s@/include@/include/libmodplug@" \
+	$PKG/usr/lib$LIBDIRSUFFIX/pkgconfig/libmodplug.pc
+
 installer_doc
 creer_post_installation
 stripper
