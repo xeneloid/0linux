@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.3
+VERSION=1.4.4
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.19.$EXT
       http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
@@ -17,6 +17,10 @@ preparer_sources $NAMESRC-0.10.19.$EXT
 # On corrige un problème avec les libcdio récents ainsi que la compilation avec opencore-amr :
 cat $CWD/gst-plugins-ugly.cdio.patch | patch -p1
 cat $CWD/gst-plugins-ugly.opencore-amr.patch | patch -p0
+
+# Permet l'utilisation d'auto-tools récents :
+sed -i 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' configure.ac
+NOCONFIGURE=1 ./autogen.sh
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
