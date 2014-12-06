@@ -61,9 +61,11 @@ make all -j${JOBS} || make all
 fakeroot make install PREFIX=${PKG}/usr
 
 # On déplace de lib vers lib${LIBDIRSUFFIX}
-mkdir -p $PKG/usr/lib$LIBDIRSUFFIX
-cp -a $PKG/usr/lib{/*,${LIBDIRSUFFIX}}
-rm -rf $PKG/usr/lib
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	mkdir -p $PKG/usr/lib$LIBDIRSUFFIX
+	cp -a $PKG/usr/lib{/*,${LIBDIRSUFFIX}}
+	rm -rf $PKG/usr/lib
+fi
 
 # On se lie à la version du compilateur correspondante à notre archi
 if [ "$FPARCH" = "x86_64" ] ; then
