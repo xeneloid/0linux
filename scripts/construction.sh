@@ -77,6 +77,7 @@ compiler_installer() {
 		evolution-data-server \
 		gnome-shell \
 		icu4c \
+		ilmbase \
 		jack \
 		libvpx \
 		lvm2 \
@@ -85,6 +86,7 @@ compiler_installer() {
 		mlt \
 		nspr \
 		nss \
+		openexr \
 		samba \
 		talloc; do
 			if [ "$(basename ${1} .recette)" = "${paquet_recalcitrant}" ]; then
