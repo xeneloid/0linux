@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.3
+VERSION=1.4.4
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.31.$EXT
       http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
@@ -19,6 +19,11 @@ cat $CWD/gst-plugins-good.linux36.patch | patch -p1
 
 # On corrige une définition manquante pour V4L2 :
 cat $CWD/gst-plugins-good.v4l2.patch | patch -p0
+
+# Permet l'utilisation d'auto-tools récents :
+sed -i '/AC_PATH_XTRA/d' configure.ac
+sed -i 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' configure.ac
+NOCONFIGURE=1 ./autogen.sh
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
