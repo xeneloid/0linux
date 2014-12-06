@@ -61,6 +61,11 @@ if [ -x /etc/rc.d/rc.sshd ]; then
 	/etc/rc.d/rc.sshd start
 fi
 
+# Lancement de BIND :
+if [ -x /etc/rc.d/rc.bind ]; then
+	/etc/rc.d/rc.bind start
+fi
+
 # Lancement de iptables (règles pour pare-feu rudimentaire) :
 if [ -x /etc/rc.d/rc.iptables ]; then
 	/etc/rc.d/rc.iptables start
@@ -150,7 +155,13 @@ fi
 if [ -x /etc/rc.d/rc.rpcbind ]; then
 	/etc/rc.d/rc.rpcbind start
 fi
-# On lance NFS :
+
+# On lance NFS (clients) :
+if [ -x /etc/rc.d/rc.nfsc ]; then
+	/etc/rc.d/rc.nfsc start
+fi
+
+# On lance NFS (serveur) :
 if [ -x /etc/rc.d/rc.nfsd ]; then
 	/etc/rc.d/rc.nfsd start
 fi
@@ -178,6 +189,11 @@ fi
 # Lancement de VirtualBox :
 if [ -x /etc/rc.d/rc.vboxdrv ]; then
 	/etc/rc.d/rc.vboxdrv start
+fi
+
+# Lancement de TeamViewer :
+if [ -x /etc/rc.d/rc.teamviewerd ]; then
+	/etc/rc.d/rc.teamviewerd start
 fi
 
 # Lancement du script « local » personnel :
