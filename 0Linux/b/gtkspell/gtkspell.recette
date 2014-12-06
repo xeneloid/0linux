@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.0.4
+VERSION=3.0.6
 EXT=tar.gz
 WGET=(
       http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}3-$VERSION.$EXT
       http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-2.0.16.$EXT
      )
 DESC="Outil d'analyse et de correction de texte"
-
 
 telecharger_sources
 
