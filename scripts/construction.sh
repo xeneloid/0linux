@@ -77,6 +77,7 @@ compiler_installer() {
 		evolution-data-server \
 		gnome-shell \
 		jack \
+		libvpx \
 		lvm2 \
 		man-pages \
 		man-pages-fr \
