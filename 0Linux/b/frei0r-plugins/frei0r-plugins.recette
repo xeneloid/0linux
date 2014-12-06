@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.4
-WGET=https://files.dyne.org/frei0r/releases/$NAMESRC-$VERSION.tar.gz
+WGET=https://0linux.geoffray-levasseur.org/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques et greffons d'effets vidéo"
 
 telecharger_sources
