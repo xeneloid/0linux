@@ -1,21 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.2
-EXT=tar.gz
-WGET=http://download.savannah.nongnu.org/releases/openexr/$NAMESRC-$VERSION.$EXT
+VERSION=2.2.0
+WGET=http://download.savannah.nongnu.org/releases/openexr/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques graphiques ILM"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige la compilation pour les GCC récents :
-cat $CWD/ilmbase.include-std.patch | patch -p1
-
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+LDFLAGS="${LDFLAGS} -lrt " \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
