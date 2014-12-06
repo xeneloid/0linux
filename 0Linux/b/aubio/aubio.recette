@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.3.2
-EXT=tar.gz
-WGET=http://aubio.org/pub/$NAMESRC-$VERSION.$EXT
+WGET=http://aubio.org/pub/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de traitement audio"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
