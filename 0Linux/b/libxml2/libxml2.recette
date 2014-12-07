@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.7.8
-EXT=tar.gz
-WGET=ftp://xmlsoft.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=2.9.2
+WGET=ftp://xmlsoft.org/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'analyse XML"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,8 +15,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On réactive le rapport de version des bibliothèques :
-	cat $CWD/libxml2.version.patch | patch -p1
+	# On utilise Python 2 :
+	sed -e 's|/usr/bin/python -u|/usr/bin/python2 -u|g' -e 's|/usr/bin/python$|/usr/bin/python2|g' -i python/tests/*.py
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -31,6 +29,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--without-python \
+		--with-threads \
+		--with-history \
+		--with-python=/usr/bin/python2
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -42,8 +43,8 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On réactive le rapport de version des bibliothèques :
-cat $CWD/libxml2.version.patch | patch -p1
+# On untilise Python 2 :
+sed -e 's|/usr/bin/python -u|/usr/bin/python2 -u|g' -e 's|/usr/bin/python$|/usr/bin/python2|g' -i python/tests/*.py
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -55,6 +56,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-threads \
+	--with-history \
+	--with-python=/usr/bin/python2
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
