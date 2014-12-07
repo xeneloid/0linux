@@ -18,14 +18,22 @@ fi
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-scons \
+scons -j${JOBS} \
 	PREFIX=/usr \
 	LIBDIR=/usr/lib${LIBDIRSUFFIX} \
 	MANDIR=/usr/man \
 	COMPILE_FLAGS="${FLAGS}" \
 	DEBUG=False \
 	ENABLE_OPTIMIZATIONS="${OPTIM}" \
-	UDEVDIR=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
+	UDEVDIR=/usr/lib${LIBDIRSUFFIX}/udev/rules.d || \
+	scons \
+		PREFIX=/usr \
+		LIBDIR=/usr/lib${LIBDIRSUFFIX} \
+		MANDIR=/usr/man \
+		COMPILE_FLAGS="${FLAGS}" \
+		DEBUG=False \
+		ENABLE_OPTIMIZATIONS="${OPTIM}" \
+		UDEVDIR=/usr/lib${LIBDIRSUFFIX}/udev/rules.d
 
 fakeroot scons install WILL_DEAL_WITH_XDG_MYSELF="True" DESTDIR=${PKG}
 
