@@ -2,10 +2,10 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=jack-audio-connection-kit
-VERSION=1.9.9.5
+VERSION=1.9.10
 WGET=(
       http://jackaudio.org/$NAMESRC-0.124.1.tar.gz
-      https://github.com/jackaudio/jack2/archive/$VERSION.tar.gz
+      https://github.com/jackaudio/jack2/archive/v$VERSION.tar.gz
      )
 DESC="Le serveur de son « Jack Audio Connection Kit »"
 
@@ -61,7 +61,7 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On compile ensuite JACK2 :
-preparer_sources $VERSION.tar.gz
+preparer_sources v$VERSION.tar.gz
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -99,7 +99,7 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources $VERSION.tar.gz
+preparer_sources v$VERSION.tar.gz
 cflags
 
 # Compilation :
