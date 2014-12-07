@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.7.0
+VERSION=0.11.0
 WGET=https://github.com/vathpela/$NAMESRC/archive/$NAMESRC-$VERSION.tar.gz
 DESC="Outil de gestion des variables d'amorçage UEFI"
 EXTRADEPS="efivar"
