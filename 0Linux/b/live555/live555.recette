@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=live
-VERSION=2014.08.26
+VERSION=2014.12.08
 WGET=http://www.live555.com/liveMedia/public/${NAMESRC}.${VERSION}.tar.gz
 DESC="Outils et bibliothèque pour flux en streaming"
 
