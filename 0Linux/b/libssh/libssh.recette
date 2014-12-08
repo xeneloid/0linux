@@ -26,7 +26,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j3 || make
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On compile 'libssh' :
@@ -46,7 +46,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	..
 
-make -j3 || make
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc
