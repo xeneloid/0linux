@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.9
+VERSION=1.8.10
 WGET=http://apache.crihan.fr/dist/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Système de contrôle de versions centralisé"
 
