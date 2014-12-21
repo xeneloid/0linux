@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=9.0.0.4g
-EXT=tar.lzma
-WGET=http://gentoo.osuosl.org/distfiles/$NAMESRC-$VERSION.$EXT
+VERSION=9.0.0.5g
+WGET=http://gentoo.osuosl.org/distfiles/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de conversion RPM vers .tar.gz"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
