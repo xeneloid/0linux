@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.29.6
-EXT=tar.gz
-WGET=http://www.webdav.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=0.30.1
+WGET=http://www.webdav.org/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques HTTP et WebDAV pour C"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
