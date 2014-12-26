@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=rel
-VERSION=3.0.5
+VERSION=3.0.6
 WGET=https://github.com/luceneplusplus/LucenePlusPlus/archive/${NAMESRC}_${VERSION}.tar.gz
 DESC="Port C++ des bibliothèques Java Lucene"
 
@@ -11,9 +11,13 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On corrige des numéros de version erronés :
-sed -i -e 's#SET(LUCENE++_VERSION_REVISION.*#SET(LUCENE++_VERSION_REVISION "5")#' \
-	-e 's#SET(LUCENE++_VERSION_PATCH.*#SET(LUCENE++_VERSION_PATCH "0")#' \
-	CMakeLists.txt
+sed -i \
+    -e 's#SET(LUCENE++_VERSION_REVISION.*#SET(LUCENE++_VERSION_REVISION "6")#' \
+    -e 's#SET(LUCENE++_VERSION_PATCH.*#SET(LUCENE++_VERSION_PATCH "0")#' \
+    CMakeLists.txt
+
+# Evite des erreur de compilation :
+cat $CWD/lucene++.testfixture.patch | patch -p1
 
 # On doit compiler dans un répertoire dédié :
 mkdir -p build && cd build
@@ -21,9 +25,11 @@ mkdir -p build && cd build
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DLIB_DESTINATION=/usr/lib${LIBDIRSUFFIX} \
 	-DBoost_LIBRARY_DIR=/usr/lib${LIBDIRSUFFIX} \
+	-DENABLE_DOCS=ON \
 	-DENABLE_CUSTOM_ALLOCATOR='FALSE' \
 	..
 
