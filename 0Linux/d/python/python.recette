@@ -2,11 +2,11 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Python
-VERSION=2.7.8
+VERSION=2.7.9
 EXT=tar.xz
-WGET=(http://www.python.org/ftp/python/3.4.1/$NAMESRC-3.4.1.$EXT
-      http://docs.python.org/ftp/python/doc/3.4.0/python-3.4.0-docs-html.tar.bz2
-      http://docs.python.org/ftp/python/doc/3.4.0/python-3.4.0-docs-text.tar.bz2
+WGET=(http://www.python.org/ftp/python/3.4.2/$NAMESRC-3.4.2.$EXT
+      http://docs.python.org/ftp/python/doc/3.4.2/python-3.4.2-docs-html.tar.bz2
+      http://docs.python.org/ftp/python/doc/3.4.2/python-3.4.2-docs-text.tar.bz2
       http://www.python.org/ftp/python/$VERSION/$NAMESRC-$VERSION.$EXT
       http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-html.tar.bz2
       http://docs.python.org/ftp/python/doc/${VERSION}/python-$VERSION-docs-text.tar.bz2
@@ -16,7 +16,7 @@ DESC="Langage de programmation interprété orienté objet"
 telecharger_sources
 
 # On compile Python 3 :
-preparer_sources $NAMESRC-3.4.1.$EXT
+preparer_sources $NAMESRC-3.4.2.$EXT
 cflags
 
 # On corrige les sources pour intégrer notre répertoire standard de bibliothèques,
@@ -60,11 +60,11 @@ mkdir -p      ${PKG}/usr/lib${LIBDIRSUFFIX}/python3.4/site-packages
 cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python3.4/site-packages
 
 # On installe la doc dans le répertoire dédié :
-installer_doc ${NAMETGZ}-3.4.1
+installer_doc ${NAMETGZ}-3.4.2
 
 # Et on extrait les archives de documentation au bon endroit :
-tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.4.0-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.4.1/
-tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.4.0-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.4.1/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.4.2-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.4.2/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-3.4.2-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-3.4.2/
 
 # On compile Python 2 :
 preparer_sources
