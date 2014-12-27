@@ -34,7 +34,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--sbindir=/usr/sbin \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
@@ -44,8 +43,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--disable-introspection \
 		--enable-rule-generator \
 		--enable-static \
-		--with-firmware-path=/usr/lib${LIBDIRSUFFIX}/firmware/updates:/usr/lib${LIBDIRSUFFIX}/firmware \
 		--with-rootprefix=/ \
+		--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
+		--with-rootlibexecdir=/usr/lib${LIBDIRSUFFIX}/udev \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -83,8 +83,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-introspection \
 	--enable-rule-generator \
 	--enable-static \
-	--with-firmware-path=/usr/lib${LIBDIRSUFFIX}/firmware/updates:/usr/lib${LIBDIRSUFFIX}/firmware \
 	--with-rootprefix=/ \
+	--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
+	--with-rootlibexecdir=/usr/lib${LIBDIRSUFFIX}/udev \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
