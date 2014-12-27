@@ -15,7 +15,14 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-		# Compilation pour i686 :
+	# On corrige la détection d'ICU :
+	cat $CWD/libxml2.icu-detect.patch | patch -Np1
+	
+	# On annule un commit qui casse la commande xmlcatalog :
+	cat $CWD/libxml2.revert-xmlcatalog-init.patch | patch -Np1
+	
+	# Compilation pour i686 :
+	autoreconf -vif
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
 		--prefix=/usr \
@@ -43,7 +50,14 @@ cflags
 # On untilise Python 2 :
 sed -e 's|/usr/bin/python -u|/usr/bin/python2 -u|g' -e 's|/usr/bin/python$|/usr/bin/python2|g' -i python/tests/*.py
 
+# On corrige la détection d'ICU :
+cat $CWD/libxml2.icu-detect.patch | patch -Np1
+
+# On annule un commit qui casse la commande xmlcatalog :
+cat $CWD/libxml2.revert-xmlcatalog-init.patch | patch -Np1
+
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
