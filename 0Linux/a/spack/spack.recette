@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.11
+VERSION=3.12
 WGET=http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.tar.gz
 DESC="Suite d'outils et gestionnaire de paquets"
 
