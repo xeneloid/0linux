@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.2.2
-EXT=tar.bz2
-WGET=(http://bitbucket.org/$NAMESRC/$NAMESRC/get/2.0.17.$EXT
-      http://bitbucket.org/$NAMESRC/$NAMESRC/get/$VERSION.$EXT
+VERSION=3.2.3
+WGET=(http://bitbucket.org/$NAMESRC/$NAMESRC/get/2.0.17.tar.bz2
+      http://bitbucket.org/$NAMESRC/$NAMESRC/get/$VERSION.tar.bz2
      )
 DESC="Bibliothèques C++ d'algèbre linéaire"
 
 
 telecharger_sources
-preparer_sources 2.0.17.${EXT}
+preparer_sources 2.0.17.tar.bz2
 cflags
 
 # La compilation se fait dans un répertoire dédié :
@@ -37,7 +36,7 @@ rm -rf ${PKG}/usr/share/pkgconfig
 # On installe la documentation dans un sous-répertoire dédié :
 installer_doc ${NAMETGZ}-${VERSION}/2.0.17
 
-preparer_sources $VERSION.$EXT
+preparer_sources $VERSION.tar.bz2
 cflags
 
 # La compilation se fait dans un répertoire dédié :
