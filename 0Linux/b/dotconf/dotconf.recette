@@ -1,29 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.1.0
-EXT=tar.gz
-WGET=http://www.azzit.de/dotconf/download/v1.1/$NAMESRC-$VERSION.$EXT
+VERSION=1.3
+WGET=https://github.com/williamh/$NAMESRC/archive/v$VERSION.tar.gz
 DESC="Analyseur de fichiers de configurations"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+autoreconf -vif
+configure_make_makeinstall
 
 installer_doc
 creer_post_installation
