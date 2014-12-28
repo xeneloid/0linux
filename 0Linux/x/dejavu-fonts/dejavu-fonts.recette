@@ -2,9 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=dejavu-fonts-ttf
-VERSION=2.33
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/dejavu/$NAMESRC-$VERSION.$EXT
+VERSION=2.34
+WGET=http://prdownloads.sourceforge.net/dejavu/$NAMESRC-$VERSION.tar.bz2
 DESC="Polices TrueType pour X"
 
 
