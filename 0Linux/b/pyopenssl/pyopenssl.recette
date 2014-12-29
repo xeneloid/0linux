@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=pyOpenSSL
-VERSION=0.13
-EXT=tar.gz
-WGET=http://pypi.python.org/packages/source/p/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=0.14
+WGET=https://github.com/pyca/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Interfaçage Python pour OpenSSL"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
