@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.0.1
-EXT=tar.gz
-WGET=http://github.com/lloyd/yajl/tarball/$VERSION/lloyd-$NAMESRC-$VERSION-0-gf4b2b1a.$EXT} # Nom et version différents !
+VERSION=2.1.0
+WGET=https://github.com/lloyd/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Bibliothèques JSON"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
