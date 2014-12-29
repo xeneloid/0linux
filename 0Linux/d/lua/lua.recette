@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.1.5
+VERSION=5.2.3
 WGET=http://www.lua.org/ftp/$NAMESRC-$VERSION.tar.gz
 DESC="Le langage de programmation Lua"
 
@@ -9,23 +9,13 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige certains chemins codés en dur :
-sed -i "s|/usr/local|/usr|" src/luaconf.h
-sed -i "s|lib/lua|lib$LIBDIRSUFFIX/lua|" src/luaconf.h
-sed -i "s|/usr/local|/usr|" etc/lua.pc
-sed -i "s|prefix}/lib|prefix}/lib${LIBDIRSUFFIX}|g" etc/lua.pc
-
-# On force l'édition de liens en statique dans un souci de performance.
-# cf. : http://article.gmane.org/gmane.comp.lang.lua.general/18519, merci Gentoo.
-sed -i 's@$(LIBTOOL) --mode=link $(CC) -export-dynamic $(LDFLAGS) -o (LIBTOOL) --mode=link $(CC) -export-dynamic $(LDFLAGS) -o@$(LIBTOOL) --mode=link $(CC) -export-dynamic $(LDFLAGS) -o (LIBTOOL) --mode=link $(CC) -static -export-dynamic $(LDFLAGS) -o@' src/Makefile
-
-# On corrige la version :
-sed -i -e 's/\(LIB_VERSION = \)6:1:1/\16:5:1/' src/Makefile
+# On corrige certains chemins codés en dur et la génération du so :
+cat $CWD/lua.conf.patch | patch -Np1
 
 # Compilation :
 make -j${JOBS} linux \
-	CFLAGS=" -DLUA_USE_LINUX ${FLAGS} " CXXFLAGS="${FLAGS}" \
-	LDFLAGS+=" -lm -ldl -lreadline " \
+	MYCFLAGS=" -DLUA_USE_LINUX ${FLAGS} " \
+	MYLDFLAGS+=" ${LDFLAGS} " \
 	INSTALL_TOP=${PKG}/usr \
 	INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX} \
 	INSTALL_LMOD=${PKG}/usr/share/lua/$(echo $VERSION | cut -d'.' -f1-2) \
@@ -33,7 +23,7 @@ make -j${JOBS} linux \
 
 # Installation :
 fakeroot make linux install \
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	CFLAGS="${FLAGS}" \
 	INSTALL_TOP=${PKG}/usr \
 	INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX} \
 	INSTALL_LMOD=${PKG}/usr/share/lua/$(echo $VERSION | cut -d'.' -f1-2) \
@@ -41,7 +31,26 @@ fakeroot make linux install \
 
 # On installe le fichier .pc pour 'pkg-config' :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
-cat etc/lua.pc > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/lua.pc
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/lua.pc << EOF
+prefix=/usr
+INSTALL_BIN=${prefix}/bin
+INSTALL_INC=${prefix}/include
+INSTALL_LIB=${prefix}/lib
+INSTALL_MAN=${prefix}/man/man1
+INSTALL_LMOD=${prefix}/share/lua/$(echo $VERSION | cut -d'.' -f1-2)
+INSTALL_CMOD=${prefix}/lib/lua/$(echo $VERSION | cut -d'.' -f1-2)
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: Lua
+Description: An Extensible Extension Language
+Version: $VERSION
+Requires: 
+Libs: -L${libdir} -llua -lm
+Cflags: -I${includedir}
+
+EOF
 
 installer_doc
 
