@@ -55,7 +55,7 @@ fakeroot make -j${JOBS} tooldir=/usr || fakeroot make tooldir=/usr
 
 # On lance la suite de tests si $TESTS est positionnée :
 if [ ! "${TESTS}" = "" ]; then
-	make -k check 2>&1
+	make -k check 2>&1 || true
 fi
 
 fakeroot make install tooldir=/usr DESTDIR=${PKG}
