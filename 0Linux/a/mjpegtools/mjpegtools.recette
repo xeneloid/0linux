@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.0.1RC1
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/mjpeg/$NAMESRC-$VERSION.$EXT
+VERSION=2.1.0
+WGET=http://prdownloads.sourceforge.net/mjpeg/$NAMESRC-$VERSION.tar.gz
 DESC="Ensemble d'outils d'exploitation du format MPEG"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
