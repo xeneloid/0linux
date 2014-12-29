@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.3.2
-EXT=tar.bz2
-WGET=http://downloads.xvid.org/downloads/$NAMESRC-$VERSION.$EXT
+VERSION=1.3.3
+WGET=http://downloads.xvid.org/downloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Le codec compatible MPEG-4 XViD"
 
 
