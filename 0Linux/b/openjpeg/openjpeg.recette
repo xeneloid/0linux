@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.0.0
-EXT=tar.gz
-WGET=(http://openjpeg.googlecode.com/files/$NAMESRC-1.5.1.$EXT
-      http://openjpeg.googlecode.com/files/$NAMESRC-$VERSION.$EXT
+VERSION=2.1.0
+WGET=(http://prdownloads.sourceforge.net/openjpeg.mirror/$NAMESRC-1.5.1.tar.gz
+      http://prdownloads.sourceforge.net/openjpeg.mirror/$NAMESRC-$VERSION.tar.gz
      )
 DESC="Codec JPEG 2000"
 
@@ -12,7 +11,7 @@ DESC="Codec JPEG 2000"
 telecharger_sources
 
 # On compile OpenJPEG 1.x :
-preparer_sources $NAMESRC-1.5.1.$EXT
+preparer_sources $NAMESRC-1.5.1.tar.gz
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -20,6 +19,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
+	
+	# On s'assure de n'utiliser que les bibliothèques du système :
+	rm -rf thirdparty
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -30,6 +32,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
+		--disable-silent-rules \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -38,8 +41,11 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources $NAMESRC-1.5.1.$EXT
+preparer_sources $NAMESRC-1.5.1.tar.gz
 cflags
+
+# On s'assure de n'utiliser que les bibliothèques du système :
+rm -rf thirdparty
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -51,6 +57,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-silent-rules \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -60,7 +67,7 @@ fakeroot make install DESTDIR=${PKG}
 installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-1.5.1
 
 # On compile maintenant la version régulière de la recette :
-preparer_sources
+preparer_sources $NAMESRC-$VERSION.tar.gz
 cflags
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
@@ -78,8 +85,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cmake -D CMAKE_BUILD_TYPE=Release \
 		-D CMAKE_INSTALL_PREFIX=/usr \
 		-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
-		-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
-		-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+		-D OPENJPEG_INSTALL_LIB_DIR=lib${LIBDIRSUFFIX} \
+		-D BUILD_DOC=off \
 		..
 	
 	make -j${JOBS} || make
@@ -88,7 +95,7 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-$VERSION.tar.gz # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # La compilation se fait dans un répertoire dédié :
@@ -100,8 +107,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
-	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
-	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D OPENJPEG_INSTALL_LIB_DIR=lib${LIBDIRSUFFIX} \
+	-D BUILD_DOC=on \
 	..
 
 make -j${JOBS} || make
