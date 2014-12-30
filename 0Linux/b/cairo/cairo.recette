@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.12.16
+VERSION=1.14.0
 WGET=http://cairographics.org/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques graphiques 2D"
 
@@ -15,16 +15,18 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# La suite de tests contient une dépendance circulaire GTK+-Cairo, on la supprime :
-	sed -i '/noinst_PROGRAMS = cairo-test-suite$(EXEEXT) # always build/d' test/Makefile.am
-	
-	# On supprime la prise en charge de LTO qui casse la compilation :
-	cat $CWD/cairo.lto.patch | patch -p1
+	# La suite de tests est une plaie en multilib, on la supprime :
+	rm -rf test perf
+	sed -i "s/boilerplate test perf/boilerplate/g" Makefile.in
+	sed -i "s@test/Makefile test/pdiff/Makefile perf/Makefile perf/micro/Makefile @@" configure
+	sed -i "/\"test\/Makefile/d" configure
+	sed -i "/\"test\/pdiff\/Makefile/d" configure
+	sed -i "/\"perf\/Makefile/d" configure
+	sed -i "/\"perf\/micro\/Makefile/d" configure
 	
 	# Compilation pour i686 :
-	autoreconf -vif
-	CFLAGS="${FLAGS} -Wall" CXXFLAGS="${FLAGS} -Wall" \
-	./configure \
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure BUILD_ANY2PPM=no \
 		--prefix=/usr \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
@@ -32,9 +34,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--disable-lto \
+		--disable-pdf \
 		--enable-tee \
 		--enable-xcb \
+		--disable-full-testing \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -49,12 +52,8 @@ cflags
 # La suite de tests contient une dépendance circulaire GTK+-Cairo, on la supprime :
 sed -i '/noinst_PROGRAMS = cairo-test-suite$(EXEEXT) # always build/d' test/Makefile.am
 
-# On supprime la prise en charge de LTO qui casse la compilation :
-cat $CWD/cairo.lto.patch | patch -p1
-
 # Compilation :
-autoreconf -vif
-CFLAGS="${FLAGS} -Wall" CXXFLAGS="${FLAGS} -Wall" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
