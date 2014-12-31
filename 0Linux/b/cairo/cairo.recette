@@ -34,7 +34,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--disable-pdf \
 		--enable-tee \
 		--enable-xcb \
 		--disable-full-testing \
