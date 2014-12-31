@@ -67,8 +67,8 @@ cflags
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
 	
-	# On NE PASSE PAS en 32 bits, JACK2 prévoit déjà un mode hybride :
-	cflags
+	# On passe en 32 bits, JACK2 prévoit certes un mode hybride mais il ne marche plus :
+	cflags i686
 	
 	# On fait en sorte d epouvoir compiler uniquement la libjack2 avec ces
 	# modifications d'Archlinux :
