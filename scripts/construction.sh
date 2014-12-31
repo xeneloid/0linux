@@ -73,7 +73,9 @@ compiler_installer() {
 		# On désinstalle au préalable ces paquets récalcitrants en attendant mieux.
 		# On désinstalle aussi les pages de manuels car les paquets vérifient si des
 		# doublons existent sur le système et suprrime leurs propres manuels :
-		for paquet_recalcitrant in efl \
+		for paquet_recalcitrant in \
+		aubio \
+		efl \
 		evolution-data-server \
 		gnome-shell \
 		icu4c \
@@ -87,6 +89,8 @@ compiler_installer() {
 		nspr \
 		nss \
 		openexr \
+		qt5 \
+		tdb \
 		samba \
 		talloc; do
 			if [ "$(basename ${1} .recette)" = "${paquet_recalcitrant}" ]; then
