@@ -2,18 +2,15 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.48
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/freeassociation/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/freeassociation/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Implémentation Open Source des protocoles iCalendar de l'IETF"
-########################################"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-./autogen.sh
-libtoolize --force
+# On génère le système de construction :
+autoreconf -vif
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
