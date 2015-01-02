@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.1.18
+VERSION=1.1.19
 WGET=http://www.samba.org/ftp/pub/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'annuaire pour Samba"
 
