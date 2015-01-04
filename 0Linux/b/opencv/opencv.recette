@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4.9
+VERSION=2.4.10
 WGET=https://github.com/Itseez/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Bibliothèques graphiques « Open Source Computer Vision »"
-
+EXTRADEPS="ffmpeg"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -19,6 +19,12 @@ fi
 
 # On corrige le fichier pour 'pkg-config', absolument immonde :
 cat $CWD/pkgconfig.patch | patch -Np1
+
+# On corrige la compilation avec un GCC récent :
+cat $CWD/opencv.gcc47.patch | patch -Np1
+
+# On corrige la compilation avec un libav récent :
+cat $CWD/opencv.libav10.patch | patch -Np1
 
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build
@@ -45,6 +51,7 @@ cmake \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D WITH_GTK=ON \
 	-D WITH_QT=ON \
+	-D WITH_QT_OPENGL=OFF \
 	-D WITH_OPENGL=ON \
 	-D WITH_TBB=OFF \
 	-D WTIH_XINE=OFF \
