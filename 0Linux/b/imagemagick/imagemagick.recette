@@ -10,6 +10,12 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# Onélimine un élément obsolète :
+sed '/AC_PATH_XTRA/d' -i configure.ac
+
+# On régénaire le système de compilation :
+autoreconf -vif
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -21,10 +27,14 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-openmp \
+	--enable-hdri \
+	--enable-opencl \
 	--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 	--with-dejavu-font-dir=/usr/share/fonts/TTF \
+	--with-lcms2 \
 	--with-modules \
 	--with-x \
+	--with-gcc-arch=x86-64 \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
