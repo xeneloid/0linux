@@ -2,11 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=openal-soft
-VERSION=1.15.1
-EXT=tar.bz2
-WGET=http://kcat.strangesoft.net/openal-releases/$NAMESRC-$VERSION.$EXT
+VERSION=1.16.0
+WGET=http://kcat.strangesoft.net/openal-releases/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques audio 3D OpenAL"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
