@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.8
+VERSION=1.8.9.1
 WGET=ftp://ftp.stack.nl/pub/users/dimitri/$NAMESRC-${VERSION}.src.tar.gz
 DESC="Système de documentation pour de nombreux langages"
 
