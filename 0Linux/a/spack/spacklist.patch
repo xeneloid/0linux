@@ -1,14 +1,14 @@
---- spack-3.11.orig/src/spacklist	2014-07-05 16:42:01.041373829 +0000
-+++ spack-3.11/src/spacklist	2014-07-05 16:44:26.337365169 +0000
-@@ -4,6 +4,7 @@
- #
+--- a/src/spacklist	2015-01-04 17:02:54.000000000 +0000
++++ b/src/spacklist	2015-01-10 11:44:09.331719838 +0000
+@@ -5,6 +5,7 @@
  
- # Copyright (c) 2007-2011, 2013 Sébastien Boillod <sbb at tuxfamily dot org>.
-+# Modifié/traduit pour 0Linux en juin 2014 par appzer0 <appzer0@0linux.org>.
+ # Copyright (c) 2007-2011, 2013, 2015 
+ #               Sébastien Boillod <sbb at tuxfamily dot org>.
++# Modifié/traduit pour 0Linux en janvier 2015 par appzer0 <appzer0@0linux.org>.
  #
  # Permission is hereby granted, free of charge, to any person obtaining a copy
  # of this software and associated documentation files (the "Software"), to deal
-@@ -32,7 +33,7 @@
+@@ -33,7 +34,7 @@
          echo "(E) $*" >&2
          exit $code
      fi
@@ -17,7 +17,7 @@
  }
  
  logdisplay () {
-@@ -43,7 +44,7 @@
+@@ -44,7 +45,7 @@
      ls -1 | awk 'BEGIN{EXIT = 1}
                  '"$re"'{ EXIT = 0
                  '$vrb'   while((getline l < $0) > 0) {
@@ -26,14 +26,18 @@
                  '$pr'      print '$vrb'l
                  '$vrb'   }; close($0)
                         }
-@@ -85,40 +86,41 @@
+@@ -86,41 +87,42 @@
      # $f EXIT CODE
      [ $1 -eq 0 ] || exec 1>&2
      cat >&1 << 3NDH3LP
--
+-spacklist - list and give information on the installed packages.
++spacklist - donne des informations sur les paquets installés et leur contenu.
+ 
 -    Without a name, spacklist just lists the content of the packages installed
 -    on your system.
--
++    S'il n'est suivi d'aucun nom de paquet, 'spacklist' affiche les paquets 
++    installés sur le système.
+ 
 -    With one or several names, it returns all the package log files matching
 -    it. A name can be specify as a base name, which will only match the exactly
 -    named package ("gcc" won't match "gcc-g++"), or as an UNIX "glob" pattern,
@@ -41,6 +45,14 @@
 -    "mozilla-firefox" and "mozilla-thunderbird"). The glob patterns can contain
 -    the classic syntax ("*" and "?") plus the character classes (e. g. "[abc]",
 -    "[0-9]").
++    Suivi d'un ou plusieurs noms de paquets, il affiche le contenu des journaux
++    des paquets spécifiés. Un nom de paquet est soit un nom court, sans version
++    ni aucun autre champ, correpondant au nom exact du paquet ('gcc' ne
++    correspondra pas au paquet 'gcc-g++'), soit un motif UNIX contenant
++    tout caractère compatible ("moz*" correspondra à "mozilla-firefox" et à 
++    "mozilla-thunderbird"). Le motif recherché peut contenir les caractères
++    jokers classiques ("*" et "?") plus les classes de caractères comme "[abc]"
++    ou "[0-9]".
      
 -    spacklist will exit with a code 0 if something is found, 1 if an error
 -    occurs and 2 if nothing matched.
@@ -48,9 +60,7 @@
 -    Usage: spacklist [NAMES] [-h|-p|-q|-v|-V].
 -
 -    Options:
-+    S'il n'est suivi d'aucun nom de paquet, 'spacklist' affiche les paquets 
-+    installés sur le système.
- 
+-
 -        --directory=<dir>   ---     use <dir> instead of the usual directory.
 -        -h, --help          ---     print this help on the standard output.
 -        -p, --post-install  ---     look for the post-install scripts instead
@@ -66,15 +76,6 @@
 -
 -    Bug reports, suggestions, feedbacks, questions, and so on are welcome here
 -    (the license is at the head of the script): <sbb at tuxfamily dot org>.
-+    Suivi d'un ou plusieurs noms de paquets, il affiche le contenu des journaux
-+    des paquets spécifiés. Un nom de paquet est soit un nom court, sans version
-+    ni aucun autre champ, correpondant au nom exact du paquet ('gcc' ne
-+    correspondra pas au paquet 'gcc-g++'), soit un motif UNIX contenant
-+    tout caractère compatible ("moz*" correspondra à "mozilla-firefox" et à 
-+    "mozilla-thunderbird"). Le motif recherché peut contenir les caractères
-+    jokers classiques ("*" et "?") plus les classes de caractères comme "[abc]"
-+    ou "[0-9]".
-+    
 +    'spacklist' retourne un code 0 si un journal de paquet est trouvé, 
 +    retourne 1 si une erreur survient et retourne 2 si aucun journal ne
 +    correspond aux paquets demandés.

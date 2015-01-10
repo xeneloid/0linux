@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.12
+VERSION=3.13
 WGET=http://requiescant.tuxfamily.org/files/$NAMESRC-$VERSION.tar.gz
 DESC="Suite d'outils et gestionnaire de paquets"
 
@@ -13,8 +13,7 @@ cflags
 
 # On applique les traductions françaises à 'spackadd', 'spackpkg', 'spackdesc'
 # et 'spacklist' :
-cat $CWD/spackadd1.patch | patch -p1
-cat $CWD/spackadd2.patch | patch -p1
+cat $CWD/spackadd.patch | patch -p1
 cat $CWD/spackpkg.patch | patch -p1
 cat $CWD/spackdesc.patch | patch -p1
 cat $CWD/spacklist.patch | patch -p1
