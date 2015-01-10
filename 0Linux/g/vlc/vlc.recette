@@ -9,14 +9,20 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige le répertoire standard des bibliothèques :
-sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
-
 # On corrige les polices par défaut :
 cat $CWD/vlc.polices.patch | patch -p1
 
 # On corrige la prise en charge de RDP :
 cat $CWD/vlc.rdp.patch | patch -p1
+
+# Pas de problème avec ffmpeg 2.4 contrèrement à ce que croit le ./configure :
+cat $CWD/vlc.ffmpeg24.patch | patch -p1
+
+# Régénération du script configure :
+autoreconf -vif
+
+# On corrige le répertoire standard des bibliothèques :
+sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
 
 # Compilation en forçant les chemins de Samba :
 LDFLAGS+="-I/usr/include/samba-4.0" \
