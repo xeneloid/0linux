@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.6.1
+VERSION=0.7.0
 WGET=http://download.enlightenment.org/rel/apps/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Émulateur de terminal basé sur les EFL"
 
