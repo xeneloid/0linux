@@ -2,18 +2,19 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.2.1
-EXT=tar.gz
-WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de réprésentation RDF pour Python"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation pour Python 2 :
+# Compilation pour Python 2 et 3 :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-fakeroot python setup.py install  --optimize=1 --root=${PKG}
+fakeroot python2 setup.py install --optimize=1 --root=${PKG}
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot python3 setup.py install --optimize=1 --root=${PKG}
 
 installer_doc
 creer_post_installation
