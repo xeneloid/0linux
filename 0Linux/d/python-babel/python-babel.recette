@@ -3,18 +3,19 @@
 
 NAMESRC=Babel
 VERSION=0.9.6
-EXT=tar.gz
-WGET=http://ftp.edgewall.com/pub/babel/$NAMESRC-$VERSION.$EXT
+WGET=http://ftp.edgewall.com/pub/babel/$NAMESRC-$VERSION.tar.gz
 DESC="Outils d'internationalisation pour Python"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation :
+# Compilation pour Python 2 et 3 :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-fakeroot python setup.py install  --optimize=1 --root=${PKG}
+fakeroot python2 setup.py install --optimize=1 --root=${PKG}
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+fakeroot python3 setup.py install --optimize=1 --root=${PKG}
 
 installer_doc
 creer_post_installation

@@ -34,7 +34,7 @@ STATIC_CC=${CC} \
 DYNAMIC_CC="${CC} -fPIC" \
 TARGET_AR="ar rcus" \
 TARGET_LD=${CC} \
-fakeroot make install PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} DESTDIR=${PKG}
+fakeroot make install PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} INSTALL_MAN=${PKG}/usr/man/man1 DESTDIR=${PKG}
 
 rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/*.a
 
