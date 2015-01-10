@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.4
+VERSION=1.4.5
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/gst-ffmpeg/gst-ffmpeg-0.10.13.tar.gz
       http://gstreamer.freedesktop.org/src/gst-libav/$NAMESRC-$VERSION.$EXT
