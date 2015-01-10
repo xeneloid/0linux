@@ -19,7 +19,8 @@ make -j${JOBS} linux \
 	INSTALL_TOP=${PKG}/usr \
 	INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX} \
 	INSTALL_LMOD=${PKG}/usr/share/lua/$(echo $VERSION | cut -d'.' -f1-2) \
-	INSTALL_CMOD=${PKG}/usr/lib${LIBDIRSUFFIX}/lua/$(echo $VERSION | cut -d'.' -f1-2)
+	INSTALL_CMOD=${PKG}/usr/lib${LIBDIRSUFFIX}/lua/$(echo $VERSION | cut -d'.' -f1-2) \
+	TO_LIB='liblua.a liblua.so liblua.so.5.2 liblua.so.5.2.3'
 
 # Installation :
 fakeroot make linux install \
@@ -27,28 +28,29 @@ fakeroot make linux install \
 	INSTALL_TOP=${PKG}/usr \
 	INSTALL_LIB=${PKG}/usr/lib${LIBDIRSUFFIX} \
 	INSTALL_LMOD=${PKG}/usr/share/lua/$(echo $VERSION | cut -d'.' -f1-2) \
-	INSTALL_CMOD=${PKG}/usr/lib${LIBDIRSUFFIX}/lua/$(echo $VERSION | cut -d'.' -f1-2)
+	INSTALL_CMOD=${PKG}/usr/lib${LIBDIRSUFFIX}/lua/$(echo $VERSION | cut -d'.' -f1-2) \
+	TO_LIB='liblua.a liblua.so liblua.so.5.2 liblua.so.5.2.3'
 
 # On installe le fichier .pc pour 'pkg-config' :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/lua.pc << EOF
 prefix=/usr
-INSTALL_BIN=${prefix}/bin
-INSTALL_INC=${prefix}/include
-INSTALL_LIB=${prefix}/lib
-INSTALL_MAN=${prefix}/man/man1
-INSTALL_LMOD=${prefix}/share/lua/$(echo $VERSION | cut -d'.' -f1-2)
-INSTALL_CMOD=${prefix}/lib/lua/$(echo $VERSION | cut -d'.' -f1-2)
-exec_prefix=${prefix}
-libdir=${exec_prefix}/lib
-includedir=${prefix}/include
+INSTALL_BIN=\${prefix}/bin
+INSTALL_INC=\${prefix}/include
+INSTALL_LIB=\${prefix}/lib
+INSTALL_MAN=\${prefix}/man/man1
+INSTALL_LMOD=\${prefix}/share/lua/$(echo $VERSION | cut -d'.' -f1-2)
+INSTALL_CMOD=\${prefix}/lib/lua/$(echo $VERSION | cut -d'.' -f1-2)
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
 
 Name: Lua
 Description: An Extensible Extension Language
 Version: $VERSION
 Requires: 
-Libs: -L${libdir} -llua -lm
-Cflags: -I${includedir}
+Libs: -L\${libdir} -llua -lm
+Cflags: -I\${includedir}
 
 EOF
 
