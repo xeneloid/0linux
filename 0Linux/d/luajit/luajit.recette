@@ -38,6 +38,9 @@ fakeroot make install PREFIX=/usr MULTILIB=lib${LIBDIRSUFFIX} INSTALL_MAN=${PKG}
 
 rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/*.a
 
+# Il manque un lien symbolique :
+ln -s libluajit-5.1.so.2 $PKG/usr/lib$LIBDIRSUFFIX/libluajit-5.1.so
+
 installer_doc
 creer_post_installation
 stripper
