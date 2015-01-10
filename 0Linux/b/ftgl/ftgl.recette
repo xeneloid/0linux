@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.1.3_rc5
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').tar.bz2
 DESC="Bibliothèques de rendu 3D sur polices de caractères"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -14,9 +12,13 @@ cflags
 # On corrige une erreur de typo :
 cat $CWD/ftgl.typo.patch | patch -p1
 
+# On ne génère pas de doc en PDF, ça casse tout :
+cat $CWD/ftgl.nopdf.patch | patch -p0
+
 # Compilation :
+autoreconf -vif
 LDFLAGS="-lm -lGLU -lGL" \
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" ECHO="echo" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -26,6 +28,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
+
+# Le makefile contient des bétises :
+sed -i -e "s/ECHO_C =/ECHO = echo/" Makefile
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
