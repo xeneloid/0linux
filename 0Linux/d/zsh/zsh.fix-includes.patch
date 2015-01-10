@@ -1,0 +1,31 @@
+From 22fdc8c0bf640557ae06dd609fd3ca0a65176947 Mon Sep 17 00:00:00 2001
+From: Bernd Steinhauser <berniyh@xxxxxxxxxxx>
+Date: Sun, 12 Jan 2014 12:00:22 +0100
+Subject: [PATCH] Move includes to fix compilation failure.
+
+---
+ Src/Modules/attr.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Src/Modules/attr.c b/Src/Modules/attr.c
+index 6e08b10..b57874e 100644
+--- a/Src/Modules/attr.c
++++ b/Src/Modules/attr.c
+@@ -27,12 +27,13 @@
+  *
+  */
+ 
+-#include "attr.mdh"
+-#include "attr.pro"
+ 
+ #include <sys/types.h>
+ #include <sys/xattr.h>
+ 
++#include "attr.mdh"
++#include "attr.pro"
++
+ static ssize_t
+ xgetxattr(const char *path, const char *name, void *value, size_t size, int symlink)
+ {
+-- 
+1.8.5.2

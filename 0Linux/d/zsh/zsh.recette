@@ -2,14 +2,15 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=5.0.5
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
-DESC="Le Z Shell : un shell évolué alternatif"
-
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+DESC="Le Z Shell : un interpréteur de commandes (« shell ») évolué alternatif"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige la compilation (un bogue de la glibc à priori) :
+cat $CWD/zsh.fix-includes.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
