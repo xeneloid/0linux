@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=4.0.18
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+DESC="Suite d'outils dédiée à la gestion de disques MS-DOS"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+configure_make_makeinstall
+
+# On place la configuration en prenant garde à ne rien écraser :
+mkdir -p ${PKG}/etc
+cp mtools.conf ${PKG}/etc/mtool.conf.0nouveau
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

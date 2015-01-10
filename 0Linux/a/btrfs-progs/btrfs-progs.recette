@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=44cdb62d34
+WGET=git://git.kernel.org/pub/scm/linux/kernel/git/kdave/$NAMESRC.git
+DESC="Outils pour systèmes de fichiers Btrfs"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} || make
+
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+make -j${JOBS} btrfs-select-super || make btrfs-select-super
+
+fakeroot make install prefix=${PKG}/usr
+
+# On ajoute ce binaire :
+cp btrfs-select-super ${PKG}/usr/bin/
+chmod 755 ${PKG}/usr/bin/btrfs-select-super
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
