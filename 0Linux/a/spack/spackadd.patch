@@ -1,5 +1,5 @@
 --- a/src/spackadd	2015-01-04 17:02:54.000000000 +0000
-+++ b/src/spackadd	2015-01-10 11:28:47.462774786 +0000
++++ b/src/spackadd	2015-01-10 11:39:00.120738268 +0000
 @@ -30,7 +30,7 @@
      local buffer="$1"; shift 1
      awk '{E=1}/^[0-9]+/{E=0}{exit E}' "$buffer" && return 0 # we should only have size here..
@@ -31,6 +31,15 @@
          return 2
      fi
      return 0
+@@ -81,7 +81,7 @@
+     awk -v CATS="$cats" -v DIRS="$dirs" -v FILES="$files" \
+         '(FNR == 1){if(NR>1)DELFILE=ARGV[1];STORE = 0}
+          (FILENAME == DELFILE){next}
+-         (STORE < 1){if ($0 ~ /^FILE LIST:/) STORE = length(DELFILE) > 0? 1 : 2; next }
++         (STORE < 1){if ($0 ~ /^FILE LIST:|^LISTE DES FICHIERS :/) STORE = length(DELFILE) > 0? 1 : 2; next }
+          (STORE < 2){delete DEL[$0]; next}
+          {DEL[$0]}
+          END{ for(i in DEL){ if (i ~ /\/$/){print i>DIRS;continue}
 @@ -98,7 +98,7 @@
      awk '{print; print >"/dev/stderr"}' 2>"$TMPDIR/files" | while read f; do
          f="$ROOT/$f"
@@ -49,6 +58,39 @@
      fi
      return 0
  }
+@@ -120,7 +120,7 @@
+     # Print the link list attached to the package, storing the others.
+     # $f PACKAGE, KEPT LINK LIST, SCRIPTS
+     local log="$POSTDIR/$1" kept="$2" post="$TMPDIR/post-install.sh"; shift 2
+-    echo "FILE LIST:" >"$kept"
++    echo "LISTE DES FICHIERS :" >"$kept"
+     if [ "$1" = "$POSTDIR/*" ]; then
+         shift 1 # no more script left...
+         [ -s "$post" ] || return 1 # nothing to save...
+@@ -150,17 +150,17 @@
+         exec 4>"$LOGDIR/$name"
+     fi
+     ( cd "$TMPDIR"
+-        echo "PACKAGE NAME: $name" >&4
++        echo "NOM DU PAQUET : $name" >&4
+         awk -v POST="$(du -k ./post-install.sh 2>/dev/null)" -v PRE="$(du -k ./pre-install.sh)" \
+             '(NR==1){ZSIZE=$1;}(NR==2){SIZE=$1}
+              END{RSIZE = 60 * (NR-2) / 512 # empty directory = 60bits
+                 sub(/[^0-9]*$/,"",POST); sub(/[^0-9]*$/,"",PRE)
+-                print "COMPRESSED SIZE: " int(ZSIZE/2) "K"
+-                print "UNCOMPRESSED SIZE: " int((SIZE+RSIZE)/2-PRE+POST) "K"}' ./zsize ./size ./dirs >&4
+-        echo "PACKAGE LOCATION: $path" >&4
+-        echo "PACKAGE DESCRIPTION:" >&4
++                print "TAILLE COMPRESSÉE : " int(ZSIZE/2) " Kio"
++                print "TAILLE DÉCOMPRESSÉE : " int((SIZE+RSIZE)/2-PRE+POST) " Kio"}' ./zsize ./size ./dirs >&4
++        echo "EMPLACEMENT DU PAQUET : $path" >&4
++        echo "DESCRIPTION DU PAQUET :" >&4
+         [ -r ./about.txt ] && awk '(L > 10){exit}/^'"$short"':/{L++;print;next}(L>0){exit}' ./about.txt >&4
+-        echo "FILE LIST:" >&4
++        echo "LISTE DES FICHIERS :" >&4
+         echo "./" >&4 # meet the Slackware spec.
+         sort ./dirs ./files >&4 ) 
+     exec 4>&- 
 @@ -170,7 +170,7 @@
      # Initialize the required paths.
      # $f 
@@ -96,7 +138,7 @@
          return 1
      fi
      return 0
-@@ -241,38 +241,38 @@
+@@ -241,41 +241,41 @@
      local dry=$1 up=$2  stamp=""; shift 2
      while [ $# -gt 0 ]; do
          echo "================================================================================" >&3
@@ -137,13 +179,17 @@
 -                echo "  delete  (directory)  $dir" >&3
 -                [ $dry -gt 0 ] || rmdir "$ROOT/$dir" 2>/dev/null || growl 0 "\"$dir\" is not empty. Won't be deleted..."
 +                echo "  Suppression du répertoire $dir" >&3
-++                [ $dry -gt 0 ] || rmdir "$ROOT/$dir" 2>/dev/null || growl 0 "$ROOT/$dir" 2>/dev/null || growl 0 "\"$dir\" n'est pas vide. Ignoré..."
++                [ $dry -gt 0 ] || rmdir "$ROOT/$dir" 2>/dev/null || growl 0 "$ROOT/$dir" 2>/dev/null || growl 0 "\"$dir\" n'est pas vide. Ignoré..."
              else
 -                growl 0 "Can't delete \"$dir\" (missing or not a directory)."
 +                growl 0 "Impossible de supprimer le répertoire manquant \"$dir\"."
              fi
          done
-         [ $up -eq 0 ] || stamp=$(date "+-upgraded-%Y-%m-%d,%T")
+-        [ $up -eq 0 ] || stamp=$(date "+-upgraded-%Y-%m-%d,%T")
++        [ $up -eq 0 ] || stamp=$(date "+-misajour-le-%d-%m-%Y-a-%T")
+         [ $dry -gt 0 ] || mv -f "$LOGDIR/$1" "$RMLOGDIR/$1$stamp"
+         [ $dry -gt 0 -o ! -f "$POSTDIR/$1" ] || mv -f "$POSTDIR/$1" "$RMPOSTDIR/$1$stamp"
+         shift 1
 @@ -288,7 +288,7 @@
      local dry=$1 name="$(basename "$2" .spack)" post="$TMPDIR/post-install.sh"
      [ -O ./sbin/ldconfig -a -x ./sbin/ldconfig ] && ./sbin/ldconfig  -r "." # use the $ROOT's ldconfig.
@@ -183,7 +229,7 @@
 -@ADDBy default, spackadd tries first to upgrade your installation with the given
 -@ADDpackages then, if no other installed versions of these are found, it perform
 -@ADDan installation.
-+@ADD    « nom-version-architecture-décomptedesempaquetages »
++@ADD    « nom-version-architecture-révision »
 +@ADD
 +@ADDet porter l'extension « .spack ».
 +@ADD'spackadd' tente d'abord de mettre à niveau l'installation des paquets
@@ -202,7 +248,7 @@
 -@RM or simply under their base names, "name". All of the packages matching a
 -@RM request are deleted.
 +@RM 'spackrm' supprime le ou les paquets spécifiés. On peut les spécifier avec
-+@RM leur nom canonique : "nom-version-architecture-empaquetage",
++@RM leur nom canonique : "nom-version-architecture-révision",
 +@RM ou leur simple nom de base, "nom".
 +@RM Tous les paquets correspondants à la requête sont supprimés.
  @RM

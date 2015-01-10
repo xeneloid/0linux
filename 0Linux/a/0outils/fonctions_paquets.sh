@@ -282,8 +282,10 @@ preparer_sources() {
 			NAME="${CURRENTARCHIVE}"
 			mkdir -p ${TMP}/${CURRENTARCHIVE}
 			cd ${TMP}/${CURRENTARCHIVE}
-			ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.lzma | lzma -d | tar x || \
-				ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.xz | xz -d | tar x
+			ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.gz | gzip -d | tar x || \
+				ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.bz2 | bzip2 -d | tar x || \
+					ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.lzma | lzma -d | tar x || \
+						ar p ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} data.tar.xz | xz -d | tar x
 			cd -
 		;;
 		*.rpm|*.RPM)
