@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=VirtualBox
-VERSION=4.3.18
+VERSION=4.3.20
 EXT=tar.bz2
 WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
       http://download.virtualbox.org/virtualbox/$VERSION/VBoxGuestAdditions_${VERSION}.iso
