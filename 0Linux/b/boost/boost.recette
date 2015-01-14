@@ -9,6 +9,10 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On ajoute un entête manquant :
+sed -i '/#include <boost\/shared_ptr.hpp>/ a\
+#include <boost/weak_ptr.hpp>' boost/signals2/trackable.hpp
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./bootstrap.sh \
