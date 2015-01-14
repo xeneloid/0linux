@@ -37,27 +37,33 @@ cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/lua.pc << EOF
 prefix=/usr
 INSTALL_BIN=\${prefix}/bin
 INSTALL_INC=\${prefix}/include
-INSTALL_LIB=\${prefix}/lib
+INSTALL_LIB=\${prefix}/lib${LIBDIRSUFFIX}
 INSTALL_MAN=\${prefix}/man/man1
-INSTALL_LMOD=\${prefix}/share/lua/$(echo $VERSION | cut -d'.' -f1-2)
-INSTALL_CMOD=\${prefix}/lib/lua/$(echo $VERSION | cut -d'.' -f1-2)
+INSTALL_LMOD=\${prefix}/share/lua/$(echo ${VERSION} | cut -d'.' -f1-2)
+INSTALL_CMOD=\${prefix}/lib${LIBDIRSUFFIX}/lua/$(echo ${VERSION} | cut -d'.' -f1-2)
 exec_prefix=\${prefix}
-libdir=\${exec_prefix}/lib
+libdir=\${exec_prefix}/lib${LIBDIRSUFFIX}
 includedir=\${prefix}/include
 
 Name: Lua
 Description: An Extensible Extension Language
-Version: $VERSION
+Version: ${VERSION}
 Requires: 
 Libs: -L\${libdir} -llua -lm
 Cflags: -I\${includedir}
 
 EOF
 
+# On corrige en créant les liens vers la bibliothèque :
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/liblua.so
+rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/liblua.so.$(echo ${VERSION} | cut -d'.' -f1-2)
+ln -sf liblua.so.${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/liblua.so.$(echo ${VERSION} | cut -d'.' -f1-2)
+ln -sf liblua.so.$(echo ${VERSION} | cut -d'.' -f1-2) ${PKG}/usr/lib${LIBDIRSUFFIX}/liblua.so
+
 installer_doc
 
 # On complète la documentation :
-cp -a doc/*.html doc/logo.gif doc/lua.css ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+cp -a doc/*.{gif,png,css,html} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
 creer_post_installation
 stripper
