@@ -27,10 +27,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--prefix=/usr \
 		--libdir=lib${LIBDIRSUFFIX} \
 		--openssldir=/etc/ssl \
-		linux-elf \
-		shared \
-		zlib \
-		-Wa,--noexecstack "${FLAGS}" "${LDFLAGS}"
+		"linux-elf" \
+		"-Wa,--noexecstack ${FLAGS} ${LDFLAGS}"
 	
 	make MAKEDEPPROG="${CC}" depend
 	make ${JOBS} || make
