@@ -82,6 +82,7 @@ compiler_installer() {
 		ilmbase \
 		jack \
 		libvpx \
+		lilv \
 		lvm2 \
 		man-pages \
 		man-pages-fr \
