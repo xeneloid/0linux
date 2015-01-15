@@ -19,6 +19,11 @@ fakeroot python setup.py install --optimize=1 --prefix=${PKG}/usr
 cp -a numpy/core/include/numpy/arrayobject.h \
 	$PKG/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages/numpy/core/include/numpy
 
+# Lien symbolique de compatibilité :
+mkdir -p $PKG/usr/include/python2.7
+ln -sf /usr/lib${LIBDIRSUFFIX}/python2.7/site-packages/numpy/core/include/numpy \
+	$PKG/usr/include/python2.7/numpy
+
 installer_doc
 creer_post_installation
 stripper
