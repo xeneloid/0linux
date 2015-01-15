@@ -22,9 +22,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./waf build -j${JOBS}
 fakeroot ./waf install --destdir=${PKG}
 
-# On corrige le fichier pour 'pkg-config' :
-#sed -i "s,/lib,/lib$LIBDIRSUFFIX," ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/${NAMESRC}.pc
-
 # On crée un fichier d'environnement pour LV2_PATH :
 cat > ${PKG}/etc/profile.d/${NAMESRC}.sh << EOF
 #!/usr/bin/env bash
