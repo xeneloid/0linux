@@ -59,10 +59,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--prefix=/usr \
 	--libdir=lib${LIBDIRSUFFIX} \
 	--openssldir=/etc/ssl \
-	${TARGETOPT} \
-	shared \
-	zlib \
-	-Wa,--noexecstack "${FLAGS}" "${LDFLAGS}"
+	"${TARGETOPT}" \
+	"-Wa,--noexecstack ${FLAGS} ${LDFLAGS}"
 
 make depend
 make ${JOBS} || make
