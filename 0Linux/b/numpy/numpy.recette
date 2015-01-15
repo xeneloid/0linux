@@ -15,6 +15,10 @@ python setup.py build
 
 fakeroot python setup.py install --optimize=1 --prefix=${PKG}/usr
 
+# Installe un include manquant :
+cp -a numpy/core/include/numpy/arrayobject.h \
+	$PKG/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages/numpy/core/include/numpy
+
 installer_doc
 creer_post_installation
 stripper
