@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.3.3
-EXT=tar.bz2
-WGET=ftp://ftp.netroedge.com/pub/lm-sensors/$NAMESRC-$VERSION.$EXT
+VERSION=3.3.5
+WGET=http://dl.lm-sensors.org/lm-sensors/releases/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils et bibliothèques pour capteurs matériels"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
