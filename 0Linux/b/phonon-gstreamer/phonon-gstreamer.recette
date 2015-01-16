@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.7.2
+VERSION=4.8.2
 WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/phonon-backend-gstreamer/$VERSION/src/phonon-backend-gstreamer-$VERSION.tar.xz
 DESC="Intefaçage GStreamer pour Phonon"
 
- 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
@@ -20,7 +19,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
 	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
-	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D CMAKE_INSTALL_LIBDIR=lib64 \
 	..
 
 make -j${JOBS} || make
