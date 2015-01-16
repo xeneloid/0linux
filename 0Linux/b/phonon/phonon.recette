@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.7.2
-WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/$VERSION/$NAMESRC-$VERSION.tar.xz
+VERSION=4.8.3
+WGET=ftp://ftp.kde.org/pub/kde/stable/phonon/$VERSION/src/$NAMESRC-$VERSION.tar.xz
 DESC="Couche d'abstraction et bibliothèques multimédia pour Qt"
  
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige les chemins d'installation :
-sed -i 's@add_definitions(-DPHONON_LIBRARY_PATH="${PLUGIN_INSTALL_DIR}/plugins")@add_definitions(-DPHONON_LIBRARY_PATH="${CMAKE_INSTALL_PREFIX}/${PLUGIN_INSTALL_DIR}/plugins")@' \
-	phonon/CMakeLists.txt
 
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build
@@ -22,12 +18,13 @@ QT_VISIBILITY_AVAILABLE=1 \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_INSTALL_LIBDIR=lib64 \
 	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
 	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
-	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D MAN_INSTALL_DIR=/usr/man \
 	-D PHONON_INSTALL_QT_EXTENSIONS_INTO_SYSTEM_QT=ON \
 	-D PHONON_BUILD_DESIGNER_PLUGIN=OFF \
+	-D PHONON_BUILD_EXPERIMENTAL=ON \
+	-D PHONON_INSTALL_QT_COMPAT_HEADER=ON \
 	..
 
 make -j${JOBS} || make
