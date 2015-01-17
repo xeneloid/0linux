@@ -277,7 +277,7 @@ preparer_sources() {
 			fi
 		;;
 		*.deb|*.DEB)
-			echo "Extraction de la sous-archive 'data.tar.lzma'/'data.tar.xz' venant de l'archive Debian dans :"
+			echo "Extraction de la sous-archive 'data.tar.*' venant de l'archive Debian dans :"
 			echo "	${TMP}/${CURRENTARCHIVE}/"
 			NAME="${CURRENTARCHIVE}"
 			mkdir -p ${TMP}/${CURRENTARCHIVE}
