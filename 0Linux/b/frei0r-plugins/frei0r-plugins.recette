@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.4
-WGET=https://0linux.geoffray-levasseur.org/$NAMESRC-$VERSION.tar.gz
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques et greffons d'effets vidéo"
 
 telecharger_sources
@@ -11,7 +11,6 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-LDFLAGS="-L/usr/lib${LIBDIRSUFFIX}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
