@@ -90,6 +90,7 @@ compiler_installer() {
 		nspr \
 		nss \
 		openexr \
+		podofo \
 		qt5 \
 		tdb \
 		samba \
