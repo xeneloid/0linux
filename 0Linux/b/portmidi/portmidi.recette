@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=200
-EXT=tar.xz
-WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
+VERSION=217
+WGET=http://prdownloads.sourceforge.net/portmedia/$NAMESRC-src-$VERSION.zip
 DESC="Bibliothèques pour entrées/sorties MIDI"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -16,8 +14,9 @@ mkdir -p ${PKG}/usr/share/applications
 mkdir -p ${PKG}/usr/share/icons/hicolor/128x128/apps
 mkdir -p ${PKG}/usr/include
 
-# On corrige ce capharnaüm avec ce correctif de Gentoo :
+# On corrige ce capharnaüm avec ces correctifs de Gentoo :
 cat $CWD/portmidi-200-Makefile.patch | patch -p1
+cat $CWD/portmidi-python.patch | patch -p1
 
 # On passe LIBDIRSUFFFIX aux références à Java :
 sed -i "#set(JAVAVM_LIB .*$#JAVAVM_LIB /usr/lib${LIBDIRSUFFIX}/libjvm.so#" pm_common/CMakeLists.txt
@@ -27,6 +26,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake . \
 	-DCMAKE_C_FLAGS="${FLAGS}" \
 	-DCMAKE_CXX_FLAGS="${FLAGS}" \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_CACHEFILE_DIR=${PKG} \
 	-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY="${PKG}/usr/lib$LIBDIRSUFFIX" \
@@ -38,17 +38,14 @@ cmake . \
 	-DJAVA_INCLUDE_PATH2="/usr/lib$LIBDIRSUFFIX/jdk/include/linux" \
 	-DJAVA_JVM_LIBRARY="/usr/lib$LIBDIRSUFFIX/libjvm.so"
 
-# On corrige les occurrences de '/usr/local' codées en dur :
-find . \( -name cmake_install.cmake -o -name CMakeLists.txt -o -name Makefile \) -exec sed -i 's%/local%%g' '{}' \;
-
-make -j${JOBS} all PMFLAGS="-DNEWBUFFER"
+make -j${JOBS} all PMFLAGS="-DNEWBUFFER" || make all PMFLAGS="-DNEWBUFFER"
 fakeroot make install DESTDIR=${PKG}
 
 # On renomme ce binaire au nom beaucoup trop générique :
 mv ${PKG}/usr/bin/{,portmidi}test
 
-# On installe les entêtes  :
-cp -a pm_common/{portmidi,pmutil}.h ${PKG}/usr/include
+# On installe un entête manquant  :
+cp -a pm_common/pmutil.h ${PKG}/usr/include
 
 # on crée le raccourci pour 'pmdefaults' :
 cat > ${PKG}/usr/share/applications/pmdefaults.desktop << "EOF"
