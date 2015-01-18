@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=8.6.3
-WGET=http://downloads.sourceforge.net/tcl/${NAMESRC}${VERSION}-src.tar.gz
+WGET=http://prdownloads.sourceforge.net/tcl/${NAMESRC}${VERSION}-src.tar.gz
 DESC="Bibliothèques pour interfaces graphiques"
 
 telecharger_sources
@@ -29,6 +29,9 @@ sed -i "s@/lib/@/lib${LIBDIRSUFFIX}/@" Makefile
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 fakeroot make install-private-headers DESTDIR=${PKG}
+
+# On crée un lien symbolique générique pour 'wish' :
+ln -sf wish$(echo $VERSION | cut -d'.' -f1-2) ${PKG}/usr/bin/wish
 
 installer_doc
 creer_post_installation
