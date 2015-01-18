@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.1l
+VERSION=1.0.1k
 WGET=http://www.openssl.org/source/$NAMESRC-$VERSION.tar.gz
 DESC="Protocoles et algorithmes OpenSSL"
 
@@ -42,7 +42,8 @@ cflags
 
 # La code généré change selon l'architecture visée :
 if [ "${PKGARCH}" = "x86_64" ]; then
-	TARGETOPT="linux-x86_64 enable-ec_nistp_64_gcc_128"
+	TARGETOPT="linux-x86_64"
+	EXTRAOPT="enable-ec_nistp_64_gcc_128"
 else
 	TARGETOPT="linux-elf"
 fi
@@ -59,7 +60,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--prefix=/usr \
 	--libdir=lib${LIBDIRSUFFIX} \
 	--openssldir=/etc/ssl \
-	"${TARGETOPT}" \
+	"${TARGETOPT}" "${EXTRAOPT}" \
 	"-Wa,--noexecstack ${FLAGS} ${LDFLAGS}"
 
 make depend
