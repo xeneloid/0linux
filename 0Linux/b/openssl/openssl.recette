@@ -21,6 +21,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On corrige l'emplacement des certificats :
 	sed -i 's@\./demoCA@/etc/ssl@g' apps/{CA.pl.in,CA.sh,openssl.cnf}
 	
+	# On corrige la parallélisation :
+	cat $CWD/openssl.parallel.patch | patch -p1
+	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./Configure \
@@ -28,10 +31,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--libdir=lib${LIBDIRSUFFIX} \
 		--openssldir=/etc/ssl \
 		"linux-elf" \
+		shared \
+		zlib-dynamic \
 		"-Wa,--noexecstack ${FLAGS} ${LDFLAGS}"
 	
 	make MAKEDEPPROG="${CC}" depend
-	make ${JOBS} || make
+	make -j${JOBS} || make
 	fakeroot make install PERL=/usr/bin/perl MANDIR=/usr/man INSTALL_PREFIX=${PKG}
 fi
 
@@ -54,17 +59,22 @@ sed -i 's@CC=\$\${CC:-\$(CC)}@CC="\$\${CC:-\$(CC)}"@' Makefile.org
 # On corrige l'emplacement des certificats :
 sed -i 's@\./demoCA@/etc/ssl@g' apps/{CA.pl.in,CA.sh,openssl.cnf}
 
+# On corrige la parallélisation :
+cat $CWD/openssl.parallel.patch | patch -p1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./Configure \
 	--prefix=/usr \
 	--libdir=lib${LIBDIRSUFFIX} \
 	--openssldir=/etc/ssl \
+	shared \
+	zlib-dynamic \
 	"${TARGETOPT}" "${EXTRAOPT}" \
 	"-Wa,--noexecstack ${FLAGS} ${LDFLAGS}"
 
 make depend
-make ${JOBS} || make
+make -j${JOBS} || make
 fakeroot make install PERL=/usr/bin/perl MANDIR=/usr/man INSTALL_PREFIX=${PKG}
 
 # On veille à ne pas écraser la configuration en place :
