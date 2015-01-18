@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=rel
 VERSION=3.0.6
-WGET=https://github.com/luceneplusplus/LucenePlusPlus/archive/${NAMESRC}_${VERSION}.tar.gz
+WGET=https://github.com/luceneplusplus/LucenePlusPlus/archive/rel_${VERSION}.tar.gz
 DESC="Port C++ des bibliothèques Java Lucene"
 
 telecharger_sources
