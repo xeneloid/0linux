@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.3
+VERSION=1.1.0
 WGET=http://git.kolab.org/libkolabxml/snapshot/libkolabxml-$VERSION.tar.gz
 DESC="Bibliothèque pour la messagerie collaborative Kolab"
 
