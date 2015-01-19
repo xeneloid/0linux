@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.26
-EXT=tar.gz
-WGET=http://www.jwz.org/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=5.32
+WGET=http://www.jwz.org/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Écrans de veille pour X"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
