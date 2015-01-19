@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.1.7
-EXT=tar.bz2
-WGET=https://bitbucket.org/france/transcode-tcforge/downloads/$NAMESRC-$VERSION.$EXT
+WGET=https://bitbucket.org/france/transcode-tcforge/downloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils de codage-décodage de formats multimédia"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -20,6 +18,7 @@ cat $CWD/transcode.preset-free.patch | patch -p1
 cat $CWD/transcode.libav-9.patch | patch -p0
 cat $CWD/transcode.preset-force.patch | patch -p1
 cat $CWD/transcode.ffmpeg2.patch | patch -p1
+cat $CWD/transcode.ffmpeg2.4.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
