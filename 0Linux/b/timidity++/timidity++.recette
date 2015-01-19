@@ -2,14 +2,11 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=TiMidity++
-VERSION=2.13.2
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/timidity/$NAMESRC-$VERSION.$EXT
+VERSION=2.14.0
+WGET=http://prdownloads.sourceforge.net/timidity/$NAMESRC-$VERSION.tar.bz2
 DESC="Synthétiseur MIDI"
 
-
 telecharger_sources
-
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
@@ -17,12 +14,8 @@ cflags
 sed -i "s|/\* #define CONFIG_FILE \"/etc/timidity.cfg\" \*/|#define CONFIG_FILE \"/etc/timidity.cfg\"|" timidity/timidity.h
 
 # On corrige d'importants problèmes avec ces correctifs de Debian :
-cat $CWD/timidity++.autoconf.patch | patch -p1
-cat $CWD/timidity++.manpages.patch | patch -p1
-cat $CWD/timidity++.other.patch | patch -p1
-cat $CWD/timidity++.scripts.patch | patch -p1
-
-autoreconf -if
+cat $CWD/timidity++.tk.patch | patch -p1
+cat $CWD/timidity++.jack.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -33,7 +26,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-module-dir=/usr/lib${LIBDIRSUFFIX}/${NAMETGZ} \
 	--enable-alsaseq \
 	--enable-audio=alsa,flac,jack,oss,speex,vorbis \
