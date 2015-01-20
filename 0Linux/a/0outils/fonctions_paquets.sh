@@ -649,10 +649,12 @@ EOF
 }
 
 stripper() {
-	# On "strippe" tout ce qu'on trouve :
-	find ${PKG} -type f | xargs file 2>/dev/null | grep "LSB executable"     | cut -f 1 -d : | xargs strip --strip-unneeded 2>/dev/null || true
-	find ${PKG} -type f | xargs file 2>/dev/null | grep "shared object"      | cut -f 1 -d : | xargs strip --strip-unneeded 2>/dev/null || true
-	find ${PKG} -type f | xargs file 2>/dev/null | grep "current ar archive" | cut -f 1 -d : | xargs strip -g               2>/dev/null || true
+	# Si la variable $NOSTRIP n'est pas définie à une valeur quelconque, On "strippe" tout ce qu'on trouve :
+	if [ -z ${NOSTRIP} ]; then
+		find ${PKG} -type f | xargs file 2>/dev/null | grep "LSB executable"     | cut -f 1 -d : | xargs strip --strip-unneeded 2>/dev/null || true
+		find ${PKG} -type f | xargs file 2>/dev/null | grep "shared object"      | cut -f 1 -d : | xargs strip --strip-unneeded 2>/dev/null || true
+		find ${PKG} -type f | xargs file 2>/dev/null | grep "current ar archive" | cut -f 1 -d : | xargs strip -g               2>/dev/null || true
+	fi
 }
 
 empaqueter() {

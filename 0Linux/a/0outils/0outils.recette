@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=13.2.3
+VERSION=13.3
 DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
 
 cflags # on appelle cflags() car elle contient la détection de l'architecture.
@@ -71,6 +71,10 @@ LIBDIRSUFFIX=""
 export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} "
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 
+# Décommentez la ligne suivante si vous ne voulez pas « stripper » les symboles
+# de débogage lors de l'empaquetage des fichiers des paquets :
+#NOSTRIP="oui"
+
 EOF
 
 cat > ${PKG}/etc/0outils/drapeaux-i686.conf.0nouveau << "EOF"
@@ -87,6 +91,10 @@ export USE_ARCH=32 # Utilisé uniquement en multilib
 export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 
+# Décommentez la ligne suivante si vous ne voulez pas « stripper » les symboles
+# de débogage lors de l'empaquetage des fichiers des paquets :
+#NOSTRIP="oui"
+
 EOF
 
 cat > ${PKG}/etc/0outils/drapeaux-x86_64.conf.0nouveau << "EOF"
@@ -102,6 +110,10 @@ export USE_ARCH=64 # Utilisé uniquement en multilib
 export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
 
+# Décommentez la ligne suivante si vous ne voulez pas « stripper » les symboles
+# de débogage lors de l'empaquetage des fichiers des paquets :
+#NOSTRIP="oui"
+
 EOF
 
 cat > ${PKG}/etc/0outils/drapeaux-arm.conf.0nouveau << "EOF"	
@@ -115,6 +127,10 @@ FLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16 -pipe"
 LIBDIRSUFFIX=""
 export LDFLAGS=" -L/usr/lib${LIBDIRSUFFIX} -Wl,-O1,--as-needed,--sort-common "
 export PKG_CONFIG_PATH=/usr/lib${LIBDIRSUFFIX}/pkgconfig
+
+# Décommentez la ligne suivante si vous ne voulez pas « stripper » les symboles
+# de débogage lors de l'empaquetage des fichiers des paquets :
+#NOSTRIP="oui"
 
 EOF
 
