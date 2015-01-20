@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=13.2.2
+VERSION=13.2.3
 DESC="Outils « maison » pour l'installation et l'administration du système 0Linux"
 
 cflags # on appelle cflags() car elle contient la détection de l'architecture.
@@ -26,7 +26,7 @@ for script in \
 0reseau; do
 	cp -a $CWD/${script} ${PKG}/usr/sbin/
 done
-chmod 700 ${PKG}/usr/sbin/*
+chmod 755 ${PKG}/usr/sbin/*
 
 # On place les script utilisateurs :
 cp -a $CWD/0bureau ${PKG}/usr/bin/

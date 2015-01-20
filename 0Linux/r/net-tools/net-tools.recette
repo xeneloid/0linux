@@ -55,6 +55,9 @@ rm -rf ${PKG}/usr/share
 # On copie le manuel de 'ipmask' :
 cp -a $CWD/ipmask.8 ${PKG}/usr/man/man8/
 
+# On crée un lien générique pour 'ifconfig' :
+ln -sf ../bin/ifconfig ${PKG}/usr/sbin/
+
 installer_doc
 creer_post_installation
 stripper
