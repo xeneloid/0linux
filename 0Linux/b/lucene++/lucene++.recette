@@ -2,21 +2,29 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.0.6
-WGET=https://github.com/luceneplusplus/LucenePlusPlus/archive/rel_${VERSION}.tar.gz
+WGET=https://github.com/luceneplusplus/LucenePlusPlus/archive/master.tar.gz
 DESC="Port C++ des bibliothèques Java Lucene"
 
+# On empêche le téléchargement des sources si on trouve les bonnes versions en
+# les renommant :
+if [ -r ${PKGSOURCES}/${NAMETGZ}/master-${VERSION} ]; then
+	mv ${PKGSOURCES}/${NAMETGZ}/master{-${VERSION,}.tar.gz
+fi
+
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# On renomme les sources avec la version :
+mv ${PKGSOURCES}/${NAMETGZ}/master{,-${VERSION}}.tar.gz
+
+telecharger_sources
+preparer_sources
 cflags
 
 # On corrige des numéros de version erronés :
 sed -i \
-    -e 's#SET(LUCENE++_VERSION_REVISION.*#SET(LUCENE++_VERSION_REVISION "6")#' \
-    -e 's#SET(LUCENE++_VERSION_PATCH.*#SET(LUCENE++_VERSION_PATCH "0")#' \
-    CMakeLists.txt
-
-# Evite des erreur de compilation :
-cat $CWD/lucene++.testfixture.patch | patch -p1
+	-e 's#SET(LUCENE++_VERSION_REVISION.*#SET(LUCENE++_VERSION_REVISION "6")#' \
+	-e 's#SET(LUCENE++_VERSION_PATCH.*#SET(LUCENE++_VERSION_PATCH "0")#' \
+	CMakeLists.txt
 
 # On doit compiler dans un répertoire dédié :
 mkdir -p build && cd build
