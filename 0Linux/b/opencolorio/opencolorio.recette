@@ -9,6 +9,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# Compatibilité avec notre yaml :
+cat $CWD/opencolorio.yaml-0.5.patch | patch -p1
+
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build
 cd build
@@ -23,6 +26,8 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D USE_EXTERNAL_TINYXML=ON \
 	-D USE_EXTERNAL_YAML=ON \
 	-D SYSCONF_INSTALL_DIR=/etc \
+	-D OIIO_INCLUDES= \
+	-D OIIO_LIBRARIES= \
 	./ ../
 
 make -j${JOBS} || make
