@@ -79,6 +79,7 @@ kopete
 kppp
 krdc
 krfb
+zeroconf-ioslave
 kde-l10n-fr
 libkdegames
 libkmahjongg
@@ -122,6 +123,7 @@ lskat
 palapeli
 picmi
 libkdeedu
+kqtquickcharts
 analitza
 artikulate
 blinken

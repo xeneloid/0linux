@@ -5,13 +5,14 @@ libgadu
 libiodbc
 libmygpo-qt
 libsrtp
+xerces-c
+xsd
 libkolabxml
 libkolab
 libfacile
 libspnav
 librevenge
 libvisio
-libqtgtl
 libetonyek
 libodfgen
 shared-desktop-ontologies
@@ -22,7 +23,6 @@ telepathy-logger-qt
 cfitsio
 gl2ps
 xplanet
-xsd
 optipng
 clamz
 grantlee
@@ -38,8 +38,8 @@ openbabel
 avogadro
 yaml-cpp
 partio
-openimageio
 opencolorio
+openimageio
 vc
 xbase
 unixodbc
