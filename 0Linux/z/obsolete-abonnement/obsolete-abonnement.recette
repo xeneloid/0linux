@@ -55,6 +55,7 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	nepomuk-core \
 	nepomuk-widgets \
 	opengtl \
+	partio \
 	python3 \
 	raptor2 \
 	suitesparseconfig \
