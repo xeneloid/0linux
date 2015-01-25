@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=13
+VERSION=14
 DESC="Une sélection très large d'outils et de bibliothèques pour disposer d'un système exploitable et complet"
 EXTRADEPS="0-art        0outils                  acl \
 acpid                   alsa-firmware            alsa-lib \
@@ -150,7 +150,7 @@ openldap-client         openslp                  opensp \
 openssh                 openssl                  opus \
 orbit2                  orc                      ortp \
 p11-kit                 pango                    pangomm \
-parted                  partio                   pciutils \
+parted                  pciutils \
 pcre                    perl                     perl-gettext \
 perl-libsgmls           perl-termreadkey         perl-text-charwidth \
 perl-text-wrapi18n      perl-uri                 perl-xml-parser \

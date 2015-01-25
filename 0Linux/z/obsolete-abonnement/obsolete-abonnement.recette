@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=17
+VERSION=18
 DESC="Paquets marqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
