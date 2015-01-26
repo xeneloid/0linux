@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+NAMESRC=digikam
+VERSION=4.6.0
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+DESC="Bibliothèque de détection de visage"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On se place dans le bon répertoire :
+cd extra/$NAMETGZ
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
