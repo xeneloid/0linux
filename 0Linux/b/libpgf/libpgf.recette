@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=6.14.12
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-src-$VERSION.tar.gz
+DESC="Bibliothèques pour le format graphique PGF"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Les fin de lignes style Microsoft, non merci :
+dos2unix configure.ac
+
+# Compilation :
+./autogen.sh
+configure_make_makeinstall
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
