@@ -26,6 +26,9 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
 	./ ../
 
+# On corrige le chemin des traductions :
+	sed -i 's|/share/locale|/share/locale/kde4|' po/cmake_install.cmake
+
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../

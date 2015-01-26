@@ -1,20 +1,14 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.0.2
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+VERSION=2.0.3a
+WGET=http://download.kde.org/stable/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Le couteau suisse pour graver ou extraire des CD, DVD ou Blu-Ray"
 extradeps="cdparanoia dvd+rw-tools growisofs transcode vcdimager emovix"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# Correctif permettant la compilation avec les versions >= 0.53 de libavutils :
-cat $CWD/k3b.ffmpeg-1.patch | patch -p1
-
-# Correctif pour le support de la version 2 de FFMPEG :
-cat $CWD/k3b.ffmpeg2.patch | patch -p1
 
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build

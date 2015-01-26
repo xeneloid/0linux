@@ -163,6 +163,7 @@ libmodplug
 libmp4v2
 libmtp
 libpcap
+libpgf
 libplist
 libpng
 libqmi
@@ -265,6 +266,7 @@ libmatroska
 libmng
 libnice
 libofa
+libotr
 libpwquality
 libqalculate
 libsoup
