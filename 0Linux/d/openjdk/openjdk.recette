@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.0u71_2.5.3
+VERSION=1.7.0u75_2.5.4
 WGET=(
       http://icedtea.classpath.org/download/source/icedtea-$(echo $VERSION | cut -d'_' -f2).tar.gz
       http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/corba.tar.bz2
@@ -50,7 +50,7 @@ export ALT_FREETYPE_LIB_PATH=/usr/lib${LIBDIRSUFFIX}
 export LC_ALL=C LANG=C # Indispensable pour openjdk !
 export OS_VARIANT_NAME="0Linux"
 export OS_VARIANT_VERSION=$(grep -E '^VERSION=' /etc/os-release | cut -d'=' -f2)
-export JAVA_HOME="/usr/lib${LIBDIRSUFFIX}/jdk" # compatible OpenJDK + Oracle JDK
+export JAVA_HOME="/usr/lib${LIBDIRSUFFIX}/java" # compatible OpenJDK + Oracle JDK
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -66,7 +66,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-hotspot-src-zip=${PKGSOURCES}/${NAMETGZ}/hotspot-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
 	--with-jaxp-src-zip=${PKGSOURCES}/${NAMETGZ}/jaxp-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
 	--with-jaxws-src-zip=${PKGSOURCES}/${NAMETGZ}/jaxws-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
-	--with-jdk-home=/usr/lib${LIBDIRSUFFIX}/jdk \
+	--with-jdk-home=/usr/lib${LIBDIRSUFFIX}/java \
 	--with-jdk-src-zip=${PKGSOURCES}/${NAMETGZ}/jdk-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
 	--with-langtools-src-zip=${PKGSOURCES}/${NAMETGZ}/langtools-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
 	--with-openjdk-src-zip=${PKGSOURCES}/${NAMETGZ}/openjdk-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
@@ -156,8 +156,11 @@ creer_post_installation
 cat >> ${PKG}/post-install.sh << EOF
 
 # On laisse la priorité au JDK d'Oracle s'il est présent :
-if [ -d usr/lib${LIBDIRSUFFIX}/jdk]; then
+if [ -e usr/lib${LIBDIRSUFFIX}/jdk]; then
 	chmod -x etc/profile.d/openjdk.sh
+else
+	# Un lien de compatibilité ne fait pas de mal s'il est absent :
+	ln -sf java usr/lib${LIBDIRSUFFIX}/jdk
 fi
 
 EOF
