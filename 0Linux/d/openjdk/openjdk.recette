@@ -52,6 +52,10 @@ export OS_VARIANT_NAME="0Linux"
 export OS_VARIANT_VERSION=$(grep -E '^VERSION=' /etc/os-release | cut -d'=' -f2)
 export JAVA_HOME="/usr/lib${LIBDIRSUFFIX}/java" # compatible OpenJDK + Oracle JDK
 
+# On corrige la compilation avec 'giflib' 5 et plus :
+cp $CWD/openjdk.giflib.patch patches/
+export DISTRIBUTION_PATCHES="patches/openjdk.giflib.patch"
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

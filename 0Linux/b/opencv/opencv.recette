@@ -30,6 +30,9 @@ cat $CWD/opencv.libav10.patch | patch -Np1
 mkdir -p build
 cd build
 
+# On évite 'ccache' pour ce paquet récalcitrant :
+export CCACHE_DISABLE=1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
@@ -50,12 +53,7 @@ cmake \
 	-D INSTALL_PYTHON_EXAMPLES=ON \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D WITH_GSTREAMER=ON \
-	-D WITH_GTK=ON \
-	-D WITH_QT=ON \
-	-D WITH_QT_OPENGL=OFF \
-	-D WITH_OPENCL=ON \
 	-D WITH_OPENGL=ON \
-	-D WITH_TBB=OFF \
 	-D WTIH_XINE=OFF \
 	./ ../
 
@@ -64,6 +62,9 @@ fakeroot make install DESTDIR=${PKG}
 
 # Lien symbolique de transition :
 ln -sf OpenCV $PKG/usr/share/opencv
+
+# On réinitialise CCACHE_DISABLE :
+unset CCACHE_DISABLE
 
 installer_doc
 creer_post_installation
