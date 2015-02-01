@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.8
+VERSION=0.9.10
 WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.tar.bz2
 DESC="Un puissant éditeur vidéo non linéaire imitant l'interface de Première"
 
