@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.8.6
+VERSION=2.8.7
 WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Calligra : la suite bureautique et artistique complète pour KDE"
 EXTRADEPS="openimageio kde-runtime libspnav libetonyek"
@@ -9,6 +9,9 @@ EXTRADEPS="openimageio kde-runtime libspnav libetonyek"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On utilise les bibliothèques d'importations basées sur librevenge :
+cat $CWD/calligra.librevenge.patch | patch -p1
 
 # Corrige la détection d'openjpeg :
 sed -i "s:/usr/include/openjpeg:/usr/include/openjpeg-1.5:" \
