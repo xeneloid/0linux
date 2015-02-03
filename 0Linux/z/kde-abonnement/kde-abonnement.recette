@@ -172,6 +172,7 @@ kdevelop-pg-qt \
 kdevelop-php \
 kdevelop-php-docs \
 kdev-python \
+kdev-qmljs \
 kdevelop-modeles"
 
 cflags
