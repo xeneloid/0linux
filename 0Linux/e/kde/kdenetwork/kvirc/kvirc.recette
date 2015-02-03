@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.3.1_r6381
+VERSION=4.3.1_r6439
 WGET=http://0linux.geoffray-levasseur.org/src/kvirc-$(echo $VERSION | sed 's/_/-/').tar.xz
 DESC="Un puissant client IRC pour Qt/KDE"
 
