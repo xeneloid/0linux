@@ -1,27 +1,45 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.0
-EXT=tar.xz
-WGET=ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.6.0/src/$NAMESRC-$VERSION.$EXT
+VERSION=1.7.0
+WGET=(
+      ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.7.0/src/$NAMESRC-$VERSION.tar.xz
+      ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.7.0/src/$NAMESRC-$VERSION-py3.tar.xz
+      )
 DESC="Plugins pour la programmation Python avec KDevelop"
-EXTRADEPS="kdevelop"
-
+EXTRADEPS="kdevelop kdevelop-pg-qt"
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-$VERSION.tar.xz # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation :
-mkdir -p build && cd build
+mkdir -p build
+cd build
+
+# Compilation pour python 2 :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_SKIP_RPATH=ON \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D BUILD_TESTS=OFF \
-	-D ENABLE_SSE=ON \
-	-D ENABLE_SSE2=ON \
-	-D ENABLE_SSE3=ON \
+	-D KDE4_BUILD_TESTS=FALSE \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D SYSCONF_INSTALL_DIR=/etc/kde \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+preparer_sources $NAMESRC-$VERSION-py3.tar.xz # À partir d'ici, on se trouve dans les sources décompactées.
+
+mkdir -p build
+cd build
+
+# Compilation pour python 3 :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D KDE4_BUILD_TESTS=FALSE \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D SYSCONF_INSTALL_DIR=/etc/kde \
