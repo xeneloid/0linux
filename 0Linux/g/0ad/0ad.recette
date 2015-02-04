@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.0.16
+VERSION=0.0.17
 EXT=tar.xz
 WGET=(http://releases.wildfiregames.com/$NAMESRC-$VERSION-alpha-unix-build.$EXT
       http://releases.wildfiregames.com/$NAMESRC-$VERSION-alpha-unix-data.$EXT
@@ -27,7 +27,6 @@ build/workspaces/update-workspaces.sh \
 	--bindir=/usr/bin \
 	--libdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--datadir=/usr/share/${NAMESRC}/data \
-	--with-system-enet \
 	-j${JOBS}
 
 make CONFIG=Release -j${JOBS} -C build/workspaces/gcc || make CONFIG=Release -C build/workspaces/gcc
