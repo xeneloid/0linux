@@ -15,6 +15,9 @@ libbluedevil
 libktorrent
 libkcompactdisc
 libkcddb
+libmediawiki
+libkgeomap
+libkface
 kde-runtime
 okular
 smokegen
