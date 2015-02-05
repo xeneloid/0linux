@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.70a
+VERSION=2.73a
 WGET=http://download.blender.org/source/blender-$VERSION.tar.gz
 DESC="Modéliseur 3D avancé de référence"
 EXTRADEPS="desktop-file-utils hicolor-icon-theme jack python shared-mime-info xdg-utils"
@@ -27,6 +27,10 @@ cat $CWD/blender.unbundle.eigen3.patch | patch -p1
 
 # Corrige une règle d'installation dangeureuse :
 cat $CWD/blender.install.rules.patch | patch -p1
+
+# On utilise l'OpenJpeg installé :
+sed -i -e "s@../libopenjpeg@/usr/include/openjpeg-1.5@" \
+	extern/libredcode/CMakeLists.txt
 
 # Les patchs ne suffisent pas, il faut aussi effacer le code des libs externe
 # à cause de nombreux chemins d'includes codés en dur dans un nombre important
@@ -55,9 +59,11 @@ cd build
 # disant que des chemins vers des includes gcc sont codé en dur).
 CFLAGS="${FLAGS} -funsigned-char -fno-delete-null-pointer-checks -DNDEBUG" \
 CXXFLAGS="${FLAGS} -funsigned-char -fno-delete-null-pointer-checks -DNDEBUG" \
-cmake -D CMAKE_BUILD_TYPE=Release \
+LDFLAGS=" -lcolamd " \
+cmake -C../build_files/cmake/config/blender_full.cmake \
+	-D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D LLVM_VERSION=3.4 \
+	-D LLVM_VERSION=3.5 \
 	-D LLVM_STATIC=OFF \
 	-D OPENIMAGEIO_ROOT_DIR=/usr \
 	-D OPENJPEG_INCLUDE_DIR=/usr/include/openjpeg-1.5 \
@@ -90,7 +96,7 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On précompile les modules Python pour de meilleures performances (requière Python 3.4) :
-#python -m compileall "${PKG}/usr/share/blender"
+python -m compileall "${PKG}/usr/share/blender"
 cd ../
 
 installer_doc
@@ -103,8 +109,8 @@ cp -a html $PKG/usr/doc/$NAMETGZ-$VERSION/
 cd -
 
 # Génération de la doc pour Python :
-$PKG/usr/bin/blender --background --python doc/python_api/sphinx_doc_gen.py -noaudio
-cp -a doc/python_api $PKG/usr/doc/$NAMETGZ-$VERSION/
+#$PKG/usr/bin/blender --background --python doc/python_api/sphinx_doc_gen.py -noaudio
+#cp -a doc/python_api $PKG/usr/doc/$NAMETGZ-$VERSION/
 
 creer_post_installation
 stripper

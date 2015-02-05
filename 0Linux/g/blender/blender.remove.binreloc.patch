@@ -23,7 +23,7 @@ diff --git a/source/blenderplayer/CMakeLists.txt b/source/blenderplayer/CMakeLis
 index bc3baee..2fa78b9 100644
 --- a/source/blenderplayer/CMakeLists.txt
 +++ b/source/blenderplayer/CMakeLists.txt
-@@ -81,10 +81,6 @@ list(APPEND BLENDER_LINK_LIBS
+@@ -92,10 +92,6 @@ list(APPEND BLENDER_LINK_LIBS
  	blenkernel_blc
  )
  
