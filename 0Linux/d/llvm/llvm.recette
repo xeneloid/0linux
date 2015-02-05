@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.5.0
+VERSION=3.5.1
 EXT=tar.xz
 WGET=(http://llvm.org/releases/${VERSION}/${NAMESRC}-${VERSION}.src.${EXT}
       http://llvm.org/releases/${VERSION}/cfe-${VERSION}.src.${EXT}
