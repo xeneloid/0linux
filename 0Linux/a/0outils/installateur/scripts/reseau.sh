@@ -40,7 +40,7 @@ while [ 0 ]; do
 	echo "1 : IGH/CNRS  - http://ftp.igh.cnrs.fr/pub/os/linux/0linux/paquets (recommandé)"
 	echo "2 : LIP6      - http://www-ftp.lip6.fr/pub/linux/distributions/0linux/paquets"
 	echo "3 : LAYERJET  - http://mirror.layerjet.com/0linux/paquets"
-	echo "4 : REDATOMIK - http://0linux.redatomik.org/paquets"
+	#echo "4 : REDATOMIK - http://0linux.redatomik.org/paquets"
 	echo "5 : MOOO      - http://darknekros.mooo.com/0linux/paquets"
 	echo "http://votre/url/paquets"
 	echo ""
