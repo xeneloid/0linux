@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.2
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+VERSION=1.6.2
+WGET=https://github.com/darktable-org/darktable/releases/download/release-$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Studio de gestion et de développement d'images brutes"
 
 telecharger_sources
