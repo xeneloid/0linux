@@ -1,0 +1,119 @@
+diff -up geany-plugins-1.23/geanylua/glspi_app.c.lua-52 geany-plugins-1.23/geanylua/glspi_app.c
+--- geany-plugins-1.23/geanylua/glspi_app.c.lua-52	2013-05-15 11:56:22.554352581 -0400
++++ geany-plugins-1.23/geanylua/glspi_app.c	2013-05-15 11:56:29.212352681 -0400
+@@ -604,7 +604,7 @@ static gint glspi_keygrab(lua_State* L)
+ 
+ 
+ 
+-static const struct luaL_reg glspi_app_funcs[] = {
++static const struct luaL_Reg glspi_app_funcs[] = {
+ 	{"pluginver", glspi_pluginver},
+ 	{"appinfo",   glspi_appinfo},
+ 	{"xsel",      glspi_xsel},
+diff -up geany-plugins-1.23/geanylua/glspi_dlg.c.lua-52 geany-plugins-1.23/geanylua/glspi_dlg.c
+--- geany-plugins-1.23/geanylua/glspi_dlg.c.lua-52	2013-05-15 11:57:27.595353557 -0400
++++ geany-plugins-1.23/geanylua/glspi_dlg.c	2013-05-15 11:57:37.612353707 -0400
+@@ -537,7 +537,7 @@ static gint glspi_pickfile(lua_State* L)
+ 
+ 
+ 
+-static const struct luaL_reg glspi_dlg_funcs[] = {
++static const struct luaL_Reg glspi_dlg_funcs[] = {
+ 	{"choose",   glspi_choose},
+ 	{"confirm",  glspi_confirm},
+ 	{"input",    glspi_input},
+diff -up geany-plugins-1.23/geanylua/glspi_doc.c.lua-52 geany-plugins-1.23/geanylua/glspi_doc.c
+--- geany-plugins-1.23/geanylua/glspi_doc.c.lua-52	2013-05-15 11:56:44.301352907 -0400
++++ geany-plugins-1.23/geanylua/glspi_doc.c	2013-05-15 11:56:57.670353108 -0400
+@@ -325,7 +325,7 @@ static gint glspi_fileinfo(lua_State* L)
+ 
+ 
+ 
+-static const struct luaL_reg glspi_doc_funcs[] = {
++static const struct luaL_Reg glspi_doc_funcs[] = {
+ 	{"filename",  glspi_filename},
+ 	{"fileinfo",  glspi_fileinfo},
+ 	{"documents", glspi_documents},
+diff -up geany-plugins-1.23/geanylua/glspi.h.lua-52 geany-plugins-1.23/geanylua/glspi.h
+--- geany-plugins-1.23/geanylua/glspi.h.lua-52	2013-05-15 11:59:43.828355601 -0400
++++ geany-plugins-1.23/geanylua/glspi.h	2013-05-15 11:59:54.492355761 -0400
+@@ -34,6 +34,10 @@
+ 
+ #include "glspi_ver.h"
+ 
++#ifndef lua_objlen
++#define lua_objlen(L,i)        lua_rawlen(L, (i))
++#endif
++
+ #define tokenWordChars  "wordchars"
+ #define tokenRectSel "rectsel"
+ #define tokenBanner "banner"
+diff -up geany-plugins-1.23/geanylua/glspi_init.c.lua-52 geany-plugins-1.23/geanylua/glspi_init.c
+--- geany-plugins-1.23/geanylua/glspi_init.c.lua-52	2013-05-15 11:58:03.948354102 -0400
++++ geany-plugins-1.23/geanylua/glspi_init.c	2013-05-15 11:58:10.595354202 -0400
+@@ -542,7 +542,7 @@ static gint glspi_rescan(lua_State* L) {
+ 	return 0;
+ }
+ 
+-static const struct luaL_reg glspi_mnu_funcs[] = {
++static const struct luaL_Reg glspi_mnu_funcs[] = {
+ 	{"rescan",    glspi_rescan},
+ 	{NULL,NULL}
+ };
+diff -up geany-plugins-1.23/geanylua/glspi_kfile.c.lua-52 geany-plugins-1.23/geanylua/glspi_kfile.c
+--- geany-plugins-1.23/geanylua/glspi_kfile.c.lua-52	2013-05-15 11:58:18.781354325 -0400
++++ geany-plugins-1.23/geanylua/glspi_kfile.c	2013-05-15 11:58:26.547354442 -0400
+@@ -370,7 +370,7 @@ static gint kfile_remove(lua_State* L)
+ 
+ 
+ 
+-static const struct luaL_reg kfile_funcs[] = {
++static const struct luaL_Reg kfile_funcs[] = {
+ 	{"new",     kfile_new},
+ 	{"data",    kfile_data},
+ 	{"groups",  kfile_groups},
+diff -up geany-plugins-1.23/geanylua/glspi_run.c.lua-52 geany-plugins-1.23/geanylua/glspi_run.c
+--- geany-plugins-1.23/geanylua/glspi_run.c.lua-52	2013-05-15 11:58:33.566354547 -0400
++++ geany-plugins-1.23/geanylua/glspi_run.c	2013-05-15 12:01:33.430357246 -0400
+@@ -279,7 +279,7 @@ static void glspi_state_done(lua_State *
+ 
+ 
+ 
+-static const struct luaL_reg glspi_timer_funcs[] = {
++static const struct luaL_Reg glspi_timer_funcs[] = {
+ 	{"timeout",  glspi_timeout},
+ 	{"yield",    glspi_yield},
+ 	{"optimize", glspi_optimize},
+@@ -293,7 +293,7 @@ static const struct luaL_reg glspi_timer
+ /* Catch and report script errors */
+ static gint glspi_traceback(lua_State *L)
+ {
+-	lua_getfield(L, LUA_GLOBALSINDEX, "debug");
++	lua_getglobal(L, "debug");
+ 	if (!lua_istable(L, -1)) {
+ 		lua_pop(L, 1);
+ 		return 1;
+diff -up geany-plugins-1.23/geanylua/glspi_sci.c.lua-52 geany-plugins-1.23/geanylua/glspi_sci.c
+--- geany-plugins-1.23/geanylua/glspi_sci.c.lua-52	2013-05-15 11:58:49.551354787 -0400
++++ geany-plugins-1.23/geanylua/glspi_sci.c	2013-05-15 11:58:56.283354888 -0400
+@@ -842,7 +842,7 @@ struct TextToFind {
+ 
+ 
+ 
+-static const struct luaL_reg glspi_sci_funcs[] = {
++static const struct luaL_Reg glspi_sci_funcs[] = {
+ 	{"text",      glspi_text},
+ 	{"selection", glspi_selection},
+ 	{"select",    glspi_select},
+diff -up geany-plugins-1.23/geanylua/gsdlg_lua.c.lua-52 geany-plugins-1.23/geanylua/gsdlg_lua.c
+--- geany-plugins-1.23/geanylua/gsdlg_lua.c.lua-52	2013-05-15 11:57:46.635353843 -0400
++++ geany-plugins-1.23/geanylua/gsdlg_lua.c	2013-05-15 11:57:54.143353955 -0400
+@@ -387,7 +387,7 @@ static gint gsdl_done(lua_State *L)
+ 
+ 
+ 
+-static const struct luaL_reg gsdl_funcs[] = {
++static const struct luaL_Reg gsdl_funcs[] = {
+ 	{"new",      gsdl_new},
+ 	{"run",      gsdl_run},
+ 	{"label",    gsdl_label},	
