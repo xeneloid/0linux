@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.32.0
-EXT=tar.xz
-WGET=http://www.giuspen.com/software/$NAMESRC-$VERSION.$EXT
+VERSION=0.35.7
+WGET=http://www.giuspen.com/software/$NAMESRC-$VERSION.tar.xz
 DESC="Application de prise de notes hiérarchisées"
 
 
