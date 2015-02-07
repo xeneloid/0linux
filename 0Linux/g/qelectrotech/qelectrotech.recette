@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.3
-WGET=http://download.tuxfamily.org/qet/tags/20130928/$NAMESRC-$VERSION-src.tar.gz
+VERSION=0.4rc2
+WGET=http://download.tuxfamily.org/qet/tags/20141227/$NAMESRC-$VERSION-src.tar.gz
 DESC="Logiciel de construction de schémas électriques"
 
 telecharger_sources
