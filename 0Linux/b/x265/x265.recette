@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.4
+WGET=https://0linux.geoffray-levasseur.org/src/$NAMETGZ-$VERSION.tar.xz
+DESC="Décodeur pour le format vidéo x265"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+cd build/linux
+CFLAGS="${FLAGS} -O3 " CXXFLAGS="${FLAGS} -O3 " \
+cmake -G "Unix Makefiles" \
+	-D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=OFF \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	./ ../../source
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../../
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
