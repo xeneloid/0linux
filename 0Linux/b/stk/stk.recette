@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.4.4
-EXT=tar.gz
-WGET=http://ccrma.stanford.edu/software/$NAMESRC/release/$NAMESRC-$VERSION.$EXT
+VERSION=4.5.0
+WGET=http://ccrma.stanford.edu/software/$NAMESRC/release/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de génération de son"
-########################################
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -19,7 +16,6 @@ export LIBS="$LIBS -lpthread"
 sed -i 's/all : $(STATICLIB)/all : $(SHAREDLIB)/' src/Makefile.in
 
 # On modifie l'emplacement de la démo rawwaves
-
 sed -i 's:\.\./\.\.:/usr/lib${LIBDIRSUFFIX}/stk:' projects/demo/demo.cpp
 
 # Compilation :
@@ -39,27 +35,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 
-# Installation manuelle (pas de make install) :
+# On corrige des scripts générés :
+cat $CWD/stk.runtime.patch | patch -p1
 
-# On crée les dossiers :
-mkdir -p ${PKG}/usr/{bin,{include,lib${LIBDIRSUFFIX}}/stk}
-
-# On installe les bibliothèques :
-cp -a src/libstk.* "${PKG}/usr/lib${LIBDIRSUFFIX}/"
-
-# On installe les en-têtes :
-cp -a include/* ${PKG}/usr/include/stk/
-
-# On installe les fichiers de ressources :
-cp -a rawwaves projects/demo/{demo,tcl} projects/effects/{effects,tcl} projects/ragamatic/{ragamat,tcl,rawwaves} ${PKG}/usr/lib${LIBDIRSUFFIX}/stk/
-
-# On installe les binaires :
-cp -a projects/{demo/StkDemo,effects/StkEffects} ${PKG}/usr/bin/
-cp -a projects/ragamatic/Raga ${PKG}/usr/bin/StkRagamatic
-chmod 755 ${PKG}/usr/bin/*
-
-# On efface ce répertoire inutile :
-rm -rf ${PKG}/usr/lib${LIBDIRSUFFIX}/stk/rawwaves/.DS_Store
+# Installation :
+fakeroot make DESTDIR=${PKG} install
 
 installer_doc
 creer_post_installation
