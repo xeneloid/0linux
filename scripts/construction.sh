@@ -77,6 +77,7 @@ compiler_installer() {
 		aubio \
 		efl \
 		evolution-data-server \
+		fltk \
 		gnome-shell \
 		icu4c \
 		ilmbase \
@@ -95,6 +96,7 @@ compiler_installer() {
 		tdb \
 		tracker \
 		samba \
+		stk \
 		talloc; do
 			if [ "$(basename ${1} .recette)" = "${paquet_recalcitrant}" ]; then
 				
