@@ -2,11 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=LibreCAD
-VERSION=2.0.2
-EXT=tar.gz
-WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.$EXT
+VERSION=2.0.7
+WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Logiciel de CAO/DAO complet"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
