@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.5.2
+VERSION=2.5.3
 WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.13.tar.bz2
       http://ffmpeg.org/releases/$NAMESRC-$VERSION.tar.bz2
      )
@@ -21,6 +21,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x \
 	--shlibdir=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x \
 	--disable-debug \
+	--disable-libopencv \
 	--mandir=/usr/man \
 	--enable-avfilter \
 	--enable-frei0r \
@@ -34,7 +35,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
-	--enable-libopencv \
 	--enable-librtmp \
 	--enable-libschroedinger \
 	--enable-libspeex \
