@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=FileZilla
-VERSION=3.9.0.3
+VERSION=3.10.1.1
 WGET=http://prdownloads.sourceforge.net/filezilla/${NAMESRC}_${VERSION}_src.tar.bz2
 DESC="Client FTP graphique"
 
@@ -20,10 +20,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-autoupdatecheck \
 	--enable-locales \
 	--disable-manualupdatecheck \
 	--disable-autoupdatecheck \
+	--disable-static \
 	--with-tinyxml=builtin \
 	--build=${PKGARCH}-0linux-linux-gnu
 
