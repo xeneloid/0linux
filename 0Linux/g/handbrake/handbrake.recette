@@ -2,47 +2,27 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=HandBrake
-VERSION=0.9.9
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/$NAMETGZ/$NAMESRC-$VERSION.$EXT
+VERSION=0.10.0
+WGET=http://prdownloads.sourceforge.net/$NAMETGZ/$NAMESRC-$VERSION.tar.bz2
 DESC="Application de conversion audio et vidéo"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # On préfère utiliser les libs du système :
-sed -i 's:.*\(/contrib\|contrib/\).*::g' make/include/main.defs
-
-# Corrige un appel avec notre libmkv :
-cat $CWD/handbrake.expand.mk.subtitles.patch | patch -p1
-
-# Utilise le dvdnav du seulement système :
-cat $CWD/handbrake.remove.duplicate.dvdnav.patch  | patch -p1
-
-# On utilise une version stable de mp4v2 :
-cat $CWD/handbrake.fix-compilation-with-mp4v2.patch | patch -p1
-
-# L'usage de FAAC pose trop de problèmes :
-cat $CWD/handbrake.remove-faac-dependency.patch | patch -p1
-sed -i 's/-lfaac//' gtk/configure.ac
-
-# Permet d'utiliser un libmkv stable et non celui de trunk :
-cat $CWD/handbrake.use-older-libmkv.patch | patch -p1
-
-# On utilise une version standard de liba52 :
-cat $CWD/handbrake.use-unpatched-a52.patch | patch -p1
-
-# Corrige un bug GTK, très génant :
-cat $CWD/handbrake.add-gmodule-to-gtk-configure.patch | patch -p1
+sed -i \
+    -e '/MODULES += contrib\/libbluray/d' \
+    -e '/MODULES += contrib\/libdvdnav/d' \
+    -e '/MODULES += contrib\/libdvdread/d' \
+    make/include/main.defs
 
 # Compilation :
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 ./configure \
 	--prefix=/usr \
 	--disable-gtk-update-checks \
-	--enable-ff-mpeg2 \
+	--force \
 	--launch \
 	--launch-jobs=0
 
