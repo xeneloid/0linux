@@ -10,17 +10,10 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Problèmes de compatibilité avec OpenCascade 0.6 :
-for f in $(grep -Rl "BRepTools::OuterShell" *)
-do
-	sed -e "s|BRepTools|BRepClass3d|g" -i "$f"
-done
-
-# Retire une blinde de warning agaçant :
-cat $CWD/freecad.moc.patch | patch -p1
-
-# Permet de compiler sans la doc de Coin (installé mais non détecté) :
-cat $CWD/freecad.no_coin3d_docs.patch | patch -p1
+# On corrige les chemins :
+sed -i -e "46i\\\tModDir = '/usr/share/freecad/Mod'" \
+    -e "50i\\\tLibDir = '/usr/lib/freecad'" \
+    "src/App/FreeCADInit.py"
 
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build
@@ -29,23 +22,22 @@ cd build
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_C_FLAGS="$CFLAGS -fpermissive" \
+	-D CMAKE_CXX_FLAGS="$CXXFLAGS -fpermissive" \
 	-D CMAKE_SKIP_RPATH=OFF \
 	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX}/freecad \
+	-D CMAKE_INSTALL_DATADIR=share/freecad \
+	-D CMAKE_DOCDIR=doc/$NAMESRC-$VERSION \
 	-D ENABLE_SSE=ON \
 	-D ENABLE_SSE2=ON \
 	-D ENABLE_SSE3=ON \
-	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	-D QT4_CREATE_MOC_COMMAND=moc \
 	-D FREECAD_USE_EXTERNAL_PIVY=ON \
 	-D PYTHON_EXECUTABLE=/usr/bin/python2 \
 	-D SYSCONF_INSTALL_DIR=/etc \
 	-D OCC_INCLUDE_DIR=/usr/include/opencascade \
 	-D OCC_LIBRARY=/usr/lib${LIBDIRSUFFIX} \
-	-D RESOURCEDIR=/usr/share/$NAMETGZ/data \
-	-D CMAKE_INSTALL_DATADIR=/usr/share/$NAMETGZ/data \
-	-D CMAKE_DOCDIR=/usr/doc/$NAMESRC-$VERSION \
-	-D CMAKE_C_FLAGS="$CFLAGS -fpermissive" \
-	-D CMAKE_CXX_FLAGS="$CXXFLAGS -fpermissive" \
 	./ ../
 
 make -j${JOBS} || make
