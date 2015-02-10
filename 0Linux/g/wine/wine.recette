@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.11
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.7.36
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Implémentation de l'environnement d'exécution de Windows"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -14,7 +12,6 @@ cflags
 # On corrige plusieurs problèmes, notamment dans un environnement multilib :
 cat $CWD/wine.winegcc-multilib.patch | patch -p1
 cat $CWD/wine.flags-multilib.patch | patch -p1
-cat $CWD/wine.osmesa.patch | patch -p1
 
 # On régénère le système de construction :
 autoreconf -vif
