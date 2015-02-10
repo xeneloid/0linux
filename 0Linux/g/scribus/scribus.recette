@@ -1,15 +1,20 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.3
-EXT=tar.xz
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=1.4.5
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Éditeur pour la Publication Assistée par Ordinateur (PAO)"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+
+# L'archive doit être mal préparée :
+cd $NAMESRC-$VERSION
+
 cflags
+
+# On compile dans un répertoire dédié :
+mkdir -p build && cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -19,10 +24,12 @@ cmake \
 	-DCMAKE_INSTALL_PREFIX:PATH=/usr \
 	-DLIB_INSTALL_DIR:PATH=/usr/lib${LIBDIRSUFFIX} \
 	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
-	-DRENDER_LIB=CAIRO
+	-DRENDER_LIB=CAIRO \
+	./ ../
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+cd ..
 
 # On déplace les manuels :
 mv ${PKG}/usr/share/man ${PKG}/usr/
