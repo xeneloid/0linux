@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.2
-EXT=tar.gz
-WGET=http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download//$NAMESRC-$VERSION.$EXT
+VERSION=1.4.3
+WGET=http://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download//$NAMESRC-$VERSION.tar.gz
 DESC="Éditeur vidéo non-linéaire"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
