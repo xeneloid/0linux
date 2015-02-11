@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.6.2
+VERSION=0.7.0
 WGET=ftp://ftp.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques d'accès aux disques Blu-Ray"
 
