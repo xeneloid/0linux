@@ -73,6 +73,7 @@ libraw1394
 libreplaygain
 libsigsegv
 libsodium
+libunistring
 libupnp
 libutempter
 libvisual
@@ -448,6 +449,7 @@ lilv
 sox
 swfdec
 mlt
+mpg123
 murrine
 murrine-themes
 serf

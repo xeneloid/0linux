@@ -46,6 +46,7 @@ m4
 flex
 bison
 pcre
+libunistring
 gettext
 attr
 acl
