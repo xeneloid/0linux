@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.3.2
+WGET=http://prdownloads.sourceforge.net/openastromenace/$NAMESRC-src-$VERSION.tar.bz2
+DESC="Environnement de bureau très léger basé sur Qt"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D DATADIR=/usr/share/astromenace \
+	-D FREETYPE_INCLUDE_DIR_freetype2=/usr/include/freetype2 \
+	./ ../
+
+make -j${JOBS} || make
+cd ../
+
+# On crée le fichier de données monolythique :
+build/AstroMenace --pack --rawdata=./RAW_VFS_DATA --dir=build
+
+# Installation manuelle :
+mkdir -p $PKG/usr/{bin,share/{pixmaps,astromenace,applications}}
+cp -a build/AstroMenace $PKG/usr/bin/astromenace
+cp -a build/gamedata.vfs $PKG/usr/share/astromenace/gamedata.vfs
+cp -a astromenace_128.png $PKG/usr/share/pixmaps/astromenace.png
+
+# On crée l'entrée de menu :
+cat > $PKG/usr/share/applications/astromenace.desktop << EOF
+[Desktop Entry]
+Encoding=UTF-8
+Name=Astromenace
+Comment=Space shooter
+Comment[Fr]=Jeu de tir spacial
+Exec=astromenace
+Icon=/usr/share/pixmaps/astromenace.png
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=Application;Game;ArcadeGame;
+
+EOF
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
