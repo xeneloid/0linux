@@ -17,14 +17,8 @@ elif [ "${PKGARCH}" = "x86_64" ]; then
 	OPTSSE3="ON"
 fi
 
-# On corrige le fichier pour 'pkg-config', absolument immonde :
-cat $CWD/pkgconfig.patch | patch -Np1
-
-# On corrige la compilation avec un GCC récent :
-cat $CWD/opencv.gcc47.patch | patch -Np1
-
-# On corrige la compilation avec un libav récent :
-cat $CWD/opencv.libav10.patch | patch -Np1
+# On corrige la génération du pkgconfig :
+cat $CWD/opencv.pkgconfig.patch | patch -p1
 
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build
