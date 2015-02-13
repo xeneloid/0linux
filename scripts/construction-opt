@@ -251,6 +251,7 @@ giflib
 glibmm
 gnutls
 gpgme
+guile
 libarchive
 libavc1394
 libcddb
