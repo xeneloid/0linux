@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=qt-everywhere-opensource-src
-VERSION=5.3.2
+VERSION=5.4.0
 WGET=http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/single/$NAMESRC-$VERSION.tar.xz
 DESC="Qt 5 : outils et bibliothèques de création d'applications graphiques"
 
@@ -11,51 +11,90 @@ preparer_sources
 cflags
 
 # On force les drapeaux d'optimisation :
-sed -i "s@-O2@& ${FLAGS}@" qtbase/mkspecs/common/{g++,gcc}-base.conf
-
-# La machine doit être spécifiée selon l'architecture :
-if [ "${PKGARCH}" = "i686" ]; then
-	OPTMACHINE=32
-elif [ "${PKGARCH}" = "x86_64" ]; then
-	OPTMACHINE=64
-fi
+sed -i -e "s|^\(QMAKE_CFLAGS_RELEASE.*\)|\1 ${FLAGS}|" \
+	qtbase/mkspecs/common/gcc-base.conf
+sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 ${LDFLAGS}|" \
+	qtbase/mkspecs/common/g++-unix.conf
 
 # Compilation :
 export QT5LINK=/usr
+export CFLAGS=$FLAGS
+export CXXFLAGS=$FLAGS
+export OPENSOURCE_CXXFLAGS=$FLAGS
 
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" OPENSOURCE_CXXFLAGS="${FLAGS}" \
-QMAKSPEC=linux-g++-${OPTMACHINE} \
-./configure \
-	-prefix                         /usr \
-	-archdatadir                    /usr/lib${LIBDIRSUFFIX}/qt5 \
-	-bindir /usr/bin \
-	-confirm-license \
-	-datadir                        /usr/share/qt5 \
-	-docdir                         /usr/doc/${NAMETGZ}-${VERSION} \
-	-dbus-linked \
-	-headerdir                      /usr/include/qt5 \
-	-L/usr/lib${LIBDIRSUFFIX} \
-	-libdir                         /usr/lib${LIBDIRSUFFIX} \
-	-no-rpath \
-	-no-separate-debug-info \
-	-nomake examples \
-	-opengl es2 \
-	-opensource \
-	-openssl-linked \
-	-optimized-qmake \
-	-plugin-sql-sqlite \
-	-release \
-	-sysconfdir                     /etc/xdg \
-	-system-harfbuzz \
-	-translationdir                 /usr/share/qt5/translations
+# On évite de se lier aux versions installées :
+export LD_LIBRARY_PATH=$PWD/qtbase/lib:$PWD/qttools/lib:${LD_LIBRARY_PATH}
+export QT_PLUGIN_PATH=$PWD/qtbase/plugins
+
+./configure  -v \
+  -confirm-license \
+  -opensource \
+  -prefix "/usr/lib${LIBDIRSUFFIX}/qt5" \
+  -sysconfdir "/etc/xdg" \
+  -headerdir "/usr/include/qt5" \
+  -libdir "/usr/lib${LIBDIRSUFFIX}" \
+  -docdir "/usr/doc/$NAMETGZ-$VERSION" \
+  -system-libpng \
+  -system-libjpeg \
+  -system-zlib \
+  -system-sqlite \
+  -system-pcre \
+  -plugin-sql-sqlite \
+  -icu \
+  -openssl \
+  -verbose \
+  -optimized-qmake \
+  -dbus-linked \
+  -qpa xcb \
+  -xcb \
+  -glib \
+  -accessibility \
+  -no-separate-debug-info \
+  -no-pch \
+  -no-rpath \
+  -no-strip \
+  -release \
+  -reduce-relocations \
+  -pulseaudio \
+  -nomake examples
 
 make -j${JOBS} || make
 fakeroot make install INSTALL_ROOT=${PKG}
 
+# On construit la doc :
+for doc in $(find . -name "Makefile*" | xargs egrep "^\s/usr/lib${LIBDIRSUFFIX}/qt5/bin/" | cut -d':' -f1) ; do
+	rm -fv $doc
+done
+make docs
+make install_docs INSTALL_ROOT=$PKG
+
+# Les binaires doivent recevoir un traitement particulier :
+mkdir -p $PKG/usr/bin
+for BIN in $PKG/usr/lib${LIBDIRSUFFIX}/qt5/bin/*; do
+	TMP_FILE=$(echo $BIN | sed -e "s|$PKG||")
+	case $(basename $BIN) in
+		syncqt.pl)
+			ln -s $TMP_FILE $PKG/usr/bin/$(basename $BIN)
+		;;
+		*)
+			ln -s $TMP_FILE $PKG/usr/bin/$(basename $BIN)-qt5
+		;;
+	esac
+done
+
 # Pour Noël, je voudrais des fichiers propres pour Qt :
-sed -i "s:$PWD/qtbase:/usr/lib/qt5:g" ${PKG}/usr/lib${LIBDIRSUFFIX}/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri || true
+sed -i "s:$PWD/qtbase:/usr/lib${LIBDIRSUFFIX}/qt5:g" \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri || true
 find /usr/lib${LIBDIRSUFFIX}/lib{qgsttools_p,Qt5*}.prl -exec sed -i -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/\1/' {} \; || true
-perl -pi -e "s, -L${srcdir}/?\S+,,g" ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt5WebKit.pc || true
+sed -i \
+  -e "s|-Wl,-whole-archive -lWebKit1 -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/WebKit[^ ]* ||" \
+  -e "s|-Wl,-whole-archive -lWebKit2 -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/WebKit2[^ ]* ||" \
+  -e "s|-Wl,-whole-archive -lWebCore -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/WebCore[^ ]* ||" \
+  -e "s|-Wl,-whole-archive -lANGLE -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/ThirdParty/ANGLE[^ ]* ||" \
+  -e "s|-Wl,-whole-archive -lJavaScriptCore -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/JavaScriptCore[^ ]* ||" \
+  -e "s|-Wl,-whole-archive -lWTF -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/WTF[^ ]* ||" \
+  -e "s|-Wl,-whole-archive -lleveldb -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/ThirdParty/leveldb[^ ]* ||" \
+  $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt5WebKit.pc
 
 # On place les icônes :
 mkdir -p ${PKG}/usr/share/icons/hicolor/{16x16,32x32,48x48,64x64,128x128}/apps
@@ -68,10 +107,30 @@ for icone in qttools/src/linguist/linguist/images/icons/linguist-*-32.png ; do
 	cp -a ${icone} ${PKG}/usr/share/icons/hicolor/${taille}x${taille}/apps/qt5-linguist.png || true
 done
 
-# On renomme les binaires pour éviter tout conflit avec Qt 4 :
-for b in ${PKG}/usr/bin/*; do
-	mv ${b}{,-qt5}
-done
+# On crée le fichier pour pkgconfig :
+cat > $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt5.pc << EOF
+prefix=/usr/lib${LIBDIRSUFFIX}/qt5
+bindir=\${prefix}/bin
+datadir=\${prefix}
+docdir=/usr/doc/$NAMETGZ-$VERSION
+archdatadir=\${prefix}
+examplesdir=\${prefix}/examples
+headerdir=/usr/include/qt5
+importdir=\${prefix}/imports
+qmldir=\${prefix}/qml
+libdir=/usr/lib${LIBDIRSUFFIX}
+libexec=\${prefix}/libexec
+moc=\${bindir}/moc
+plugindir=\${prefix}/plugins
+qmake=\${bindir}/qmake
+sysconfdir=/etc/xdg
+translationdir=\${prefix}/translations
+
+Name: Qt5
+Description: Ensemble de bibliothèque Qt5
+Version: $VERSION
+EOF
+
 
 # On ajoute les raccourcis bureau :
 mkdir -p ${PKG}/usr/share/applications
