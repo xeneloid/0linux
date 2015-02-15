@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.1.0
+WGET=http://downloads.lxqt.org/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.xz
+DESC="Bibliothèques XDG pour l'environnement de bureau LXQt"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_SKIP_RPATH=ON \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_INSTALL_LIBDIR=lib$LIBDIRSUFFIX \
+	-D CMAKE_INSTALL_LIBEXECDIR=lib$LIBDIRSUFFIX/lxqt \
+	-D CMAKE_INSTALL_LOCALSTATEDIR=/var \
+	-D CMAKE_INSTALL_SYSCONFDIR=/etc/lxqt \
+	-D USE_QT5=ON \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
