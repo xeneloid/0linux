@@ -24,7 +24,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D KDE_INSTALL_LIBEXECDIR=lib$LIBDIRSUFFIX/kde5 \
 	./ ../
 
-make AM_QT_MOC_EXECUTABLE=/usr/bin/moc-qt5 -j${JOBS} || make AM_QT_MOC_EXECUTABLE=/usr/bin/moc-qt5
+make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 cd ../
 
