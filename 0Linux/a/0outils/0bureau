@@ -13,10 +13,10 @@ if [ -n "$1" ]; then
 			echo "	$(basename $0) fluxbox"
 			echo "	$(basename $0) gnome"
 			echo "	$(basename $0) kde"
+			echo "	$(basename $0) lxqt"
 			echo "	$(basename $0) mate"
 			echo "	$(basename $0) openbox"
 			echo "	$(basename $0) openbox-session"
-			echo "	$(basename $0) razor-qt"
 			echo "	$(basename $0) twm"
 			echo "	$(basename $0) xbmc"
 			echo "	$(basename $0) xfce"
@@ -34,6 +34,9 @@ if [ -n "$1" ]; then
 		"kde")
 			XINITRC="xinitrc.kde"
 		;;
+		"lxqt")
+			XINITRC="xinitrc.lxqt"
+		;;
 		"mate")
 			XINITRC="xinitrc.mate"
 		;;
@@ -42,9 +45,6 @@ if [ -n "$1" ]; then
 		;;
 		"openbox-session")
 			XINITRC="xinitrc.openbox-session"
-		;;
-		"razor-qt|razor")
-			XINITRC="xinitrc.razor-qt"
 		;;
 		"twm")
 			XINITRC="xinitrc.twm"
@@ -132,17 +132,17 @@ else
 		if [ -x /etc/X11/xinit/xinitrc.kde ]; then
 			echo "4 : KDE             - Environnement de bureau complet en Qt."
 		fi
+		if [ -x /etc/X11/xinit/xinitrc.lxqt ]; then
+			echo "5 : LXQt        - Environnement de bureau léger alternatif à KDE."
+		fi
 		if [ -x /etc/X11/xinit/xinitrc.mate ]; then
-			echo "5 : MATE            - Environnement de bureau similaire à GNOME 2."
+			echo "6 : MATE            - Environnement de bureau similaire à GNOME 2."
 		fi
 		if [ -x /etc/X11/xinit/xinitrc.openbox ]; then
-			echo "6 : Openbox         - Gestionnaire de fenêtres léger, rapide, personnalisable."
+			echo "7 : Openbox         - Gestionnaire de fenêtres léger, rapide, personnalisable."
 		fi
 		if [ -x /etc/X11/xinit/xinitrc.openbox-session ]; then
-			echo "7 : Openbox-session - Gestionnaire de fenêtres léger et rapide (avec session)."
-		fi
-		if [ -x /etc/X11/xinit/xinitrc.razor-qt ]; then
-			echo "8 : Razor-qt        - Environnement de bureau léger alternatif à KDE."
+			echo "8 : Openbox-session - Gestionnaire de fenêtres léger et rapide (avec session)."
 		fi
 		if [ -x /etc/X11/xinit/xinitrc.twm ]; then
 			echo "9 : twm             - Gestionnaire de fenêtres basique."
@@ -178,19 +178,19 @@ else
 			break
 		;;
 		"5")
-			XINITRC="xinitrc.mate"
+			XINITRC="xinitrc.lxqt"
 			break
 		;;
 		"6")
-			XINITRC="xinitrc.openbox"
+			XINITRC="xinitrc.mate"
 			break
 		;;
 		"7")
-			XINITRC="xinitrc.openbox-session"
+			XINITRC="xinitrc.openbox"
 			break
 		;;
 		"8")
-			XINITRC="xinitrc.razor-qt"
+			XINITRC="xinitrc.openbox-session"
 			break
 		;;
 		"9")
