@@ -9,6 +9,16 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On utilise les bibliothèque partagés, pas les statiques :
+cat $CWD/fltk.shared.patch | patch -p1
+
+# On corrige un appel au bibliothèque du serveur X :
+sed -i 's/class Fl_XFont_On_Demand/class FL_EXPORT Fl_XFont_On_Demand/' FL/x.H
+
+# Problème avec l'édition de lien de certains programmes :
+sed -i -e 's/$(LINKFLTK)/$(LINKSHARED)/' \
+	-e 's/$(LINKFLTKIMG)/$(LINKSHARED)/' test/Makefile
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
