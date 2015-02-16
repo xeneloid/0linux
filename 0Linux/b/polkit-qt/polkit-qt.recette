@@ -10,10 +10,10 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # La compilation se fait dans un répertoire dédié :
-mkdir -p build
-cd build
+mkdir -p build-qt4
+cd build-qt4
 
-# Compilation :
+# Compilation pour Qt4 :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
@@ -22,6 +22,25 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D LIB_DESTINATION=/usr/lib${LIBDIRSUFFIX} \
 	-D MAN_INSTALL_DIR=/usr/man \
 	-D USE_QT4=ON \
+	..
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ..
+
+# Un crée un second répertoire de compilation pour Qt5 :
+mkdir -p build-qt5
+cd build-qt5
+
+# Compilation pour Qt5 :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-D LIB_DESTINATION=/usr/lib${LIBDIRSUFFIX} \
+	-D MAN_INSTALL_DIR=/usr/man \
+	-D USE_QT4=OFF \
 	..
 
 make -j${JOBS} || make
