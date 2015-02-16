@@ -75,6 +75,7 @@ compiler_installer() {
 		# doublons existent sur le système et supprime leurs propres manuels :
 		for paquet_recalcitrant in \
 		aubio \
+		audacious \
 		efl \
 		evolution-data-server \
 		fltk \
