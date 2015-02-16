@@ -20,7 +20,6 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
 	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
 	-D LIB_DESTINATION=/usr/lib${LIBDIRSUFFIX} \
-	-D MAN_INSTALL_DIR=/usr/man \
 	-D USE_QT4=ON \
 	..
 
@@ -39,12 +38,12 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
 	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
 	-D LIB_DESTINATION=/usr/lib${LIBDIRSUFFIX} \
-	-D MAN_INSTALL_DIR=/usr/man \
 	-D USE_QT4=OFF \
 	..
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+cd ..
 
 installer_doc
 creer_post_installation
