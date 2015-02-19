@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.1
+VERSION=7.2
 WGET=http://waterlan.home.xs4all.nl/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Permet la conversion des fins de ligne pour passer de DOS à Unix ou l'inverse"
 
@@ -13,7 +13,7 @@ cflags
 RPM_OPT_FLAGS="${FLAGS}" make -j${JOBS} || RPM_OPT_FLAGS="${FLAGS}" make
 fakeroot make install \
 	prefix=$PKG/usr \
-	docdir=$PKG/usr/doc/$PRGNAM-$VERSION \
+	docdir=$PKG/usr/doc/$NAMETGZ-$VERSION \
 	mandir=$PKG/usr/man
 
 # On déplace les pages de man résiduelles :
