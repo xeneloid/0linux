@@ -5,6 +5,7 @@ VERSION=14.1
 CODENAME=Helix
 WGET=http://mirrors.kodi.tv/releases/source/$VERSION-$CODENAME.tar.gz
 DESC="Station multimédia"
+EXTRADEPS="libcec lirc"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
