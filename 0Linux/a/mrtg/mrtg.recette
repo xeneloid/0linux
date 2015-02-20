@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.17.4
+WGET=http://oss.oetiker.ch/mrtg/pub/$NAMESRC-$VERSION.tar.gz
+DESC="Grapheur capable d'analyser plusieurs routeurs simultanément"
+EXTRADEPS="perl gdlib"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On supprime un paramètre génant :
+sed 's|LD_RUN_PATH=$(LD_RUN_PATH) ||g' -i Makefile.in
+
+# Compilation :
+configure_make_makeinstall
+
+# On corrige l'accès aux libs :
+sed -i -e "s@lib\${main@lib${LIBDIRSUFFIX}\${main@" $PKG/usr/bin/mrtg{,-traffic-sum}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
