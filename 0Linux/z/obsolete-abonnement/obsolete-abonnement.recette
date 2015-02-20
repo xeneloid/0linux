@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=19
+VERSION=20
 DESC="Paquets marqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
@@ -64,7 +64,8 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	systemd \
 	terminal \
 	udisks2 \
-	virtuoso
+	virtuoso \
+	xbmc
 
 EOF
 chmod 755 ${PKG}/usr/bin/0ex.sh
@@ -138,11 +139,14 @@ nepomuk-widgets: remplacé par 'baloo*'
 opengtl: projet mort
 python3: fusionné dans 'python'
 raptor2: fusionné dans  'raptor'
+razor-qt: fusionné avec LXDE pour devenir 'LXQt'
+suitesparseconfig: distribué avec le paquet 'suitesparse'
 syslog-ng: remplacé par 'syslog'
 systemd: banni de 0Linux :)
 terminal: remplacé apr 'xfce4-terminal'
 udisks2: fusionné dans 'udisks'
 virtuoso: dépendence de 'nepomuk', supprimé
+xbmc: renommé en 'kodi'
 
 EOF
 
