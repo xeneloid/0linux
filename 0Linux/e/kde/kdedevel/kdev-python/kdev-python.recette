@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.0
+VERSION=1.7.1
 WGET=(
-      ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.7.0/src/$NAMESRC-$VERSION.tar.xz
-      ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.7.0/src/$NAMESRC-$VERSION-py3.tar.xz
+      ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.7.1/src/$NAMESRC-$VERSION.tar.xz
+      ftp://ftp.kde.org/pub/kde/stable/kdevelop/4.7.1/src/$NAMESRC-$VERSION-py3.tar.xz
       )
 DESC="Plugins pour la programmation Python avec KDevelop"
 EXTRADEPS="kdevelop kdevelop-pg-qt"
