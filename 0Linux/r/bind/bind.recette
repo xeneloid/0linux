@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=9.10.1
+VERSION=9.10.1_P2
 WGET=(
-      ftp://ftp.isc.org/isc/${NAMESRC}$(echo $VERSION | cut -d'.' -f1)/$VERSION/$NAMESRC-$VERSION.tar.gz
+      ftp://ftp.isc.org/isc/${NAMESRC}$(echo $VERSION | cut -d'.' -f1)/$(echo $VERSION | sed 's/_/-/')/$NAMESRC-$(echo $VERSION | sed 's/_/-/').tar.gz
       http://www.internic.net/zones/named.root
      )
 DESC="Le serveurs de noms de domaine BIND et ses outils dédiés"
 
 telecharger_sources
-preparer_sources $NAMESRC-$VERSION.tar.gz
+preparer_sources $NAMESRC-$(echo $VERSION | sed 's/_/-/').tar.gz
 cflags
 
 # Compilation :
