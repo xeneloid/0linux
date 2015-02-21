@@ -91,7 +91,7 @@ else
 fi
 
 EOF
-chmod 755 ${PKG}/etc/X11/xinit/xinitrc.xbmc
+chmod 755 ${PKG}/etc/X11/xinit/xinitrc.kodi
 
 installer_doc
 creer_post_installation
