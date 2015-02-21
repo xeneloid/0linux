@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.10.22
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Outils de compression des archives au format ARJ"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -22,10 +20,11 @@ cat $CWD/arj.build.patch | patch -p1
 cat $CWD/arj.postproc.patch | patch -p1
 
 # Compilation avec nos outils :
-rm makefile
 cd gnu
-cp -a /usr/share/libtool/config/config.sub ./
-autoreconf -vif || true
+aclocal
+autoconf
+rm -f config.{guess,sub}
+cp /usr/share/automake-1.14/config.{guess,sub} .
 
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 ./configure \
@@ -41,6 +40,7 @@ CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 	--build=${PKGARCH}-0linux-linux-gnu
 cd ..
 
+make prepare
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
