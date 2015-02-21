@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.7.3
+VERSION=0.8
 WGET=http://download.kde.org/unstable/$NAMESRC/$VERSION/src/$NAMESRC-kde-$VERSION.tar.xz
 DESC="Outils de synchronisation et gestion pour téléphones Android"
 EXTRADEPS="kde-runtime"
