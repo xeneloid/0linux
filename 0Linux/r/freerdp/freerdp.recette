@@ -2,18 +2,16 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=FreeRDP
-VERSION=1.1.0beta_20130710
-EXT=tar.gz
-WGET=https://github.com/$NAMESRC/$NAMESRC/archive/780d451afad21a22d2af6bd030ee71311856f038.$EXT
+VERSION=1.2.0_beta1+android9
+WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$(echo $VERSION | sed 's/_/-/').tar.gz
 DESC="Un client RDP pour l'accès aux bureaux à distance"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige le verrou numérique, la compilation avec FFMPEG 2 et une faille de scéurité :
-cat $CWD/freerdp.ffmpeg2.patch | patch -p1
+# Corrige les usage obsolètes dans les CMakeLists :
+cat $CWD/freerdp.cmake31.patch | patch -p1
 
 # On compile dans un répertoire dédié :
 mkdir build
@@ -22,10 +20,8 @@ cd build
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
-	-DCMAKE_C_FLAGS="${FLAGS}" \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
-	-DWITH_PULSEAUDIO=OFF \
 	..
 
 make -j${JOBS} || make
