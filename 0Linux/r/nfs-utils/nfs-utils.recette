@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.3.1
+VERSION=1.3.2
 WGET=http://prdownloads.sourceforge.net/nfs/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils de partage NFS"
 
@@ -50,15 +50,15 @@ cat > ${PKG}/etc/rc.d/rc.nfsc << "EOF"
 nfsc_start() {
 	if grep -wq rpc_pipefs /proc/filesystems 2> /dev/null ; then
 		if grep -vwq rpc_pipefs /proc/mounts 2> /dev/null ; then
-    			/sbin/mount -t rpc_pipefs sunrpc /var/lib/nfs/rpc_pipefs/ 2> /dev/null
-    		fi
+			/sbin/mount -t rpc_pipefs sunrpc /var/lib/nfs/rpc_pipefs/ 2> /dev/null
+		fi
 	fi
 	if [ -x /usr/sbin/rpc.idmapd ]; then
-    		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de rpc.idmapd"
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de rpc.idmapd"
 		/usr/sbin/rpc.idmapd
 	fi
 	if [ -x /usr/sbin/rpc.gssd ]; then
-    		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de rpc.gssd"
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de rpc.gssd"
 		/usr/sbin/rpc.gssd
 	fi
 }
