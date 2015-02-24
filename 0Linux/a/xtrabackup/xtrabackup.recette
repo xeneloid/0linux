@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.2.9
+WGET=http://www.percona.com/downloads/XtraBackup/LATEST/source/tarball/percona-$NAMESRC-$VERSION.tar.gz
+DESC="Système de sauvegarde à chaud pour MySQL / MariaDB"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D SYSCONFDIR=/etc \
+	-D BUILD_CONFIG=xtrabackup_release \
+	./ ../
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+# On enlève des scripts de test, uniqument utiles aux développeurs du projet :
+rm -rf $PKG/usr/xtrabackup-test
+
+# Il faut installer les pages de manuel manuellement :
+mkdir -p $PKG/usr/man
+cp -a man/mysqlman.1 $PKG/usr/man
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
