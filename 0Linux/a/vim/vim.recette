@@ -20,7 +20,7 @@ cflags
 # On télécharge chaque correctif :
 mkdir -p ${PKGSOURCES}/${NAMETGZ}/patches
 
-for correctif in {001..557}; do # Indiquer ici le nombre de correctifs à appliquer.
+for correctif in {001..640}; do # Indiquer ici le nombre de correctifs à appliquer.
 	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} ]; then
 		wget -vc "ftp://ftp.vim.org/pub/vim/patches/${VERSION}/${VERSION}.${correctif}" \
 			-O ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}.part
