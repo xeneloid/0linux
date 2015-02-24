@@ -2,8 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=digikam
-VERSION=4.6.0
-WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+VERSION=4.7.0_1
+WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$NAMESRC-$(echo $VERSION | sed "s/_/-/").tar.bz2
 DESC="Bibliothèque d'interface pour site utilisant MediaWiki (comme Wikipedia)"
 
 telecharger_sources
