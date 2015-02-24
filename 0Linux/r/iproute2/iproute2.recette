@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.18.0
+VERSION=3.19.0
 WGET=http://kernel.org/pub/linux/utils/net/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de routage d'IP"
 
