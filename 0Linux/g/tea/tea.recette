@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=39.1.0
+VERSION=40.0.0
 WGET=http://semiletov.org/tea/dloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Éditeur de texte léger et puissant en Qt"
 
@@ -9,9 +9,12 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La variable prefix n'est pas prise en compte :
+sed -i 's|/usr/local|/usr|g' src.pro
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-qmake PREFIX=/usr/bin
+qmake
 
 make -j${JOBS} || make
 fakeroot make install INSTALL_ROOT=${PKG}
@@ -23,6 +26,7 @@ cat > $PKG/usr/share/applications/tea.desktop << EOF
 Encoding=UTF-8
 Name=Tea
 Comment=A small programmer's QT editor
+Comment[Fr]=Un éditeur léger en Qt pour les programmeurs
 Exec=tea %U
 Terminal=false
 Type=Application
