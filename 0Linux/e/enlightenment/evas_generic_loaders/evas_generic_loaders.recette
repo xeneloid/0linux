@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.12.0
-WGET=http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+VERSION=1.13.0
+WGET=http://download.enlightenment.org/rel/libs/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques supplémentaires de rendu graphique pour E"
 
 telecharger_sources
