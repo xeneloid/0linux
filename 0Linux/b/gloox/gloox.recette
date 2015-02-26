@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.10
+VERSION=1.0.13
 WGET=http://camaya.net/download/gloox-$VERSION.tar.bz2
 DESC="Moteur client et serveur pour le protocole XMPP"
 
