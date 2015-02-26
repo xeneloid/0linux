@@ -28,7 +28,7 @@ mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
 rm -f ${NAMESRC}-${VERSION}-linux-*.tar.gz
 
 # On copie tout le reste au bon endroit :
-cp -ar $TMP/${NAMESRC}1.7.0_$(echo $VERSION | tr -d '7u')/* ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
+cp -ar $TMP/${NAMESRC}1.7.0_$(echo $VERSION | sed 's/7u//')/* ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}
 
 # On crée un lien dans les plugins Mozilla pour le plugin Java :
 ln -sf ../../../../usr/lib${LIBDIRSUFFIX}/jdk/jre/lib/${LIB_ARCH}/libnpjp2.so \
