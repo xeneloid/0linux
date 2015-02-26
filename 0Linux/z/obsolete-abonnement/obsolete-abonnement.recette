@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=20
+VERSION=21
 DESC="Paquets marqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
@@ -57,6 +57,8 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	opengtl \
 	partio \
 	python3 \
+	qca-ossl \
+	qca-gnupg \
 	raptor2 \
 	razor-qt \
 	suitesparseconfig \
@@ -138,6 +140,8 @@ nepomuk-core: remplacé par 'baloo*'
 nepomuk-widgets: remplacé par 'baloo*'
 opengtl: projet mort
 python3: fusionné dans 'python'
+qca-ossl: fusionné dans 'qca2'
+qca-gnupg: fusionné dans 'qca2'
 raptor2: fusionné dans  'raptor'
 razor-qt: fusionné avec LXDE pour devenir 'LXQt'
 suitesparseconfig: distribué avec le paquet 'suitesparse'
