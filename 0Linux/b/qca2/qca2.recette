@@ -2,8 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=qca
-VERSION=2.0.3
-WGET=http://delta.affinix.com/download/qca/2.0/$NAMESRC-$VERSION.tar.bz2
+VERSION=2.1.0
+WGET=http://delta.affinix.com/download/qca/2.0/$NAMESRC-$VERSION.tar.gz
 DESC="Extension de cryptographie pour Qt"
 EXTRADEPS="ca-certificates"
 
@@ -11,26 +11,19 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Corrige la compilation avec gcc 4.7.x :
-cat $CWD/qca2.gcc47.patch | patch -p1
-
-# Corrige un problème d'exportation Qt :
-cat $CWD/qca2.export.patch | patch -p1
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--qtdir=/usr \
-	--includedir=/usr/include \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--certstore-path=/etc/ssl/certs/ca-certificates.crt \
-	--no-separate-debug-info \
-	--disable-tests \
-	--release
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	..
 
 make -j${JOBS} || make
-fakeroot make install INSTALL_ROOT=${PKG}
+fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
