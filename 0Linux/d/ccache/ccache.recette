@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.1.9
+VERSION=3.2.1
 WGET=http://samba.org/ftp/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Système de cache pour compilateur"
 
@@ -30,7 +30,7 @@ export PATH="/usr/libARCH/ccache/bin:${PATH}"
 EOF
 chmod +x ${PKG}/etc/profile.d/ccache.sh
 
-# On corige le fichier profil pour notre suffixe de bibliothèques :
+# On corrige le fichier profil pour notre suffixe de bibliothèques :
 sed -i "s@ARCH@${LIBDIRSUFFIX}@g" ${PKG}/etc/profile.d/ccache.sh
 
 installer_doc
