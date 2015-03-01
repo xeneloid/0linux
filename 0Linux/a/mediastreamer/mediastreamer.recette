@@ -21,6 +21,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
 
+# On enlève la directive Werror, pour paranoiaques :
+sed -i -e "s/-Werror //g" $(find . -type f -name Makefile)
+
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
