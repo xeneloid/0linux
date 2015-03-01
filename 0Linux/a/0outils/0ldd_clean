@@ -1,4 +1,16 @@
 #!/bin/sh
+
+growl () {
+    # Print error message on stderr and exit if a non-null code is given.
+    # $f CODE, MESSAGE
+    local code=$1; shift 1
+    if [ $code -ne 0 ]; then
+        echo "(E) $*" >&2
+        exit $code
+    fi
+    echo "(W) $*" >&2
+}
+
 findelves () {
     # Print the dynamic library list the given stuff is linked to.
     # $f FILE OR DIRECTORY
