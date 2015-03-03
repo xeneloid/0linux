@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=21
+VERSION=22
 DESC="Paquets marqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
@@ -49,6 +49,7 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	libqtgtl \
 	libssh2 \
 	libutemper \
+	libxfcegui4 \
 	mplayer-codecs \
 	mysql \
 	ndiswrapper \
@@ -133,6 +134,7 @@ lcms2: fusionné dans 'lcms'
 libqtgtl: lié à 'opengtl', projet mort
 libssh2: fusionné dans 'libssh'
 libutemper: corrigé en 'libutempter'
+libxfcegui4: remplacé par 'libxfce4ui'
 mplayer-codecs: obsolète
 mysql: remplacé par 'mariadb'
 ndiswrapper: supprimé, inutile
