@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.1
-WGET=http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
+VERSION=1.4.3
+WGET=http://archive.xfce.org/src/xfce/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Gestion de l'énergie pour Xfce"
 EXTRADEPS="upower"
 
