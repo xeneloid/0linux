@@ -2,11 +2,9 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Thunar
-VERSION=1.6.3
-EXT=tar.bz2
-WGET=http://archive.xfce.org/src/xfce/thunar/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=1.6.6
+WGET=http://archive.xfce.org/src/xfce/thunar/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Gestionnaire de fichiers d'Xfce"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
