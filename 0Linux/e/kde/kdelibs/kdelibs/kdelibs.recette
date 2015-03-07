@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.14.5
-WGET=ftp://ftp.kde.org/pub/kde/stable/applications/14.12.2/src/$NAMESRC-$VERSION.tar.xz
+VERSION=4.14.6
+WGET=ftp://ftp.kde.org/pub/kde/stable/applications/14.12.3/src/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques communes de l'environnement et des applications KDE"
 EXTRADEPS="oxygen-icons media-player-info shared-desktop-ontologies upower ca-certificates polkit-qt docbook-xml"
 
