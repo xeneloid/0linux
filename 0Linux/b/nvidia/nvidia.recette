@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=NVIDIA
-VERSION=340.24
+VERSION=346.47
 EXT=run
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
