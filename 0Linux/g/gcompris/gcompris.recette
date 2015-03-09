@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=14.12
+VERSION=15.02
 WGET=http://gcompris.net/download/$NAMESRC-$VERSION.tar.bz2
 DESC="Une riche suite éducative pour enfants de 2 à 10 ans"
 
