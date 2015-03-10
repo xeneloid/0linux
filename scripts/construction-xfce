@@ -2,7 +2,6 @@ libxfce4util
 xfconf
 libxfce4ui
 garcon
-libxfcegui4
 exo
 xfce4-panel
 thunar
@@ -12,9 +11,9 @@ xfce4-session
 xfdesktop
 xfwm4
 xfwm4-themes
-xfce4-appfinder 
+xfce4-appfinder
 gtk-xfce-engine
-xfce4-notifyd 
+xfce4-notifyd
 xfce4-power-manager
 xfce4-screenshooter
 xfce4-taskmanager
