@@ -13,9 +13,6 @@ cflags
 sed -i -e 's:truetype/freefont:TTF:g' modules/text_renderer/freetype.c
 sed -i -e 's:truetype/ttf-dejavu:TTF:g' modules/visualization/projectm.cpp
 
-# On corrige le répertoire standard des bibliothèques :
-# sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
-
 # Compilation en forçant les chemins de Samba :
 LDFLAGS+="-I/usr/include/samba-4.0"
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
