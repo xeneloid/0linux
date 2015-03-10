@@ -10,8 +10,11 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Corrige les usage obsolètes dans les CMakeLists :
+# Corrige les usages obsolètes dans les CMakeLists :
 cat $CWD/freerdp.cmake31.patch | patch -p1
+
+# Corrige un mauvais comportement de la touche 'Meta' :
+cat $CWD/freerdp.winkey.patch | patch -p1
 
 # On compile dans un répertoire dédié :
 mkdir build
@@ -22,6 +25,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
+	-DWITH_PULSE=ON \
+	-DWITH_CUPS=ON \
+	-DWITH_CHANNELS=ON \
+	-DWITH_CLIENT_CHANNELS=ON \
+	-DWITH_SERVER_CHANNELS=ON \
 	..
 
 make -j${JOBS} || make
