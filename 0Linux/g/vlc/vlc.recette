@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.1.5
+VERSION=2.2.0
 WGET=http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Le lecteur multimédia polyvalent VLC"
 
@@ -10,22 +10,14 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On corrige les polices par défaut :
-cat $CWD/vlc.polices.patch | patch -p1
-
-# On corrige la prise en charge de RDP :
-cat $CWD/vlc.rdp.patch | patch -p1
-
-# Pas de problème avec ffmpeg 2.4 contrèrement à ce que croit le ./configure :
-cat $CWD/vlc.ffmpeg24.patch | patch -p1
-
-# Régénération du script configure :
-autoreconf -vif
+sed -i -e 's:truetype/freefont:TTF:g' modules/text_renderer/freetype.c
+sed -i -e 's:truetype/ttf-dejavu:TTF:g' modules/visualization/projectm.cpp
 
 # On corrige le répertoire standard des bibliothèques :
-sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
+# sed -i -e "s#/lib/vlc#/usr/lib${LIBDIRSUFFIX}/vlc#g" configure*
 
 # Compilation en forçant les chemins de Samba :
-LDFLAGS+="-I/usr/include/samba-4.0" \
+LDFLAGS+="-I/usr/include/samba-4.0"
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -35,6 +27,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-freerdp \
 	--disable-rpath \
 	--disable-update-check \
 	--enable-a52 \
