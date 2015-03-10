@@ -83,11 +83,14 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--enable-avfilter \
 	--enable-avisynth \
+	--enable-avresample \
+	--enable-fontconfig \
 	--enable-frei0r \
 	--enable-gnutls \
 	--enable-gpl \
 	--enable-libass \
 	--enable-libbluray \
+	--enable-libcaca \
 	--enable-libcdio \
 	--enable-libdc1394 \
 	--enable-libfaac \
@@ -98,11 +101,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
+	--enable-libopencv \
 	--enable-libopus \
 	--enable-librtmp \
 	--enable-libschroedinger \
 	--enable-libspeex \
 	--enable-libtheora \
+	--enable-libtwolame \
 	--enable-libv4l2 \
 	--enable-libvorbis \
 	--enable-libvpx \
