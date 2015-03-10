@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.5.3
+VERSION=2.5.4
 WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.13.tar.bz2
       http://ffmpeg.org/releases/$NAMESRC-$VERSION.tar.bz2
      )
@@ -21,15 +21,18 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x \
 	--shlibdir=/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x \
 	--disable-debug \
+	--disable-stripping \
 	--disable-libopencv \
 	--mandir=/usr/man \
 	--enable-avfilter \
 	--enable-frei0r \
+	--enable-gnutls \
 	--enable-gpl \
 	--enable-libass \
 	--enable-libcdio \
 	--enable-libdc1394 \
 	--enable-libfaac \
+	--enable-libfreetype \
 	--enable-libgsm \
 	--enable-libmodplug \
 	--enable-libmp3lame \
@@ -48,7 +51,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-openal \
 	--enable-postproc \
 	--enable-pthreads \
+	--enable-runtime-cpudetect \
 	--enable-shared \
+	--enable-swresample \
 	--enable-vdpau \
 	--enable-version3 \
 	--enable-x11grab
@@ -74,38 +79,43 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--shlibdir=/usr/lib${LIBDIRSUFFIX} \
 	--disable-debug \
+	--disable-stripping \
 	--mandir=/usr/man \
 	--enable-avfilter \
-	--enable-avresample \
-	--enable-fontconfig \
+	--enable-avisynth \
 	--enable-frei0r \
+	--enable-gnutls \
 	--enable-gpl \
 	--enable-libass \
-	--enable-libcaca \
+	--enable-libbluray \
 	--enable-libcdio \
 	--enable-libdc1394 \
 	--enable-libfaac \
+	--enable-libfreetype \
+	--enable-libfribidi \
 	--enable-libgsm \
 	--enable-libmodplug \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
-	--enable-libopencv \
+	--enable-libopus \
 	--enable-librtmp \
 	--enable-libschroedinger \
 	--enable-libspeex \
 	--enable-libtheora \
-	--enable-libtwolame \
 	--enable-libv4l2 \
 	--enable-libvorbis \
 	--enable-libvpx \
 	--enable-libx264 \
+	--enable-libx265 \
 	--enable-libxvid \
 	--enable-nonfree \
 	--enable-openal \
 	--enable-postproc \
 	--enable-pthreads \
+	--enable-runtime-cpudetect \
 	--enable-shared \
+	--enable-swresample \
 	--enable-vdpau \
 	--enable-version3 \
 	--enable-x11grab
