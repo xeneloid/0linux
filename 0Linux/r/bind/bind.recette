@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=9.10.1_P2
+VERSION=9.10.2
 WGET=(
       ftp://ftp.isc.org/isc/${NAMESRC}$(echo $VERSION | cut -d'.' -f1)/$(echo $VERSION | sed 's/_/-/')/$NAMESRC-$(echo $VERSION | sed 's/_/-/').tar.gz
       http://www.internic.net/zones/named.root
      )
-DESC="Le serveurs de noms de domaine BIND et ses outils dédiés"
+DESC="Le serveur de noms de domaine (DNS) BIND et ses outils dédiés"
 
 telecharger_sources
 preparer_sources $NAMESRC-$(echo $VERSION | sed 's/_/-/').tar.gz
@@ -34,8 +34,9 @@ fakeroot make install DESTDIR=${PKG}
 # On crée un lien générique :
 ln -sf named ${PKG}/usr/bin/lwresd
 
-# On crée ce répertoire nécessaire au bon fonctionnement de BIND :
+# On crée ces répertoires nécessaires au bon fonctionnement de BIND :
 mkdir -p ${PKG}/var/run/named
+mkdir -p ${PKG}/etc/default
 
 # On crée un fichier service, désactivé par défaut :
 mkdir -p ${PKG}/etc/rc.d
@@ -51,7 +52,7 @@ bind_start() {
 	[ -r /etc/default/rndc ] && . /etc/default/rndc
 	
 	if [ -x /usr/sbin/named ]; then
-		/usr/sbin/named $NAMED_OPTIONS
+		/usr/sbin/named
 	fi
 }
 
@@ -85,7 +86,7 @@ esac
 EOF
 
 # On crée un fichier de configuration pour fournir un simple serveur de
-# cache DNS en prenant garde à ne rien écraser:
+# cache DNS local en prenant garde à ne rien écraser:
 mkdir -p $PKG/var/named/cache-dns
 
 cat > ${PKG}/etc/named.conf.0nouveau << "EOF"
@@ -148,6 +149,10 @@ EOF
 cp -a ${PKGSOURCES}/${NAMETGZ}/named.root ${PKG}/var/named/cache-dns/
 
 installer_doc
+
+# On complète la documentation :
+cp -a doc/arm doc/misc ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+
 creer_post_installation
 stripper
 empaqueter
