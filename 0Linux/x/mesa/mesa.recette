@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
+NAMESRC=MesaLib
 VERSION=10.4.6
-WGET=ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.tar.xz
+WGET=ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques graphiques 3D OpenGL pour X11"
 
 telecharger_sources
@@ -14,6 +15,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
+	
+	# On régénère le système de construction avec nos outils :
+	autoreconf -vif
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -54,6 +58,9 @@ fi
 
 preparer_sources
 cflags
+
+# On régénère le système de construction avec nos outils :
+autoreconf -vif
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
