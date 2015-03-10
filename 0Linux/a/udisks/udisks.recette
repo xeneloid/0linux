@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.1.4
+VERSION=2.1.5
 WGET=(http://hal.freedesktop.org/releases/$NAMESRC-1.0.5.tar.gz
      http://udisks.freedesktop.org/releases/$NAMESRC-$VERSION.tar.bz2
      )
