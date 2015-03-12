@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.2.0
+VERSION=2.2.1
 WGET=ftp://ftp.ruby-lang.org/pub/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Langage de programmation orienté objet « élégant »"
 
