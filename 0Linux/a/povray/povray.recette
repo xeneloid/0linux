@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.7.0.RC7
-EXT=tar.bz2
-WGET=http://www.povray.org/beta/source/$NAMESRC-$VERSION.$EXT
+VERSION=3.7.0.0
+WGET=https://github.com/POV-Ray/$NAMESRC/archive/v$VERSION.tar.gz
 DESC="Persistance of Vision Raytracer, un lanceur de rayons ultra-puissant pour la création 3D."
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige pour 'boost' et les derniers 'automake'/'autoconf' :
-sed -i 's:=no:=yes:' unix/config/ax_boost_thread.m4
-sed -i 's:AC_MSG_FAILURE(\[c:AC_MSG_RESULT(\[:' configure.ac
+# On adapte le système de regénération des outils de compilation :
+cd unix
+sed 's/automake --w/automake --add-missing --w/g' -i prebuild.sh
+sed 's/dist-bzip2/dist-bzip2 subdir-objects/g' -i configure.ac
+./prebuild.sh
+cd ..
 
 # On régénère le système de construction :
 ./bootstrap
 
 # Compilation avec "-O3" pour ne pas écraser le "-O3" interne avec notre "-O2" :
-CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3 -w -lboost_system" \
+CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3 -w -lboost_system -lboost_thread" \
 ./configure \
-	COMPILED_BY="fatalerrors <jeff.levasseur@free.fr> - 0Linux <http://0linux.org>" \
+	COMPILED_BY="fatalerrors <geoffray.levasseurbrandin@numericable.fr> - 0Linux <http://0linux.org>" \
+	LIBS="-lboost_system -lboost_thread" \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
