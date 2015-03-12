@@ -1,24 +1,30 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.5.0
-WGET=http://prdownloads.sourceforge.net/jsoncpp/$NAMESRC-src-$VERSION.tar.gz
+VERSION=1.4.4
+WGET=https://github.com/open-source-parsers/jsoncpp/archive/$VERSION.tar.gz
 DESC="Analyseur JSon en C++"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-scons platform=linux-gcc
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D JSONCPP_LIB_BUILD_SHARED=ON \
+	-D JSONCPP_WITH_TESTS=OFF \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	./ ../
 
-# Installation manuelle :
-mkdir -p $PKG/usr/include/jsoncpp
-cp -a include/json $PKG/usr/include/jsoncpp
-mkdir -p $PKG/usr/lib${LIBDIRSUFFIX}
-cp -a buildscons/linux-gcc-*/src/lib_json/libjson_linux-gcc*libmt.so \
-	$PKG/usr/lib${LIBDIRSUFFIX}/libjsoncpp.so
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+cd ../
 
 installer_doc
 creer_post_installation
