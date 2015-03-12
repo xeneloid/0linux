@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.1.0
+VERSION=2.2.1
 WGET=http://wiki.qemu-project.org/download/$NAMESRC-$VERSION.tar.bz2
 DESC="Émulateur de processeurs et systèmes multiples"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# Qemu n'aime pas make 4, ceci contourne le problème :
+export ARFLAGS="rv"
+
+# Corrige un problème avec GCC :
+cat $CWD/qemu.xattr.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -18,12 +24,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--audio-drv-list=alsa,oss,sdl \
+	--smbd=/usr/bin/smbd \
+	--audio-drv-list=alsa,sdl \
 	--enable-docs \
 	--enable-linux-aio \
 	--enable-system
 
-make -j${JOBS} || make
+make -j${JOBS} V=99 || make V=99
 fakeroot make install DESTDIR=${PKG}
 
 # On crée une règle 'udev' afin que que tous les utilisateurs aient accès à kvm :
