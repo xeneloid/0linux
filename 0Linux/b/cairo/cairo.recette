@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.14.0
+VERSION=1.14.2
 WGET=http://cairographics.org/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques graphiques 2D"
 
@@ -48,8 +48,14 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# La suite de tests contient une dépendance circulaire GTK+-Cairo, on la supprime :
-sed -i '/noinst_PROGRAMS = cairo-test-suite$(EXEEXT) # always build/d' test/Makefile.am
+# La suite de tests est une plaie (tout court), on la supprime :
+rm -rf test perf
+sed -i "s/boilerplate test perf/boilerplate/g" Makefile.in
+sed -i "s@test/Makefile test/pdiff/Makefile perf/Makefile perf/micro/Makefile @@" configure
+sed -i "/\"test\/Makefile/d" configure
+sed -i "/\"test\/pdiff\/Makefile/d" configure
+sed -i "/\"perf\/Makefile/d" configure
+sed -i "/\"perf\/micro\/Makefile/d" configure
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
