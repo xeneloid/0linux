@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Cairo
-VERSION=1.104
+VERSION=1.105
 WGET=http://prdownloads.sourceforge.net/gtk2-perl/$NAMESRC-$VERSION.tar.gz
 DESC="Interfaçage Cairo pour Perl"
 
