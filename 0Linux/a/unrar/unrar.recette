@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=unrarsrc
-VERSION=5.1.7
+VERSION=5.2.6
 WGET=http://www.rarlab.com/rar/$NAMESRC-$VERSION.tar.gz
 DESC="Décompresseur d'archives RAR"
 
