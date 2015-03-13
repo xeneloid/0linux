@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Gtk2
-VERSION=1.2492
+VERSION=1.2495
 WGET=http://prdownloads.sourceforge.net/gtk2-perl/$NAMESRC-$VERSION.tar.gz
 DESC="Interfaçage Perl pour GTK+ 2"
 EXTRADEPS="cairo-perl glib-perl pango-perl"
