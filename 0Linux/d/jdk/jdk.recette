@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7u75
+VERSION=7u76
 cflags # Pour définir de suite $PKGARCH
 
 # La sous-archive et le répertoire des bibliothèques changent de nom selon
