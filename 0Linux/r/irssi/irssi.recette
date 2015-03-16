@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.8.15
-EXT=tar.bz2
-WGET=http://www.irssi.org/files/$NAMESRC-$VERSION.$EXT
+VERSION=0.8.17
+WGET=http://www.irssi.org/files/$NAMESRC-$VERSION.tar.bz2
 DESC="Client IRC pour terminal"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
