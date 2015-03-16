@@ -12,6 +12,9 @@ cflags
 # On corrige un comportement créant des lignes vides en début de script :
 sed -i 's;\$(AM_V_GEN)\$(RAWCPP) \$(RAWCPPFLAGS) \$(CPP_FILES_FLAGS) < \$< | \$(CPP_SED_MAGIC) > \$@;\$(AM_V_GEN)$(RAWCPP) \$(RAWCPPFLAGS) \$(CPP_FILES_FLAGS) \$< | \$(CPP_SED_MAGIC) > \$@;' cpprules.in
 
+# On regénère les scripts de compilation :
+autoreconf -vif
+
 # Compilation :
 configure_make_makeinstall
 
