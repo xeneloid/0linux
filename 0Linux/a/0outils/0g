@@ -2,7 +2,7 @@
 #
 # 0G - gestionnaire distant pour 0linux.
 
-# Copyright (c) 2012, 2013, 2014 Sébastien Boillod <sbb at tuxfamily dot org>.
+# Copyright (c) 2012-2015 Sébastien Boillod <sbb at tuxfamily dot org>.
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -118,15 +118,14 @@ humansize () {
 printinfo () {
     # Affiche le contenu des fichiers textes associés aux paquets demandés.
     # $f URL DU DÉPÔT
-    local tmp="" txt=""
-    while read tmp; do
-        read tmp; read txt
-        basename "$txt.txt"
-        echo "+----------+"
-        $CURL "$1/$txt.txt"
-        echo "+----------+"
+    local code="" size="" file="" ok=1
+    while read -r code size file; do
+        echo "**** ${file##*/}.spack ($(humansize $size))"
+        $CURL "$1/$file.txt"
+        echo ""
+        ok=0
     done
-    [ "$txt" ] || return 1
+    return $ok
 }
 
 requestinfo () {
