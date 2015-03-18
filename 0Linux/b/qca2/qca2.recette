@@ -20,6 +20,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D QT4_BUILD=ON \
 	..
 
 make -j${JOBS} || make
