@@ -9,10 +9,11 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige une déclaration obsolète :
-sed -i 's/PCITAG/CARD32/' src/r128.h
+# Correctifs en provenance du dépot git officiel :
+cat $CWD/git-fixes.patch | patch -p1
 
 # Compilation :
+autoreconf -vif
 configure_make_makeinstall
 
 installer_doc
