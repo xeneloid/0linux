@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.3
+VERSION=1.6.5
 WGET=(
       https://github.com/maxmind/$NAMESRC-api-c/archive/v${VERSION}.tar.gz
       http://geolite.maxmind.com/download/$NAMESRC/database/GeoLiteCountry/GeoIP.dat.gz
