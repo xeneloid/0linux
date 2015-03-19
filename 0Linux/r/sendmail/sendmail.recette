@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=8.14.9
+VERSION=8.15.1
 WGET=ftp://ftp.sendmail.org/pub/$NAMESRC/$NAMESRC.$VERSION.tar.gz
 DESC="Démons d'envoi de courrier électronique"
 
