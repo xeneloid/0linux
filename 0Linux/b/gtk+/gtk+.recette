@@ -3,7 +3,7 @@
 
 VERSION=3.14.8
 EXT=tar.xz
-WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.25.$EXT
+WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.27.$EXT
       http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
      )
 DESC="Suite d'outils pour la création d'interfaces graphiques"
