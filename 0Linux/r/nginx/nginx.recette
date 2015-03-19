@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.1
+VERSION=1.7.10
 WGET=http://nginx.org/download/$NAMESRC-$VERSION.tar.gz
 DESC="Serveur/ proxy inverse HTTP et proxy IMAP/POP3 hautes performances"
 EXTRADEPS="geoip"
