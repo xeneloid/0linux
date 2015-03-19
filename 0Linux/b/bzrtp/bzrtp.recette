@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.0.1
+WGET=http://download.savannah.gnu.org/releases/linphone/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="Bibliothèque de gestion sécurisé d'échange de clés"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+configure_make_makeinstall
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
