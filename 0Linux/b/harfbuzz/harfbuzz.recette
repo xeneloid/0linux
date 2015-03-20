@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.37
+VERSION=0.9.38
 WGET=http://www.freedesktop.org/software/$NAMESRC/release/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèque de rendu de texte"
 
