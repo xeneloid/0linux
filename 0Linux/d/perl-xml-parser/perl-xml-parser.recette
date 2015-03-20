@@ -2,8 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=XML-Parser
-VERSION=2.36
-WGET=http://cpan.org/authors/id/M/MS/MSERGEANT/$NAMESRC-$VERSION.tar.gz
+VERSION=2.44
+WGET=http://cpan.org/authors/id/T/TO/TODDR/$NAMESRC-$VERSION.tar.gz
 DESC="Module XML-Parser pour Perl"
 
 telecharger_sources

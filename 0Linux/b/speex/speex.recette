@@ -46,6 +46,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--with-ogg-libraries=/usr/lib${LIBDIRSUFFIX} \
+	--enable-binaries \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

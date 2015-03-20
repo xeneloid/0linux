@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.7p1
+VERSION=6.8p1
 WGET=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$NAMESRC-$VERSION.tar.gz
 DESC="Serveur et clients sécurisés OpenSSH"
 

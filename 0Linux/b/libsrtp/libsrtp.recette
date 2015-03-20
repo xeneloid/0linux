@@ -1,26 +1,15 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=srtp
-VERSION=1.4.5~20130609
-WGET=http://ftp.de.debian.org/debian/pool/main/s/$NAMESRC/${NAMESRC}_${VERSION}~dfsg.orig.tar.gz
+VERSION=1.5.2
+WGET=https://github.com/cisco/$NAMESRC/archive/v$VERSION.tar.gz
 DESC="Bibliothèque de gestion du protocole SRTP"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Corrige la doc pour un Doxygen récents :
-cat $CWD/libsrtp.update_doxygen.patch | patch -p1
-
-# Permet de disposer d'un .so :
-cat $CWD/libsrtp.shared.patch | patch -p1
-
-# Évite une fuite mémoire :
-cat $CWD/libsrtp.data_alignment.patch | patch -p1
-
 # Compilation :
-autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -29,9 +18,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--enable-openssl \
+	--enable-syslog \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+make -j${JOBS} shared_library || make shared_library
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.16.5
+VERSION=4.16.6
 WGET=http://prdownloads.sourceforge.net/pyqt/$NAMESRC-$VERSION.tar.gz
 DESC="Outils d'interfaçage pour Python"
 
