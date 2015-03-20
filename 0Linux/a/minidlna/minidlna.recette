@@ -45,8 +45,8 @@ cat > ${PKG}/etc/rc.d/rc.minidlnad << "EOF"
 minidlnad_start() {
 		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de minidlnad..."
  
-		# On démarre le service :
-		/usr/sbin/minidlnad -S
+		# On démarre le service en tâche de fond:
+		/usr/sbin/minidlnad -S &
 }
  
 minidlnad_stop() {
