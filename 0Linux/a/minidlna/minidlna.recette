@@ -46,7 +46,7 @@ minidlnad_start() {
 		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de minidlnad..."
  
 		# On démarre le service en tâche de fond:
-		/usr/sbin/minidlnad -S &
+		/usr/sbin/minidlnad &
 }
  
 minidlnad_stop() {
