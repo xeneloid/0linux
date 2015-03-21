@@ -22,13 +22,78 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
         --libdir=/usr/lib${LIBDIRSUFFIX} \
         --docdir=/usr/doc/${NAMETGZ}-${VERSION} \
         --enable-batch \
-        --disable-gui \
+        --enable-gui=newgui2 \
+        --enable-upnp-natpmp \
         --build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make mlnet.static
 fakeroot make install DESTDIR=${PKG}
 
+# On installe l'icone et le fichier de menu :
+mkdir -p $PKG/usr/share/{icons,applications}
+cp -a icons/rsvg/type_source_normal.svg $PKG/usr/share/icons/mldonkey.svg
+cp -a distrib/mldonkey.desktop $PKG/usr/share/applications/mldonkey.desktop
+
+# On place la configuration en veillant à ne rien écraser :
+mkdir -p ${PKG}/etc
+cat > ${PKG}/etc/mldonkey.conf.0nouveau << EOF
+# Parameters to be passed to the daemon (default is empty)
+PARAMS=""
+
+EOF
+
+# On crée le fichier service (ne sera pas lancé automatiquement au
+# démarrage ; à lancer à la main avec '/etc/rc.d/rc.mldonkey-server  start')
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.mldonkey-server  << "EOF"
+#!/usr/bin/env bash
+
+mldonkey-server_start() {
+        echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de mldonkey-server..."
+
+        # On démarre le service :
+        /usr/sbin//usr/bin/mlnet -log_to_syslog true -log_file /dev/null -pid /run/mldonkey
+}
+
+mldonkey-server_stop() {
+        echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de mldonkey-server..."
+       
+        # On tue le service :
+        killall mlnet
+}
+
+case "$1" in
+        'start')
+                mldonkey-server_start
+        ;;
+       
+        'stop')
+                mldonkey-server_stop
+        ;;
+       
+        'restart')
+                mldonkey-server_stop
+                sleep 1
+                mldonkey-server_start
+        ;;
+       
+        *)
+                echo "Utilisation : $0 start|stop|restart"
+                exit 1
+        ;;
+
+esac
+
+EOF
+
+# On s'assure de la présence de ces répertoires de travail :
+mkdir -p ${PKG}/var/{cache,run}/mldonkey-server
+
 installer_doc
+
+# On installe de la documentation suplémentaire :
+cp -a docs/* $PKG/usr/doc/$NAMETGZ-$VERSION
+
 creer_post_installation
 stripper
 empaqueter
