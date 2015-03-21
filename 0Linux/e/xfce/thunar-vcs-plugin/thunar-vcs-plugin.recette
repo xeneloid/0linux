@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.1.4
-WGET=http://archive.xfce.org/src/thunar-plugins/$NAMESRC/0.1/$NAMESRC-$VERSION.tar.bz2
+WGET=http://archive.xfce.org/src/thunar-plugins/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Ajoute la gestion des systèmes de controle de révision dans Thunar"
 
 telecharger_sources
