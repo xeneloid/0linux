@@ -19,10 +19,7 @@ mkdir -p build && cd build
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
-	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
-	-D WL_INSTALL_PREFIX=/usr \
 	-D WL_INSTALL_DATADIR=/usr/share/widelands \
-	-D WL_INSTALL_BINDIR=/usr/bin \
 	-D SYSCONF_INSTALL_DIR=/etc \
 	./ ../
 
@@ -35,6 +32,7 @@ mkdir -p $PKG/usr/share/applications
 cp -a $CWD/widelands.desktop $PKG/usr/share/applications/widelands.desktop
 
 # Les executables devraient être dans bin :
+mkdir -p $PKG/usr/bin
 mv $PKG/usr/{widelands,wl_{map_info,render_richtext}} $PKG/usr/bin/
 
 installer_doc
