@@ -4,6 +4,7 @@
 VERSION=0.5.9
 WGET=http://www.midori-browser.org/downloads/${NAMESRC}_${VERSION}_all_.tar.bz2
 DESC="Navigateur Web léger pour Xfce"
+EXTRADEPS="gsettings-desktop-schemas"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
