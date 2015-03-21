@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.22
+VERSION=0.9.24
 WGET=http://www.samba.org/ftp/pub/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Système de gestion d'évènements pour Samba"
 
