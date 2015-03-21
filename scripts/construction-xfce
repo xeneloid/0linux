@@ -28,6 +28,7 @@ midori
 mousepad
 thunar-archive-plugin
 thunar-media-tags-plugin
+thunar-vcs-plugin
 xfce4-clipman-plugin
 xfce4-cpufreq-plugin
 xfce4-cpugraph-plugin
@@ -41,3 +42,4 @@ xfce4-sensors-plugin
 xfce4-vala
 xfce4-weather-plugin
 xfce4-whiskermenu-plugin
+xfce4-smartbookmark-plugin
