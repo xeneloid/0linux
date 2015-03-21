@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.0.3
+WGET=http://icculus.org/physfs/downloads/$NAMESRC-$VERSION.tar.bz2
+DESC="Bibliothèque d'abstraction pour divers formats d'archives"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D PHYSFS_BUILD_TEST=OFF \
+	-D PHYSFS_BUILD_WX_TEST=OFF \
+	./ ../
+
+make -j${JOBS} all docs || make all docs
+fakeroot make install DESTDIR=${PKG}
+cd ../
+
+installer_doc
+
+# On ajoute de la doc supplémentaire :
+mkdir -p $PKG/usr/man/man3
+cp -a build/docs/man/man3/* $PKG/usr/man/man3/
+cp -a build/docs/html $PKG/usr/doc/$NAMETGZ-$VERSION/
+
+# On renome une partie des manuels pour éviter les conflicts :
+for i in author Deinit description extension Free Init major Malloc minor opaque patch Realloc url ; do
+	mv $PKG/usr/man/man3/{,PHYSFS_}$i.3
+done
+
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
