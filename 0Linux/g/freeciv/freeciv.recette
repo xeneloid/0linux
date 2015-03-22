@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4.4
+VERSION=2.5.0
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Jeu dans lequel vous devrez créer une civilisation et la faire évoluer"
 
@@ -11,7 +11,7 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
+./configure MOCCMD="/usr/lib${LIBDIRSUFFIX}/qt5/bin/moc" \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
@@ -20,7 +20,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--without-ggz-client \
-	--enable-client=gtk,sdl \
+	--enable-aimodules \
+	--enable-client=gtk2,sdl \
+	--enable-fcdb=sqlite3 \
+	--enable-fcmp=gtk2 \
+	--enable-shared \
+	--enable-sys-lua \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
