@@ -2,8 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Ardour3
-VERSION=3.5.380
-WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.tar.bz2
+VERSION=3.5.403
+WGET=https://sources.archlinux.org/other/$NAMETGZ/$NAMESRC-$VERSION.tar.bz2
 DESC="Studio de production audio"
 
 telecharger_sources
