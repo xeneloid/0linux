@@ -3,7 +3,7 @@
 
 NAMESRC=HandBrake
 VERSION=0.10.1
-WGET=https://handbrake.fr/mirror/$NAMESRC-$VERSION.tar.bz2
+WGET=http://prdownloads.sourceforge.net/$NAMETGZ/$NAMESRC-$VERSION.tar.bz2
 DESC="Application de conversion audio et vidéo"
 
 telecharger_sources
@@ -16,6 +16,9 @@ sed -i \
     -e '/MODULES += contrib\/libdvdnav/d' \
     -e '/MODULES += contrib\/libdvdread/d' \
     make/include/main.defs
+
+# Empêche un crash au chargement d'une vidéo :
+cat $CWD/handbrake.crash.patch | patch -p2
 
 # Compilation :
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
