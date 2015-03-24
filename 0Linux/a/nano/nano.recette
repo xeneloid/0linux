@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.2.6
-EXT=tar.gz
-WGET=http://www.nano-editor.org/dist/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=2.4.0
+WGET=http://www.nano-editor.org/dist/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz
 DESC="Éditeur en mode texte facile d'utilisation"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
