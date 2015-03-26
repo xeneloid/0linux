@@ -1,31 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.3.3
-WGET=http://google-glog.googlecode.com/files/$NAMESRC-$VERSION.tar.gz
+VERSION=0.3.4
+WGET=https://github.com/google/$NAMESRC/archive/v$VERSION.tar.gz
 DESC="Bibliothèque de gestion de fichiers log pour C++"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compatibilité avec GFlag 2.1.x
-cat $CWD/glog.gflags21x.patch | patch -p1
-
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+configure_make_makeinstall
 
 installer_doc
 creer_post_installation
