@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.1.5
+VERSION=5.2.6
 WGET=http://ftp.debian.org/debian/pool/main/w/$NAMESRC/${NAMESRC}_${VERSION}.tar.xz
 DESC="Client d'interrogation distante de la base « whois »"
 
@@ -14,11 +14,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} prefix=/usr \
 	CONFIG_FILE=/etc/whois.conf \
 	HAVE_LIBIDN=1 \
-	HAVE_ICONV=1 || \
+	HAVE_ICONV=1 \
+	CFLAGS="$CFLAGS" || \
 make prefix=/usr \
 	CONFIG_FILE=/etc/whois.conf \
 	HAVE_LIBIDN=1 \
-	HAVE_ICONV=1 || \
+	CFLAGS="$CFLAGS"
 
 fakeroot make install-whois prefix=/usr BASEDIR=${PKG}
 
