@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=ModemManager
-VERSION=1.4.4
+VERSION=1.4.6
 WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Service de gestion de connexions réseau par modem"
 EXTRADEPS="libmbim libqmi"
