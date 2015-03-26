@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.1
-EXT=tar.xz
-WGET=http://0linux.geoffray-levasseur.org/src/$NAMESRC-$VERSION.$EXT
+VERSION=0.2
+WGET=http://0linux.geoffray-levasseur.org/src/$NAMESRC-$VERSION.tar.xz
 DESC="De nombreuses polices TTF et OTF fantaisistes"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
