@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.8.13
-EXT=tar.bz2
-WGET=http://www.midnight-commander.org/downloads/$NAMESRC-$VERSION.$EXT
+VERSION=4.8.14
+WGET=http://www.midnight-commander.org/downloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Gestionnaire de fichiers en mode texte et interpréteur"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige l'ouverture des archives créées avec 'cpio' et 'tar' :
-sed -i 's@tmp_vpath = vfs_path_from_str (s);@tmp_vpath = vfs_path_from_str_flags (s, VPF_NO_CANON);@' \
-	src/vfs/cpio/cpio.c \
-	src/vfs/tar/tar.c
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
