@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=ImageMagick
-VERSION=6.9.0_7
+VERSION=6.9.1_0
 WGET=http://mirror.checkdomain.de/imagemagick/$NAMESRC-$(echo $VERSION | tr '_' '-').tar.xz
 DESC="Outils de manipulation de fichiers graphiques"
 
