@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.1.1
+VERSION=1.1.3
 WGET=https://github.com/LMMS/$NAMESRC/archive/v$VERSION.tar.gz
 DESC="Boîte à rythmes multipiste avancée"
 
@@ -10,7 +10,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On corige la compilation :
-cat $CWD/lmms.compilefix.patch | patch -p1
+#cat $CWD/lmms.compilefix.patch | patch -p1
 
 # On compile dans un répertoire dédié :
 mkdir -p build && cd build
