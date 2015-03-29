@@ -27,8 +27,8 @@ CXXFLAGS="$(echo ${FLAGS} | sed 's/-O2 //')" \
 	--enable-alsa \
 	--enable-jack \
 	--enable-fftw \
-	--enable-portmidi \
 	--enable-setuid \
+	--disable-portmidi \
 	--disable-portaudio \
 	--build=${PKGARCH}-0linux-linux-gnu
 
