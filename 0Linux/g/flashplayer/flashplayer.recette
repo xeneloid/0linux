@@ -99,8 +99,9 @@ EOF
 	# On complète la documentation avec notre avertissement :
 	cp -a $CWD/LISEZMOI ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
 	
-	# On ramène tout fichier texte qui se serait perdu :
-	mv ${PKG}/*.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+	# On ramène toute documentation qui se serait perdue :
+	mv ${PKG}/*.txt ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/ || true
+	mv ${PKG}/LGPL ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/ || true
 	
 	# On déplace le multilib le cas échéant :
 	if [ "${PKGARCH}" = "x86_64" ]; then
