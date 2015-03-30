@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.7.0
+VERSION=7.8.0
 WGET=http://www.bunkus.org/videotools/$NAMESRC/sources/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de manipulation de fichiers vidéo MKV"
 
