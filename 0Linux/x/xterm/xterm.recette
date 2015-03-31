@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=316
+VERSION=317
 WGET=ftp://invisible-island.net/$NAMESRC/$NAMESRC-$VERSION.tgz
 DESC="Émulateur de terminal pour X11"
 
