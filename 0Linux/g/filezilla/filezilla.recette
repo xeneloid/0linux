@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=FileZilla
-VERSION=3.10.1.1
+VERSION=3.10.3
 WGET=http://prdownloads.sourceforge.net/filezilla/${NAMESRC}_${VERSION}_src.tar.bz2
 DESC="Client FTP graphique"
 
