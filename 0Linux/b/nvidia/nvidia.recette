@@ -66,23 +66,54 @@ cp -a nvidia_drv.so ${PKG}/usr/lib${LIBDIRSUFFIX}/xorg/modules/drivers/
 chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/xorg/modules/drivers/nvidia_drv.so
 
 # On copie les bibliothèques sans vergogne pour écraser celles du système... :
-cp -a libGL.{la,so.*} libnvidia-glcore.so.*  \
-	tls/libnvidia-tls.so.* libOpenCL.so.* libnvidia-compiler.so.* \
-	libcuda.so.* libnvidia-cfg.so.* \
-	${PKG}/usr/lib${LIBDIRSUFFIX}
+cp -a \
+	libGL.{la,so*} \
+	tls/libnvidia-tls.so* \
+	libOpenCL.so* \
+	libcuda.so* \
+	nvidia_drv.so* \
+	libcuda.so* \
+	libglx.so* \
+	libEGL.so* \
+	libnvcuvid.so* \
+	libnvidia-*.so* \
+	libvdpau_nvidia.so* \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/
 
-# VDPAU :
-cp -a libvdpau_nvidia.so.* ${PKG}/usr/lib${LIBDIRSUFFIX}/vdpau/
+# Idem pour le 32 bits multilib :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	mkdir -p ${PKG}/usr/lib/tls
+	cp -a \
+		32/libGL.{la,so*} \
+		32/tls/libnvidia-tls.so* \
+		32/libOpenCL.so* \
+		32/libcuda.so* \
+		32/nvidia_drv.so* \
+		32/libcuda.so* \
+		32/libglx.so* \
+		32/libEGL.so* \
+		32/libnvcuvid.so* \
+		32/libnvidia-*.so* \
+		32/libvdpau_nvidia.so* \
+		${PKG}/usr/lib/
+fi
 
 # OpenCL :
 cp -a nvidia.icd ${PKG}/etc/OpenCL/vendors/
 
 # On copie les binaires et exécutables :
-cp -a nvidia-bug-report.sh ${PKG}/usr/bin/
-cp -a nvidia-smi ${PKG}/usr/bin/
+cp -a \
+	nvidia-bug-report.sh \
+	nvidia-cuda-mps-control \
+	nvidia-cuda-mps-server \
+	nvidia-debugdump \
+	nvidia-smi \
+	${PKG}/usr/bin/
+chmod 755 ${PKG}/usr/bin/*
 
-# On copie le manuel :
-cp -a nvidia-smi.1.gz ${PKG}/usr/man/man1/
+# On place les manuels sans la compression (on a notre traitement avec xz-utils) :
+zcat nvidia-cuda-mps-control.1.gz > ${PKG}/usr/man/man1/nvidia-cuda-mps-control.1
+zcat nvidia-smi.1.gz > ${PKG}/usr/man/man1/nvidia-smi.1
 
 # On crée un fichier blacklist pour empêcher 'nouveau' de se charger :
 cat > ${PKG}/etc/modprobe.d/blacklist-nouveau.conf << "EOF"
@@ -112,13 +143,13 @@ done
 
 # On place 'nvidia-settings' :
 install -m 755 nvidia-settings ${PKG}/usr/bin/
-install -m 644 nvidia-settings.1.gz ${PKG}/usr/man/man1/
+zcat nvidia-settings.1.gz > ${PKG}/usr/man/man1/nvidia-settings.1
 install -m 644 nvidia-settings.desktop ${PKG}/usr/share/applications/
 install -m 644 nvidia-settings.png ${PKG}/usr/share/pixmaps/
 
 # On place 'nvidia-xconfig' :
 install -m 755 nvidia-xconfig ${PKG}/usr/bin/
-install -m 644 nvidia-xconfig.1.gz ${PKG}/usr/man/man1/
+zcat nvidia-xconfig.1.gz > ${PKG}/usr/man/man1/nvidia-xconfig.1
 
 # On corrige ce fatras de chemins incorrects :
 sed -i "s|__LIBGL_PATH__|/usr/lib${LIBDIRSUFFIX}/|" ${PKG}/usr/lib${LIBDIRSUFFIX}/libGL.la
