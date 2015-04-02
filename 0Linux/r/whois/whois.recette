@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.2.6
+VERSION=5.2.7
 WGET=http://ftp.debian.org/debian/pool/main/w/$NAMESRC/${NAMESRC}_${VERSION}.tar.xz
 DESC="Client d'interrogation distante de la base « whois »"
 
