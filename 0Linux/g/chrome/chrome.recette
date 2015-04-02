@@ -4,7 +4,7 @@
 # Pour voir les versions disponibles (vous pouvez faire mieux avec vos
 # numéros de versions, Google !) :
 # curl -s https://dl.google.com/linux/chrome/rpm/stable/x86_64/repodata/other.xml.gz | gzip -df | awk -F\" '/pkgid/{ sub(".*-","",$4); print $4": "$10 }
-VERSION=41.0.2272.101
+VERSION=41.0.2272.118
 
 cflags
 [ "${PKGARCH}" = "x86_64" ] && SRCARCH="amd64"
