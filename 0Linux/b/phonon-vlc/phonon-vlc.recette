@@ -9,6 +9,7 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# ------------------------Section Qt4 --------------------
 # La compilation se fait dans un répertoire dédié :
 mkdir -p build
 cd build
@@ -19,7 +20,26 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
 	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
-	-D CMAKE_INSTALL_LIBDIR=lib64 \
+	-D CMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
+	-D PHONON_BUILD_PHONON4QT5=OFF \
+	..
+
+make
+fakeroot make install DESTDIR=${PKG}
+
+# ------------------------Section Qt5 --------------------
+# La compilation se fait dans un répertoire dédié :
+mkdir -p build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
+	-D PHONON_BUILD_PHONON4QT5=ON \
 	..
 
 make
