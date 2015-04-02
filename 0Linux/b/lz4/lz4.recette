@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=127
+VERSION=128
 WGET=https://github.com/Cyan4973/$NAMESRC/archive/r$VERSION.tar.gz
 DESC="Alogorythme de compression très rapide"
 
