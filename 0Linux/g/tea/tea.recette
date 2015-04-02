@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=40.0.0
+VERSION=41.0.0
 WGET=http://semiletov.org/tea/dloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Éditeur de texte léger et puissant en Qt"
 
