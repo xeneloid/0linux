@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.1
+VERSION=1.4.2
 WGET=http://dl.matroska.org/downloads/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques multimédia Matroska"
 
@@ -9,16 +9,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige le chemin des bibliothèques :
-sed -i "s@^libdir=\$(prefix)/lib@&${LIBDIRSUFFIX}@" make/linux/Makefile
-
-cd make/linux
-
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-make -j${JOBS} sharedlib || make sharedlib
-
-fakeroot make install prefix=${PKG}/usr
+FLAGS=$(echo $FLAGS | sed "s/-O2/-O3/")
+configure_make_makeinstall
 
 installer_doc
 creer_post_installation
