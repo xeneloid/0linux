@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.3.4
-EXT=tar.xz
-WGET=http://downloads.xiph.org/releases/vorbis/$NAMESRC-$VERSION.$EXT
+VERSION=1.3.5
+WGET=http://downloads.xiph.org/releases/vorbis/$NAMESRC-$VERSION.tar.xz
 DESC="Format de compression audio"
 
 
