@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+NAMESRC=docutils
+VERSION=0.12
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="Bibliothèque de coloration synthaxique pour Python"
+
+telecharger_sources
+preparer_sources
+cflags
+
+# Compilation pour Python 3 :
+python3 setup.py build --build-lib=build/python
+find build/python -type f -exec \
+	sed -i '1s,^#! \?/usr/bin/\(env \|\)python$,#!/usr/bin/python3,' {} \;
+python3 setup.py build --build-lib=build/python \
+	install --root=$PKG --optimize=1
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
