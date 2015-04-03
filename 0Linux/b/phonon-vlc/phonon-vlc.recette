@@ -26,11 +26,12 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 
 make
 fakeroot make install DESTDIR=${PKG}
+cd ..
 
 # ------------------------Section Qt5 --------------------
 # La compilation se fait dans un répertoire dédié :
-mkdir -p build
-cd build
+mkdir -p build-qt5
+cd build-qt5
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -44,6 +45,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 
 make
 fakeroot make install DESTDIR=${PKG}
+cd ..
 
 installer_doc
 creer_post_installation
