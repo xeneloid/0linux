@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.65
+VERSION=1.0.67
 WGET=http://www.openprinting.org/download/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Ensemble de filtres d'impression OpenPrinting pour CUPS"
 
