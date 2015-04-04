@@ -12,12 +12,9 @@ cflags
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/share/icons/hicolor/{24x24,32x32,48x48}/apps
 
-# On adapte les sources aux plus récents 'glib' :
-sed -i 's@^#include <glib/.*$@#include <glib.h>@g' src/gtk/StockIcons.h
-
 # On corrige pour que ça fonctionne avec Cups 1.6 et plus ainsi que
 # le rendu de soculeurs :
-cat $CWD/epdfview.cups16.patch | patch -p1
+cat $CWD/epdfview-0.1.8-fixes-2.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
