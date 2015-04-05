@@ -4,6 +4,7 @@
 VERSION=2.1
 WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques pour l'utilisation de périphériques Bluetooth"
+EXTRADEPS="bluez"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
