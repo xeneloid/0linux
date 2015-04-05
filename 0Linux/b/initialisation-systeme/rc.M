@@ -81,6 +81,11 @@ if [ -x /etc/rc.d/rc.messagebus ]; then
 	/etc/rc.d/rc.messagebus start
 fi
 
+# Lancement de Bluez :
+if [ -x /etc/rc.d/rc.bluetoothd ]; then
+	/etc/rc.d/rc.bluetoothd start
+fi
+
 # Lancement des programmes pour GDK-Pixbuf :
 if [ -x /usr/bin/gdk-pixbuf-query-loaders ]; then
 	/usr/bin/gdk-pixbuf-query-loaders --update-cache 2>/dev/null
@@ -176,6 +181,14 @@ if [ -x /etc/rc.d/rc.samba ]; then
 	/etc/rc.d/rc.samba start
 fi
 
+# Montage du reste des systèmes de fichiers, maintenant qu'on a réseau, NFS, Samba, etc. :
+mount -v -F -a | grep -v "already mounted"
+
+# Lancement de MLDonkey :
+if [ -x /etc/rc.d/rc.mldonkey-server ]; then
+	/etc/rc.d/rc.mldonkey-server start
+fi
+
 # Lancement du serveur de pointage GPM :
 if [ -x /etc/rc.d/rc.gpm ]; then
 	/etc/rc.d/rc.gpm start
@@ -200,9 +213,6 @@ fi
 if [ -x /etc/rc.d/rc.local ]; then
 	/etc/rc.d/rc.local
 fi
-
-# Montage du reste des systèmes de fichiers, maintenant qu'on a réseau, NFS, Samba, etc. :
-mount -v -F -a | grep -v "already mounted"
 
 # Nettoyage du système après le montage de systèmes de fichiers, superflu compris :
 rm -f /var/lock/* /tmp/.X*lock /tmp/core /core /tmp/hunt* 2> /dev/null
