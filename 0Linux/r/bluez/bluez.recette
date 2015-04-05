@@ -3,7 +3,7 @@
 
 VERSION=5.30
 WGET=http://www.kernel.org/pub/linux/bluetooth/$NAMESRC-$VERSION.tar.xz
-DESC="Des bibliothèques et outils pour faire fonctionner quelque chose de précis..."
+DESC="Démon et bibliothèques pour le Bluetooth"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -43,9 +43,9 @@ ln -svf ../lib${LIBDIRSUFFIX}/bluetooth/bluetooth/bluetoothd $PKG/usr/sbin
 # On crée des fichiers de configuration supplémentaires :
 cat > $PKG/etc/bluetooth/rfcomm.conf << "EOF"
 # rfcomm.conf
-# Règle la configuration de RFCOMM du sou-sytème Bluetooth dans le noyau Linux.
+# Règle la configuration de RFCOMM du sous-sytème Bluetooth dans le noyau Linux.
 # Utilsez une ligne par commande
-# Voir la page de manuel rfcomm pour la liste des options
+# Voir la page de manuel de 'rfcomm' pour la liste des options
 
 # Fin de rfcomm.conf
 
@@ -55,13 +55,13 @@ cat > $PKG/etc/bluetooth/uart.conf << "EOF"
 # uart.conf
 # Attache les périphériques séries avec l'UART HCI à la pile BlueZ
 # Utilsez une ligne par périphérique
-# Voir la page de manuel hciattach pour la liste des options
+# Voir la page de manuel 'hciattach' pour la liste des options
 
 # Fin de uart.conf
 
 EOF
 
-# On ajoute le fichier rc, activé par défaut :
+# On crée le fichier de service, activé par défaut :
 mkdir -p ${PKG}/etc/rc.d
 cat > ${PKG}/etc/rc.d/rc.bluetoothd  << "EOF"
 #!/usr/bin/env bash
