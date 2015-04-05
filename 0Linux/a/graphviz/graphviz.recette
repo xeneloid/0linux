@@ -11,9 +11,18 @@ cflags
 
 # Une vieille libtool qui traîne :
 rm -rf libltdl
-autoreconf -vif
+
+# Supprime un lien mort :
+sed -i -e '/$(pkgluadir)/d' tclpkg/gv/Makefile.am
+
+# Remplace les espaces multiples par des tabulations et corrige la doc :
+find . -iname Makefile.am \
+	| xargs sed -i -e '/^\(html\|pdf\)_DATA.*\\[[:space:]]*$/{:m;N;s/\\\n//;tm;d}' \
+	-e '/^\(html\|pdf\)_DATA/d'
+sed -i -e 's:  :\t:g' doc/info/Makefile.am
 
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -24,10 +33,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-ltdl-install \
-	--enable-ltdl \
 	--with-tcl \
 	--with-tk \
+	--with-digcola \
+	--with-fontconfig \
+	--with-freetype2 \
+	--with-ipsepcola \
+	--with-libgd \
+	--with-sfdp \
 	--without-included-ltdl \
+	--without-ming \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
