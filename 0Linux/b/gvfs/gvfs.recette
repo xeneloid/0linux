@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.22.3
+VERSION=1.22.4
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Couche d'abstraction pour l'accès aux systèmes de fichiers"
 
