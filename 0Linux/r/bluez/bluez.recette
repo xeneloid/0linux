@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=5.30
+WGET=http://www.kernel.org/pub/linux/bluetooth/$NAMESRC-$VERSION.tar.xz
+DESC="Des bibliothèques et outils pour faire fonctionner quelque chose de précis..."
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On applique ce patch permettant de s'affranchir de systemd :
+cat $CWD/bluez.obexd_without_systemd.patch | patch -p1
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/bluetooth \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-sixaxis \
+	--enable-experimental \
+	--enable-library \
+	--disable-systemd \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On installe la configuration par défaut :
+mkdir -p $PKG/etc/bluetooth
+cp -a src/main.conf $PKG/etc/bluetooth/main.conf.0nouveau
+
+# On permet l'accès au démon :
+mkdir -p $PKG/usr/sbin
+ln -svf ../lib${LIBDIRSUFFIX}/bluetooth/bluetooth/bluetoothd $PKG/usr/sbin
+
+# On crée des fichiers de configuration supplémentaires :
+cat > $PKG/etc/bluetooth/rfcomm.conf << "EOF"
+# rfcomm.conf
+# Règle la configuration de RFCOMM du sou-sytème Bluetooth dans le noyau Linux.
+# Utilsez une ligne par commande
+# Voir la page de manuel rfcomm pour la liste des options
+
+# Fin de rfcomm.conf
+
+EOF
+
+cat > $PKG/etc/bluetooth/uart.conf << "EOF"
+# uart.conf
+# Attache les périphériques séries avec l'UART HCI à la pile BlueZ
+# Utilsez une ligne par périphérique
+# Voir la page de manuel hciattach pour la liste des options
+
+# Fin de uart.conf
+
+EOF
+
+# On ajoute le fichier rc, activé par défaut :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.bluetoothd  << "EOF"
+#!/usr/bin/env bash
+
+bluetoothd_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de bluetoothd..."
+	
+	# On démarre le service :
+	/usr/sbin/bluetoothd &
+}
+
+bluetoothd_stop() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt de bluetoothd..."
+	
+	# On tue le service :
+	killall bluetoothd
+}
+
+case "$1" in
+	'start')
+		bluetoothd_start
+	;;
+	
+	'stop')
+		bluetoothd_stop
+	  ;;
+	
+	'restart')
+		bluetoothd_stop
+		sleep 1
+		bluetoothd_start
+	;;
+	
+	*)
+		echo "Utilisation : $0 start|stop|restart"
+		exit 1
+	  ;;
+esac
+
+EOF
+chmod +x ${PKG}/etc/rc.d/rc.bluetoothd
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
