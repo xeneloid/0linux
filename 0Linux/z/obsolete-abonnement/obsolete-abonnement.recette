@@ -32,6 +32,7 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	emotion \
 	ethumb \
 	evas \
+	expedite \
 	glib2 \
 	gtk2 \
 	gtk3 \
@@ -117,6 +118,7 @@ embryo: fusionné dans 'efl'
 emotion: fusionné dans 'efl'
 ethumb: fusionné dans 'efl'
 evas: fusionné dans 'efl'
+expedite: obsolète
 glib2: fusionné dans 'glib'
 gtk2: fusionné dans 'gtk'
 gtk3: fusionné dans 'gtk'
