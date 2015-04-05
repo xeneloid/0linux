@@ -1,30 +1,24 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=14.1
+VERSION=14.2
 CODENAME=Helix
-WGET=http://mirrors.kodi.tv/releases/source/$VERSION-$CODENAME.tar.gz
+WGET=https://github.com/xbmc/xbmc/archive/$VERSION-$CODENAME.tar.gz
 DESC="Station multimédia"
-EXTRADEPS="libcec lirc"
+EXTRADEPS="libcec lirc bluez"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On se lie à cette bibliothèque statiquement :
-sed -i 's|-lsquish-native|-lsquish|' tools/TexturePacker/Makefile.in
+# On corrige lalocalisation d'un include :
+sed -i "s|<microhttpd.h>|<libmicrohttpd/microhttpd.h>|" \
+	xbmc/network/httprequesthandler/IHTTPRequestHandler.h
 
 # On génère les outils de compilation spécifiques :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./bootstrap
 export PYTHON_VERSION=2
-
-# Les informations de version ne sont pas appropriés :
-sed -i '/Git:/s|.*|    return GetVersionShort();|' xbmc/GUIInfoManager.cpp
-
-# On corrige lalocalisation d'un include :
-sed -i "s|<microhttpd.h>|<libmicrohttpd/microhttpd.h>|" \
-	xbmc/network/httprequesthandler/IHTTPRequestHandler.h
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -33,11 +27,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMETGZ} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-asap-codec \
 	--disable-debug \
 	--disable-pulse \
 	--disable-texturepacker \
@@ -92,6 +85,10 @@ fi
 
 EOF
 chmod 755 ${PKG}/etc/X11/xinit/xinitrc.kodi
+
+# Nous n'avous pas besoin de la compatibilité avec XBMC :
+rm $PKG/usr/share/xsessions/xbmc.desktop
+rm $PKG/usr/bin/xbmc{,-standalone}
 
 installer_doc
 creer_post_installation
