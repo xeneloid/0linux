@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.2
+VERSION=1.7.2
 WGET=http://www.tcpdump.org/release/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de capture du trafic réseau"
 
@@ -9,8 +9,32 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# Il manque un fichier dans la distribution :
+mkdir -p include/bluetooth
+cp $CWD/mgmt.h include/bluetooth/
+
 # Compilation :
-configure_make_makeinstall
+CFLAGS="${FLAGS} -I./include" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-ipv6 \
+	--enable-bluetooth \
+	--with-libnl \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Lien de compatibilité :
+mkdir -p $PKG/usr/include/net
+ln -s ../pcap-bpf.h $PKG/usr/include/net/bpf.h
+
 installer_doc
 creer_post_installation
 stripper
