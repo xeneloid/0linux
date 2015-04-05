@@ -14,9 +14,9 @@ sed -i -e "s@\$(PREFIX)/lib@\$(PREFIX)/lib${LIBDIRSUFFIX}@" \
 	Makefile lib/Makefile
 
 # Compilation :
-CFLAGS="$FLAGS -O3" CXXFLAGS="$FLAGS -O3" \
-make -j${JOBS} || CFLAGS="$FLAGS -O3" CXXFLAGS="$FLAGS -O3" make
-fakeroot make install DESTDIR=${PKG}
+CFLAGS="$FLAGS -O3" CXXFLAGS="$FLAGS -O3" make -j${JOBS} PREFIX=/usr || \
+CFLAGS="$FLAGS -O3" CXXFLAGS="$FLAGS -O3" make PREFIX=/usr
+fakeroot make install PREFIX=/usr DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation
