@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=22
+VERSION=23
 DESC="Paquets marqués comme obsolètes avec outil de désinstallation interactif"
 
 cflags
@@ -69,7 +69,8 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	terminal \
 	udisks2 \
 	virtuoso \
-	xbmc
+	xbmc \
+	xfce4-notes-plugin
 
 EOF
 chmod 755 ${PKG}/usr/bin/0ex.sh
@@ -155,6 +156,7 @@ terminal: remplacé apr 'xfce4-terminal'
 udisks2: fusionné dans 'udisks'
 virtuoso: dépendence de 'nepomuk', supprimé
 xbmc: renommé en 'kodi'
+xfce4-notes-plugin: obsolète
 
 EOF
 
