@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.0
+WGET=https://github.com/twogood/$NAMESRC/archive/$VERSION.tar.gz
+DESC="Outil d'extraction des archives InstallShield"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+./bootstrap
+configure_make_makeinstall
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
