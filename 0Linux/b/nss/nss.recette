@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.17.3
+VERSION=3.18
 WGET=ftp://ftp.mozilla.org/pub/mozilla.org/security/$NAMESRC/releases/NSS_$(echo $VERSION | sed 's/\./_/g')_RTM/src/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de sécurité multi-plateformes de Mozilla"
 
