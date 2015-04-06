@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.9.1
-WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.xz
+VERSION=2.9.2
+WGET=http://download.kde.org/stable/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Calligra : la suite bureautique et artistique complète pour KDE"
 EXTRADEPS="openimageio kde-runtime libspnav libetonyek"
 
