@@ -107,6 +107,7 @@ valgrind
 wavpack
 x264
 xdg-utils
+xdg-user-dirs
 xvidcore
 yajl
 alsa-lib
@@ -214,6 +215,7 @@ swig
 taglib
 txt2tags
 unixodbc
+x265
 xmlto
 vala
 cantarell-fonts
@@ -235,6 +237,7 @@ qrencode
 slang
 startup-notification
 webcore-fonts
+zvbi
 at-spi2-core
 boost
 celt
@@ -296,6 +299,7 @@ sdl-mixer
 sdl-net
 sord
 speex
+speexdsp
 taglib-extras
 telepathy-glib
 tevent

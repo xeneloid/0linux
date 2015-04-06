@@ -55,6 +55,7 @@ kcharselect
 kdf
 kfloppy
 kgpg
+kremotecontrol
 kwalletmanager
 print-manager
 sweeper
@@ -123,6 +124,7 @@ ksudoku
 ktuberling
 kubrick
 lskat
+pairs
 palapeli
 picmi
 libkdeedu
