@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.9.1
-WGET=ftp://ftp.kde.org/pub/kde/stable/calligra-$VERSION/calligra-l10n/calligra-l10n-fr-$VERSION.tar.xz
+VERSION=2.9.2
+WGET=http://download.kde.org/stable/calligra-$VERSION/calligra-l10n/calligra-l10n-fr-$VERSION.tar.xz
 DESC="Localisation française pour la suite Calligra"
 EXTRADEPS="calligra"
 
