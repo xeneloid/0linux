@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6
+VERSION=1.5.1
 WGET=http://download.kde.org/stable/konversation/$VERSION/src/konversation-$VERSION.tar.xz
 DESC="Un puissant client IRC pour KDE"
 
