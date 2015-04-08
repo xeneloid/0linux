@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.3
+VERSION=1.6.4
 WGET=https://github.com/darktable-org/darktable/releases/download/release-$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Studio de gestion et de développement d'images brutes"
 
