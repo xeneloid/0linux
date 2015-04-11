@@ -26,6 +26,10 @@ PKGSOURCES=${PKGSOURCES:-${CWD}}
 # Emplacement du dépôt des paquets résultant de la construction :
 PKGREPO=${PKGREPO:-/usr/local/paquets}
 
+# On utilise la locale C pour la compilation :
+LC_ALL=C
+LANG=C
+
 # On crée la marmite :
 mkdir -p ${MARMITE}
 mkdir -p ${MARMITELOGS}
