@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.22.1
+VERSION=1.23.2
 WGET=http://busybox.net/downloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Le « couteau suisse » pour Linux et systèmes embarqués"
 
@@ -27,6 +27,11 @@ sed -i \
 # Compilation :
 CFLAGS="${FLAGS} -fno-strict-aliasing " CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true # On ne quitte pas sur les erreurs rencontrées
+fi
 
 # On modifie l'orthographe car on a déjà un binaire qui va s'appeller 'busybox' !
 mkdir -p ${PKG}/usr/bin/BusyBox
