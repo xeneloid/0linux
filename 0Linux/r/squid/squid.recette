@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=3.5.3
+WGET=http://www.squid-cache.org/Versions/v$(echo $VERSION | cut -d'.' -f1)/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
+DESC="Squid, serveur mandataire (« proxy ») et de cache Web"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc/squid \
+	--localstatedir=/var/log/squid \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/$NAMESRC \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--datadir=/usr/share/squid \
+	--disable-strict-error-checking \
+	--enable-async-io \
+	--enable-auth \
+	--enable-auth-basic \
+	--enable-linux-netfilter \
+	--enable-snmp \
+	--with-logdir=/var/log/squid \
+	--with-pidfile=/var/run/squid \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée le fichier service :
+mkdir -p ${PKG}/etc/rc.d
+cat > ${PKG}/etc/rc.d/rc.squid << "EOF"
+#!/usr/bin/env bash
+
+squid_start() {
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage de Squid..."
+	
+	# On crée l'arborescence de cache s'il est vide :
+	ALL_DIRS=$(awk '/^cache_dir/ {print $3}' /etc/squid/squid.conf)
+	[ -z "${ALL_DIRS}" ] && ALL_DIRS=/var/cache/squid
+	
+	for CACHE_DIR in ${ALL_DIRS} ; do
+		if [ ! -d ${CACHE_DIR}/00 ] ; then
+			echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Création du cache de Squid en cours : 'squid -z' ..."
+			squid -z
+			break
+		fi
+	done
+	
+	# On lance squid :
+	squid -F
+}
+
+squid_stop() {
+	COUNTDOWN=$(awk '/^shutdown_lifetime/ {print $2}' /etc/squid/squid.conf)
+	[ -z "$COUNTDOWN" ] && COUNTDOWN=30
+	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Arrêt total de Squid dans ${COUNTDOWN} secondes..."
+	squid -k shutdown
+	
+	while squid -k check 2>/dev/null ; do
+		sleep 1
+		echo -n "."
+		COUNTDOWN=$(( ${COUNTDOWN} - 1 ))
+		if [ $COUNTDOWN -le 0 ] ; then
+			squid -k interrupt 2>/dev/null
+			sleep 1
+			echo ""
+			break
+		fi
+	done
+}
+
+case "$1" in
+	'start')
+		squid_start
+	;;
+	
+	'stop')
+		squid_stop
+	;;
+	
+	'restart')
+		squid_stop
+		sleep 1
+		squid_start
+	;;
+	'reload')
+		echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Relecture de la configuration de Squid : 'squid -k reconfigure' ..."
+		squid -k reconfigure
+	;;
+	*)
+		echo "Utilisation : $0 start|stop|restart|reload"
+		exit 1
+	;;
+
+esac
+
+EOF
+
+# On crée le fichier de régénération des journaux sans écraser d'ancienne configuration :
+mkdir -p ${PKG}/etc/logrotate.d
+cat > ${PKG}/etc/logrotate.d/squid.0nouveau << "EOF"
+# On passe « logfile_rotate 0 » dans squid.conf afin de désactiver la rotation
+# des journaux par Squid lui-même, c'est 'logrotate' qui s'en occupera.
+# Mais comme Squid ferme et réouvre son journal, on le régénère ici
+# (de 'squid.log' en 'squid.log.1') sans le compresser de suite puisque Squid
+# voudra toujours écrire dedans. Le script dans la section « postrotate »
+# dit alors à Squid de fermer puis de réouvrir 'squid.log'.
+# L'ancien fichier 'squid.log.1' sera alors compressé au prochain 'logrotate'.
+/var/log/squid/*.log {
+	su nobody nobody
+	weekly
+	rotate 5
+	compress
+	delaycompress
+	notifempty
+	missingok
+	postrotate
+		/usr/sbin/squid -k rotate
+	endscript
+}
+
+EOF
+
+# On renomme la configuration pour s'assurer de ne rien écraser :
+mv ${PKG}/etc/squid/mime.conf{,.0nouveau}
+mv ${PKG}/etc/squid/cachemgr.conf{,.0nouveau}
+cp $CWD/squid.conf ${PKG}/etc/squid/squid.conf.0nouveau
+
+# On crée les répertoire de cache et d'exécution :
+mkdir -p ${PKG}/var/{cache,run}/squid
+
+# On crée ce lien générique avec la version, auquel sont habitués les admins :
+ln -sf squid ${PKG}/etc/squid$(echo $VERSION | cut -d -f1)
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+chown nobody:nobody var/{cache,log,run}/squid
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.
