@@ -31,8 +31,9 @@ rm -rf Modules/zlib
 rm -rf Modules/_ctypes/darwin*
 rm -rf Modules/_ctypes/libffi*
 
-# Compilation (on conserve l'optimisation interne -O3) :
-CFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" CXXFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" \
+# Compilation de Python 3 (on conserve l'optimisation interne -O3) :
+CFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" \
+CXXFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -52,6 +53,14 @@ CFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" CXXFLAGS="$(echo ${FLAGS} | sed 's@-O2
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+# Attention : quelques tests échoueront si la recette n'a pas été lancée
+# depuis un terminal de serveur X.
+if [ ! "${TESTS}" = "" ]; then
+	make -k test 2>&1 || true
+fi
+
 fakeroot make install maninstall DESTDIR=${PKG}
 
 # On copie les outils dans les modules :
@@ -85,8 +94,9 @@ sed -i "s/python2.3/python2/g" \
 # On permet au module SQLite de charger des extensions :
 sed -i "/SQLITE_OMIT_LOAD_EXTENSION/d" setup.py
 
-# Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+# Compilation de Python 2 (on conserve l'optimisation interne -O3) :
+CFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" \
+CXXFLAGS="$(echo ${FLAGS} | sed 's@-O2@@')" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -105,6 +115,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+# Attention : quelques tests échoueront si la recette n'a pas été lancée
+# depuis un terminal de serveur X.
+if [ ! "${TESTS}" = "" ]; then
+	# On évite un test qui va échouer :
+	cat $CWD/python2-skip_test_gdb.patch | patch -p1
+	make -k test 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On copie les outils dans les modules :
