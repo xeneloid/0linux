@@ -36,7 +36,7 @@ fakeroot make install DESTDIR=${PKG}
 installer_doc
 
 # On installe de la doc suypplémentaire :
-cp -a doxygen/html $PKG/usr/share/doc/$NAMETGZ-$VERSION/
+cp -a doxygen/html $PKG/usr/doc/$NAMETGZ-$VERSION/
 
 creer_post_installation
 stripper
