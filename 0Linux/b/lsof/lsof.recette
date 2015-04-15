@@ -17,7 +17,7 @@ echo n | CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./Configure linux
 
 # Compilation :
-make -j${JOBS} || make
+make -j${JOBS} CFGL="-L./lib -ltirpc" || make CFGL="-L./lib -ltirpc"
 
 # On copie le binaire et le manuel :
 mkdir -p ${PKG}/usr/{bin,man/man8}
