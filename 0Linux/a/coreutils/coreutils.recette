@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=8.23
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+WGET=http://mirror-fr1.bbln.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outils système vitaux GNU"
 
 telecharger_sources
