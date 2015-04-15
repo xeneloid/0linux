@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.4.47
-EXT=tar.gz
-WGET=http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.$EXT
+WGET=http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.tar.gz
 DESC="Outils de gestion des attributs de fichiers"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -63,6 +61,14 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance les suites de tests si $TESTS est positionnée :
+# Attention : root-tests requiert d'être dans /etc/sudoers
+if [ ! "${TESTS}" = "" ]; then
+	make -k tests 2>&1 || true
+	sudo make -k root-tests 2>&1 || true
+fi
+
 fakeroot make install install-dev install-lib DIST_ROOT=${PKG}
 
 installer_doc
