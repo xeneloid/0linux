@@ -24,14 +24,21 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install pkgconfigdir=/usr/lib${LIBDIRSUFFIX}/pkgconfig DESTDIR=${PKG}
 
 # On place quelques liens de compatibilité avec les anciens outils de 'module-init-tools' :
 mkdir -p ${PKG}/usr/sbin
-for binaire in depmod insmod modinfo modprobe rmmod; do
+for binaire in depmod insmod lsmod modinfo modprobe rmmod; do
 	ln -sf ../bin/kmod ${PKG}/usr/sbin/${binaire}
 done
 
+# On permet l'accès à lsmod pour tout les utilisateurs :
 ln -sf kmod ${PKG}/usr/bin/lsmod
 
 installer_doc
