@@ -10,7 +10,8 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+CFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
+CXXFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
