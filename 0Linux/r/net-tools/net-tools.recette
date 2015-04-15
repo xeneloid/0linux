@@ -2,8 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=26022013
-EXT=tar.xz
-WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
+WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.tar.xz
 DESC="Outils réseau pour Linux"
 
 telecharger_sources
