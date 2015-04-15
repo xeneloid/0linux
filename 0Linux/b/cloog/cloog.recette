@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.18.1
-WGET=ftp://gcc.gnu.org/pub/gcc/infrastructure/${NAMESRC}-${VERSION}.tar.gz
+VERSION=0.18.3
+WGET=http://www.bastoul.net/cloog/pages/download/count.php3?url=./${NAMESRC}-${VERSION}.tar.gz
 DESC="Bibliothèques d'analyse et de génération de boucles optimisées"
 
 telecharger_sources
@@ -64,7 +64,7 @@ make -j${JOBS} || make
 
 # On lance la suite de tests si $TESTS est positionnée :
 if [ ! "${TESTS}" = "" ]; then
-	make -k check 2>&1
+	make -k check 2>&1 || true
 fi
 
 fakeroot make install DESTDIR=${PKG}
