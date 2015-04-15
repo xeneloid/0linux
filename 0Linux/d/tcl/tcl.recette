@@ -32,6 +32,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k test 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 fakeroot make install-private-headers DESTDIR=${PKG}
 
