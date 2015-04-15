@@ -2,17 +2,16 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.6
-EXT=tar.xz
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://mirror-fr1.bbln.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Compresseur de fichiers"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+CFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
+CXXFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -24,6 +23,12 @@ CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc
