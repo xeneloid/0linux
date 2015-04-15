@@ -2,8 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.2.8
-EXT=tar.gz
-WGET=http://www.zlib.net/$NAMESRC-$VERSION.$EXT
+WGET=http://www.zlib.net/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de compression"
 
 
@@ -18,7 +17,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cflags i686
 	
 	# Compilation pour i686 :
-	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	CFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
+	CXXFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
 	./configure \
 		--prefix=/usr \
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -34,7 +34,8 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+CFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
+CXXFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
 ./configure \
 	--prefix=/usr \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
