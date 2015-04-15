@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2015b
+VERSION=2015c
 EXT=tar.gz
 WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT}
 	  http://www.iana.org/time-zones/repository/releases/tzcode${VERSION}.${EXT}
@@ -24,6 +24,11 @@ mkdir -p ${PKG}/usr/man/man{3,5,8}
 # Compilation :
 cd $TMP/${NAMESRC}-${VERSION}
 make
+
+# On lance la suite de tests si $TESTS est positionnée (requiert OpenSP) :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
 
 # Installation à la main :
 for timezone in africa \
