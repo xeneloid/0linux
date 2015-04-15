@@ -21,6 +21,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-gnutls \
 	--with-openssl \
+	--without-included-regex \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
