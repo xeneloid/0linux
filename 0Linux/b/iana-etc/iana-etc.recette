@@ -13,6 +13,11 @@ cflags
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k test 2>&1 || true
+fi
+
 # Installation des fichiers compilés :
 mkdir -p ${PKG}/etc
 cp -a protocols services ${PKG}/etc/
