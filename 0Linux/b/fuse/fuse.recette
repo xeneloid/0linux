@@ -11,6 +11,7 @@ cflags
 
 # Compilation :
 configure_make_makeinstall
+doxygen doc/Doxyfile
 
 # On supprime /dev, on a 'udev' pour gérer cela :
 rm -rf ${PKG}/dev
@@ -23,8 +24,9 @@ rm -rf ${PKG}/etc/init.d
 
 installer_doc
 
-# On ajoute ce répertoire de documentation :
-cp -a doc/ ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+# On ajoute ce répertoire de documentation et on enlève les résidus :
+cp -a doc/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION}
+rm -f ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/{Makefile*,Doxyfile,fusermount.1,mount.fuse.8,ulockmgr_server.1}
 
 creer_post_installation
 stripper
