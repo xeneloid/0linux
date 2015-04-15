@@ -10,11 +10,19 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On évite de quitter sur des avertissements traités comme des erreurs par GCC :
-sed -i 's@-Werror@@g' Makefile
+sed -i 's/Wall -Werror/Wall/' Makefile
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+# Attention : les tests requiert d'être dans /etc/sudoers
+if [ ! "${TESTS}" = "" ]; then
+	make -k test 2>&1 || true
+	sudo ./test || true
+fi
+
 fakeroot make install MANDIR=/usr/man BINDIR=/usr/sbin DESTDIR=${PKG}
 
 # On prend garde à ne rien écraser :
