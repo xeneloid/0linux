@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.19.0
+VERSION=4.0.0
 WGET=http://kernel.org/pub/linux/utils/net/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de routage d'IP"
 
@@ -31,7 +31,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 sed -i 's/-Werror//' Makefile
 
 make -j${JOBS} LIBDIR=/usr/lib${LIBDIRSUFFIX} || make LIBDIR=/usr/lib${LIBDIRSUFFIX}
-fakeroot make install LIBDIR=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
+fakeroot make install LIBDIR=/usr/lib${LIBDIRSUFFIX} \
+	DOCDIR=/usr/doc/${NAMETGZ}-${VERSION} MANDIR=/usr/man DESTDIR=${PKG}
 
 # On n'écrase aucun fichier existant :
 for fichier in ${PKG}/etc/iproute2/*; do
@@ -40,10 +41,6 @@ done
 
 # On crée de quoi accueillir l'activité de 'arpd' :
 mkdir -p ${PKG}/var/lib/arpd
-
-# On déplace les manuels et la documentation :
-mv ${PKG}/usr/{share/,}man
-mv ${PKG}/usr/{share/,}doc
 
 installer_doc
 creer_post_installation
