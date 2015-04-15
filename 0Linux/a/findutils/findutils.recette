@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=4.4.2
-EXT=tar.gz
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://mirror-fr1.bbln.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Ensemble de programmes de recherche de fichiers"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -27,6 +25,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On se passe de 'locate 'et 'updatedb' aux performances affreuses, utilisez 'whereis'
