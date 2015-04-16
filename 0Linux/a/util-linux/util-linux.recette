@@ -39,7 +39,7 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Les programmmes 'login', 'init' et 'mountpoint' ne sont pas compilés car ils figurent
+# Les programmmes 'login' et 'init' ne sont pas compilés car ils figurent
 # déjà dans d'autres paquets.
 
 # On n'installe pas 'strings' de BSD, seul 'strings' de GNU est
@@ -59,8 +59,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-last \
-	--disable-mountpoint \
+	--enable-last \
+	--enable-mountpoint \
 	--enable-agetty \
 	--enable-kill \
 	--enable-mesg \
