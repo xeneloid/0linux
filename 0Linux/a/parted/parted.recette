@@ -2,14 +2,39 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.2
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+WGET=http://mirror-fr1.bbln.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de partitionnement et de manipulation de systèmes de fichiers"
 
 telecharger_sources
 preparer_sources
 cflags
-configure_make_makeinstall
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+makeinfo --html -o doc/html doc/parted.texi
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
+fakeroot make install DESTDIR=${PKG}
+
 installer_doc
+
+# On installe la doc supplémentaire :
+cp -a doc/html $PKG/usr/doc/$NAMESRC-$VERSION/
+
 creer_post_installation
 stripper
 empaqueter
