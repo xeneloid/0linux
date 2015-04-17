@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.4
-EXT=tar.bz2
+VERSION=7.4.702
+VERREELLE=$(echo ${VERSION} | cut -d'.' -f1-2)
 WGET=(
-      ftp://ftp.vim.org/pub/vim/unix/$NAMESRC-$VERSION.$EXT
+      ftp://ftp.vim.org/pub/vim/unix/$NAMESRC-$VERREELLE.tar.bz2
       ftp://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.spl
       ftp://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.sug
       ftp://ftp.vim.org/pub/vim/runtime/spell/fr.utf-8.spl
@@ -12,23 +12,22 @@ WGET=(
      )
 DESC="Le puissant éditeur de texte « Vi IMproved »"
 
-
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-$(echo ${VERSION} | cut -d'.' -f1-2).tar.bz2 # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # On télécharge chaque correctif :
 mkdir -p ${PKGSOURCES}/${NAMETGZ}/patches
 
-for correctif in {001..640}; do # Indiquer ici le nombre de correctifs à appliquer.
-	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} ]; then
-		wget -vc "ftp://ftp.vim.org/pub/vim/patches/${VERSION}/${VERSION}.${correctif}" \
-			-O ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}.part
-		mv ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif}{.part,}
+for correctif in {001..702}; do # Indiquer ici le nombre de correctifs à appliquer.
+	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/$VERREELLE.${correctif} ]; then
+		wget -vc "ftp://ftp.vim.org/pub/vim/patches/$VERREELLE/$VERREELLE.${correctif}" \
+			-O ${PKGSOURCES}/${NAMETGZ}/patches/$VERREELLE.${correctif}.part
+		mv ${PKGSOURCES}/${NAMETGZ}/patches/$VERREELLE.${correctif}{.part,}
 	fi
 	
 	# On applique un à un les correctifs des mainteneurs :
-	cat ${PKGSOURCES}/${NAMETGZ}/patches/${VERSION}.${correctif} | patch -Np0
+	cat ${PKGSOURCES}/${NAMETGZ}/patches/$VERREELLE.${correctif} | patch -Np0
 done
 
 # Compilation en 3 temps : 
