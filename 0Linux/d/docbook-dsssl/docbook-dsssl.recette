@@ -2,8 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.79
-EXT=tar.bz2
-WGET=http://prdownloads.sourceforge.net/docbook/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/docbook/$NAMESRC-$VERSION.tar.bz2
 DESC="Feuilles de style DSSSL pour Docbook"
 
 
