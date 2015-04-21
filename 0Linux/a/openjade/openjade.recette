@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.3.3_pre1
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$(echo $VERSION | sed 's/_/-/').tar.gz
 DESC="Bibliothèques et outils de transformation XML"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
