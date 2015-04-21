@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.2.1
+VERSION=3.2.2
 WGET=http://www.cmake.org/files/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz
 DESC="Système de compilation multiplateforme"
 
@@ -10,7 +10,8 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Un répertoire dédié à la compilation est conseillé :
-mkdir build && cd build
+mkdir build
+cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -22,6 +23,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--system-libs
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	mkdir -p $PKG/usr/doc/$NAMESRC-$VERSION
+	bin/ctest -j${JOBS} -O $PKG/usr/doc/$NAMESRC-$VERSION/$NAMETGZ-$VERSION-test.log || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 cd -
