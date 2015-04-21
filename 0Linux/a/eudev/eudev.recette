@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.0
-WGET=https://github.com/gentoo/$NAMESRC/archive/v${VERSION}.tar.gz
+VERSION=2.1.1
+WGET=http://dev.gentoo.org/~blueness/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Système de gestion dynamique de périphériques"
 
 telecharger_sources
@@ -24,7 +24,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	sed -i 's@rootprefix}/lib/udev@rootprefix}/${libdir}/udev@' configure.ac
 	
 	# Compilation pour i686 :
-	./autogen.sh
+	autoreconf -vif
 	
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
@@ -62,7 +62,7 @@ cflags
 sed -i 's@rootprefix}/lib/udev@rootprefix}/${libdir}/udev@' configure.ac
 
 # Compilation :
-./autogen.sh
+autoreconf -vif
 
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
