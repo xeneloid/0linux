@@ -40,6 +40,11 @@ fakeroot make install DESTDIR=${PKG}
 # On crée le répertoire spécifié dans l'option « PrivilegeSeparation » :
 mkdir -p ${PKG}/var/empty
 
+# On installe ce petit script bien pratique, avec sa doc :
+cp -a contrib/ssh-copy-id $PKG/usr/bin/ssh-copy-id
+chmod 755 $PKG/usr/bin/ssh-copy-id
+cp -a contrib/ssh-copy-id.1 $PKG/usr/man/man1/
+
 # On supprime les clés, elles sont uniques à chaque machine :
 rm -f ${PKG}/etc/ssh/*_key*}
 
