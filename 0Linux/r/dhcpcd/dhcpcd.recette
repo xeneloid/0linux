@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.8.1
+VERSION=6.8.2
 WGET=http://roy.marples.name/downloads/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Client DHCP"
 
