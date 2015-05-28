@@ -6,9 +6,9 @@ VERSION=3.4.3
 WGET=(http://www.python.org/ftp/python/$VERSION/$NAMESRC-$VERSION.tar.xz
       http://docs.python.org/ftp/python/doc/$VERSION/python-$VERSION-docs-html.tar.bz2
       http://docs.python.org/ftp/python/doc/$VERSION/python-$VERSION-docs-text.tar.bz2
-      http://www.python.org/ftp/python/2.7.9/$NAMESRC-2.7.9.tar.xz
-      http://docs.python.org/ftp/python/doc/2.7.9/python-2.7.9-docs-html.tar.bz2
-      http://docs.python.org/ftp/python/doc/2.7.9/python-2.7.9-docs-text.tar.bz2
+      http://www.python.org/ftp/python/2.7.10/$NAMESRC-2.7.10.tar.xz
+      http://docs.python.org/ftp/python/doc/2.7.10/python-2.7.10-docs-html.tar.bz2
+      http://docs.python.org/ftp/python/doc/2.7.10/python-2.7.10-docs-text.tar.bz2
      )
 DESC="Langage de programmation interprété orienté objet"
 
@@ -75,7 +75,7 @@ tar xf ${PKGSOURCES}/${NAMETGZ}/python-$VERSION-docs-html.tar.bz2 -C ${PKG}/usr/
 tar xf ${PKGSOURCES}/${NAMETGZ}/python-$VERSION-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-$VERSION/
 
 # On compile Python 2 :
-preparer_sources $NAMESRC-2.7.9.tar.xz
+preparer_sources $NAMESRC-2.7.10.tar.xz
 cflags
 
 # On corrige les sources pour intégrer notre répertoire standard de bibliothèques,
@@ -132,17 +132,17 @@ mkdir -p      ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
 cp -a Tools/* ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
 
 # On supprime une référence au répertoire de construction :
-sed -i "s@${TMP}/Python-2.7.9:@@" ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/config/Makefile
+sed -i "s@${TMP}/Python-2.7.10:@@" ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/config/Makefile
 
 # On lie un manuel manquant et on lie le manuel 'python2' par défaut :
 ln -sf python2.7.1 ${PKG}/usr/man/man1/python2.1
 ln -sf python2.1 ${PKG}/usr/man/man1/python.1
 
-installer_doc $NAMETGZ-2.7.9
+installer_doc $NAMETGZ-2.7.10
 
 # Et on extrait les archives de documentation au bon endroit :
-tar xf ${PKGSOURCES}/${NAMETGZ}/python-2.7.9-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-2.7.9/
-tar xf ${PKGSOURCES}/${NAMETGZ}/python-2.7.9-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-2.7.9/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-2.7.10-docs-html.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-2.7.10/
+tar xf ${PKGSOURCES}/${NAMETGZ}/python-2.7.10-docs-text.tar.bz2 -C ${PKG}/usr/doc/${NAMETGZ}-2.7.10/
 
 creer_post_installation
 stripper
