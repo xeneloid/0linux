@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.1.1
+VERSION=4.1.3
 WGET=http://mirror-fr1.bbln.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Programmes de manipulation de fichiers"
 
@@ -21,9 +21,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
-
-# On corrige une étourderie nous empêchant de compiler en utilisateur normal :
-sed -i 's@$(RM) $(pkgextensiondir)/$$i@$(RM) $(DESTDIR)$(pkgextensiondir)/$$i@g' extension/Makefile
 
 make -j${JOBS} || make
 
