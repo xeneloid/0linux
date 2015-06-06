@@ -6,7 +6,6 @@ VERSION=2.34
 WGET=http://prdownloads.sourceforge.net/dejavu/$NAMESRC-$VERSION.tar.bz2
 DESC="Polices TrueType pour X"
 
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
