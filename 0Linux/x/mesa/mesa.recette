@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=10.5.5
+VERSION=10.5.6
 WGET=ftp://ftp.freedesktop.org/pub/$NAMETGZ/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques graphiques 3D OpenGL pour X11"
 
