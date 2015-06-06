@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.1.11
-EXT=tar.bz2
-WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.$EXT
+WGET=http://xorg.freedesktop.org/releases/individual/app/$NAMESRC-$VERSION.tar.bz2
 DESC="Gestionnaire de connexion de X11"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,19 +15,8 @@ cat $CWD/xdm.crypt.patch | patch -p1
 # On corrige le comportement de utmp et wtmp pour régler les problèmes avec 'who' :
 echo "exec /usr/bin/sessreg -a -w \"/var/log/wtmp\" -u \"/run/utmp\" -x \"/usr/lib${LIBDIRSUFFIX}/X11/xdm/Xservers\" -l \$DISPLAY -h \"\" \$USER 2>/dev/null" >> config/GiveConsole
 
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+# Compilation :
+configure_make_makeinstall
 
 # On place nos fichiers personnalisés :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/X11/xdm
