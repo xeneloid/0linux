@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.0
+VERSION=1.8.1
 WGET=http://wayland.freedesktop.org/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Protocole pour serveur d'affichage graphique"
 
