@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=4.3.33 # Le numéro de version mineur correspond au nombre de patch officiels
-WGET=http://mirror-fr1.bbln.org/gnu/$NAMESRC/$NAMESRC-$(echo ${VERSION} | cut -d'.' -f1-2).tar.gz
+WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$(echo ${VERSION} | cut -d'.' -f1-2).tar.gz
 DESC="Interpréteur (shell) compatible sh"
 
 telecharger_sources
