@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=tiff
-VERSION=4.0.3
+VERSION=4.0.4
 WGET=ftp://ftp.remotesensing.org/pub/libtiff/$NAMESRC-$VERSION.tar.gz
 DESC="Outils et bibliothèques pour le format TIFF"
 
