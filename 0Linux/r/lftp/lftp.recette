@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.6.2
+VERSION=4.6.3a
 WGET=http://lftp.yar.ru/ftp/$NAMESRC-$VERSION.tar.xz
 DESC="Client HTTP et FTP en ligne de commande"
 
