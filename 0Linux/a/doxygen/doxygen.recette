@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.9.1
+VERSION=1.8.10
 WGET=ftp://ftp.stack.nl/pub/users/dimitri/$NAMESRC-${VERSION}.src.tar.gz
 DESC="Système de documentation pour de nombreux langages"
 
@@ -9,19 +9,36 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On force nos drapeaux de compilation :
-sed -i "s@TMAKE_CFLAGS_RELEASE	= -O2@& ${FLAGS}@g" $(find * -type f -name "tmake.conf")
+# On crée un répertoire séparé pour la compilation :
+mkdir -p build
+cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--enable-langs \
-	--build=${PKGARCH}-0linux-linux-gnu
+cmake -D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D DOC_INSTALL_DIR=share/doc/$NAMETGZ-$VERSION \
+	-D build_app=ON \
+	-D build_doc=OFF \
+	-D build_search=OFF \
+	-D build_wizard=ON \
+	-D build_xmlparser=ON \
+	-D use_libclang=OFF \
+	./ ../
 
 make -j${JOBS} || make
-fakeroot make install DOCDIR=${PKG}/usr/doc/${NAMETGZ}-${VERSION} INSTALL=${PKG}/usr
+fakeroot make install DESTDIR=${PKG}
+cd ../
 
 installer_doc
+
+# La documentation doit être installé munuellement (CMakeFile ultra buggué) :
+mkdir -p $PKG/usr/man/man1
+cp -a doc/*.{doc,png,dot,eps,txt,gif,css,tex,fig,tpl} \
+	$PKG/usr/doc/$NAMETGZ-$VERSION
+cp -a doc/*.1 /$PKG/usr/man/man1
+rm $PKG/usr/doc/doxygen-1.8.10/CMakeLists.txt
+
 creer_post_installation
 stripper
 empaqueter
