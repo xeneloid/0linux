@@ -31,6 +31,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 
 # On lance la suite de tests si $TESTS est positionnée :
+# Certains tests seront ignorées si on est pas root.
 if [ ! "${TESTS}" = "" ]; then
 	make -k tests 2>&1 || true
 fi
