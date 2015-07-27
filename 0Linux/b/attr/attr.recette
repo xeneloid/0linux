@@ -16,7 +16,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cflags i686
 	
 	# On force le respect de nos CFLAGS :
-	export OPTIMIZER=${FLAGS}
+	export OPTIMIZER=${FLAGS} INSTALL_USER=root INSTALL_GROUP=root
+	
+	# On n'installe pas les manuels, ceux de man-pages sont plus à jour :
+	sed -i -e "/SUBDIRS/s|man2||" man/Makefile
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -33,7 +36,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--enable-static \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
-	make -j${JOBS} || make
+	make -j${JOBS} || make -j1
 	fakeroot make install install-dev install-lib DIST_ROOT=${PKG}
 fi
 
@@ -43,7 +46,10 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On force le respect de nos CFLAGS :
-export OPTIMIZER=${FLAGS}
+export OPTIMIZER=${FLAGS} INSTALL_USER=root INSTALL_GROUP=root
+
+# On n'installe pas les manuels, ceux de man-pages sont plus à jour :
+sed -i -e "/SUBDIRS/s|man2||" man/Makefile
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
