@@ -9,6 +9,9 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On restaure des fonctions retirée de l'API :
+cat $CWD/libtirpc-api_fixes.patch | patch -p1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
