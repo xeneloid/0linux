@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.88
-WGET=ftp://lsof.itap.purdue.edu/pub/tools/unix/$NAMESRC/${NAMESRC}_${VERSION}.tar.bz2
+VERSION=4.89
+WGET=ftp://sunsite.ualberta.ca/pub/Mirror/$NAMESRC/${NAMESRC}_${VERSION}.tar.bz2
 DESC="Outil d'information sur les processus système ouverts"
 
 telecharger_sources
@@ -13,8 +13,8 @@ cflags
 tar xvf lsof_${VERSION}_src.tar
 cd lsof_${VERSION}_src
 
-echo n | CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./Configure linux
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./Configure -n linux
 
 # Compilation :
 make -j${JOBS} CFGL="-L./lib -ltirpc" || make CFGL="-L./lib -ltirpc"
