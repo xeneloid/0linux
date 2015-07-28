@@ -9,6 +9,10 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On corrige le comportement du "backspace" :
+sed -i '/v0/{n;s/new:/new:kb=^?:/}' termcap
+printf '\tkbs=\\177,\n' >> terminfo
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
