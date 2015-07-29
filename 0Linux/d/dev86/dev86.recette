@@ -13,6 +13,7 @@ cflags
 # Compilation sans $FLAGS :
 echo 'quit' | make -j${JOBS} PREFIX=/usr INCLDIR=/usr/lib${LIBDIRSUFFIX}/bcc LIBDIR=/usr/lib${LIBDIRSUFFIX}/bcc DIST=${PKG} || \
 echo 'quit' | make PREFIX=/usr  INCLDIR=/usr/lib${LIBDIRSUFFIX}/bcc LIBDIR=/usr/lib${LIBDIRSUFFIX}/bcc DIST=${PKG}
+
 fakeroot make install-all DIST=${PKG}
 
 installer_doc
