@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.0.25
-EXT=tar.bz2
-WGET=https://fedorahosted.org/releases/x/m/$NAMESRC/$NAMESRC-$VERSION.$EXT
+VERSION=0.0.26
+WGET=https://fedorahosted.org/releases/x/m/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Outil de conversion XML"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige des avertissement par rapport au mot-clé « local » utilisée hors des fonctions :
-cat $CWD/xmlto.local-warnings.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -27,6 +22,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc
