@@ -34,6 +34,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make pkgdatadir=/usr/share/sgml/${NAMETGZ}-${VERSION}
+
+# On lance la suite de tests si $TESTS est positionnée :
+# Sur les 23 tests, il est normal que 9 échouent !
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On relie OpenJade à OpenSP :
