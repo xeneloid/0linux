@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.14.8
+VERSION=3.16.6
 EXT=tar.xz
-WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.27.$EXT
+WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.28.$EXT
       http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
      )
 DESC="Suite d'outils pour la création d'interfaces graphiques"
@@ -13,7 +13,7 @@ telecharger_sources
 cflags
 
 # On compile GTK+ 2 :
-preparer_sources $NAMESRC-2.24.27.$EXT
+preparer_sources $NAMESRC-2.24.28.$EXT
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -21,8 +21,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On corrige la génération de la doc, boguée avec nos 'docbook*' :
-	sed -i 's#l \(gtk-.*\).sgml#& -o \1#' docs/{faq,tutorial}/Makefile.in
+	# On corrige la génération de la doc, en la supprimant :
+	sed -i "s/) docs m4macros/) /" Makefile.in
 	
 	# Ainsi que quelques manuels manquants :
 	sed -i 's#.*@man_#man_#' docs/reference/gtk/Makefile.in
@@ -33,7 +33,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		gdk/x11/gdkxid.c
 	
 	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	CXX=/bin/false CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -41,9 +41,14 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
+		--enable-gtk-doc-html=no \
+		--disable-gtk-doc-html \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--with-xinput=yes \
 		--build=${PKGARCH}-0linux-linux-gnu
+	
+	# On corrige un bug dans les fichiers produits par configure :
+	sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
 	
 	make -j${JOBS} || make
 	fakeroot make install DESTDIR=${PKG}
@@ -57,11 +62,11 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources $NAMESRC-2.24.27.$EXT
+preparer_sources $NAMESRC-2.24.28.$EXT
 cflags
 
-# On corrige la génération de la doc, boguée avec nos 'docbook*' :
-sed -i 's#l \(gtk-.*\).sgml#& -o \1#' docs/{faq,tutorial}/Makefile.in
+# On corrige la génération de la doc, en la supprimant :
+sed -i "s/) docs m4macros/) /" Makefile.in
 
 # Ainsi que quelques manuels manquants :
 sed -i 's#.*@man_#man_#' docs/reference/gtk/Makefile.in
@@ -72,7 +77,7 @@ sed -i -e '/if (g_hash_table_lookup (display_x11->xid_ht, xid))/d' \
 	gdk/x11/gdkxid.c
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CXX=/bin/false CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -82,10 +87,21 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-introspection \
+	--enable-gtk-doc-html=no \
+	--disable-gtk-doc-html \
 	--with-xinput=yes \
 	--build=${PKGARCH}-0linux-linux-gnu
 
+# On corrige un bug dans les fichiers produits par configure :
+sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -107,7 +123,7 @@ fi
 echo 'gtk-theme-name="GTK+"' > ${PKG}/etc/gtk-2.0/gtkrc
 
 # On place la doc dans un sous-répertoire dédié :
-installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.24.27
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.24.28
 
 # On compile GTK+ 3 :
 preparer_sources
@@ -132,7 +148,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-xkb \
 	--build=${PKGARCH}-0linux-linux-gnu
 
+# On corrige un bug dans les fichiers produits par configure :
+sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On affecte un thème par défaut :
