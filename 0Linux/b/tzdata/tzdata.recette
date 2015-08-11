@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2015e
+VERSION=2015f
 WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.tar.gz
 	  http://www.iana.org/time-zones/repository/releases/tzcode${VERSION}.tar.gz
 	 )
