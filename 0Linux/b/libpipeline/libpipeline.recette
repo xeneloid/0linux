@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.0
+VERSION=1.4.1
 WGET=http://download.savannah.gnu.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèque de gestion de sous-processus"
 
