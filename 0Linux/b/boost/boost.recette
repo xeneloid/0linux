@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.57.0
+VERSION=1.59.0
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_$(echo $VERSION | sed 's/\./_/g').tar.bz2
 DESC="Ensemble de bibliothèques C++ portables"
 
@@ -9,9 +9,10 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On ajoute un entête manquant :
-sed -i '/#include <boost\/shared_ptr.hpp>/ a\
-#include <boost/weak_ptr.hpp>' boost/signals2/trackable.hpp
+# On corrige un appel à Qt qui pose problème avec cetain paquet dépendant :
+sed -e '1 i#ifndef Q_MOC_RUN' \
+    -e '$ a#endif'            \
+        -i boost/type_traits/detail/has_binary_operator.hpp
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -19,7 +20,15 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--prefix=${PKG}/usr \
 	--libdir=${PKG}/usr/lib${LIBDIRSUFFIX}
 
-fakeroot ./bjam install -j${JOBS} --without-mpi || fakeroot ./bjam install --without-mpi
+./b2 -j${JOBS} stage threading=multi link=shared || ./b2 stage threading=multi link=shared
+
+# On lance les tests de régression :
+# Attention, ils sont très long, certains vont échouer et 40Go d'espace disque sont requis
+if [ ! "${TESTS}" = "" ]; then
+	pushd status; ../b2 -j${JOBS}; popd
+fi
+
+fakeroot ./b2 install threading=multi link=shared
 
 installer_doc
 creer_post_installation
