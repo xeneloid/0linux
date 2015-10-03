@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=libXi
-VERSION=1.7.4
+VERSION=1.7.5
 WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques natives de X11"
 
