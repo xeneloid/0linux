@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.9.1
+VERSION=7.10
 WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Le débogueur de GNU"
 
@@ -25,6 +25,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	pushd gdb/testsuite
+	make  site.exp
+	echo  "set gdb_test_timeout 120" >> site.exp
+	runtest TRANSCRIPT=y || true
+	popd
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On crée un fichir de configuration vide :
