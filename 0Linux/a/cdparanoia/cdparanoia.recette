@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=10.2
-EXT=tgz
-WGET=http://downloads.xiph.org/releases/$NAMESRC/${NAMESRC}-III-${VERSION}.src.$EXT
+WGET=http://downloads.xiph.org/releases/$NAMESRC/${NAMESRC}-III-${VERSION}.src.tgz
 DESC="Outils d'extraction de pistes de CD audio"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -33,7 +31,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--infodir=/usr/info \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
-	make -j${JOBS} || make
+	make -j${JOBS} || make -j1
 	fakeroot make install prefix=${PKG}/usr LIBDIR=${PKG}/usr/lib${LIBDIRSUFFIX} MANDIR=${PKG}/usr/man
 fi
 
@@ -58,7 +56,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--build=${PKGARCH}-0linux-linux-gnu
 
-make -j${JOBS} || make
+make -j${JOBS} || make -j1
 fakeroot make install prefix=${PKG}/usr LIBDIR=${PKG}/usr/lib${LIBDIRSUFFIX} MANDIR=${PKG}/usr/man
 
 installer_doc

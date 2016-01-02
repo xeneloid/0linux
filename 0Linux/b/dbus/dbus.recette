@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.28
+VERSION=1.8.20
 WGET=http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bus de messages système"
 
@@ -29,6 +29,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--disable-asserts \
 		--disable-modular-tests \
 		--disable-tests \
+		--disable-systemd \
 		--enable-inotify \
 		--enable-x11-autolaunch \
 		--with-dbus-user=messagebus \
@@ -63,6 +64,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-systemd \
 	--enable-inotify \
 	--enable-x11-autolaunch \
 	--with-dbus-user=messagebus \
@@ -72,6 +74,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 if [ "${PKGARCH}" = "x86_64" ] && [ "${LIBDIRSUFFIX}" != "" ]; then

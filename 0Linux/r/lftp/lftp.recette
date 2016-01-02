@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.6.1
+VERSION=4.6.3a
 WGET=http://lftp.yar.ru/ftp/$NAMESRC-$VERSION.tar.xz
 DESC="Client HTTP et FTP en ligne de commande"
 
@@ -21,6 +21,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--with-gnutls \
 	--with-openssl \
+	--without-included-regex \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

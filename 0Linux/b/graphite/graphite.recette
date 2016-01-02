@@ -3,10 +3,8 @@
 
 NAMESRC=graphite2
 VERSION=1.2.4
-EXT=tgz
-WGET=http://downloads.sourceforge.net/project/silgraphite/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://downloads.sourceforge.net/project/silgraphite/$NAMESRC/$NAMESRC-$VERSION.tgz
 DESC="Bibliothèques d'analyse textuelle"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -16,17 +14,18 @@ cflags
 cat $CWD/graphite.cmakepath.patch | patch -p1
 
 # On crée un répertoire dédié à la compilation :
-mkdir build && cd build
+mkdir -p build
+cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake -G "Unix Makefiles" \
-	-DCMAKE_C_FLAGS:STRING="${FLAGS}" \
-	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_BUILD_TYPE:STRING=Release \
-	-DGRAPHITE2_COMPARE_RENDERER=OFF \
-	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
-	..
+	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_BUILD_TYPE:STRING=Release \
+	-D GRAPHITE2_COMPARE_RENDERER=OFF \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	./ ../
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}

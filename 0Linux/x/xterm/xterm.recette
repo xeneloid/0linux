@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=317
+VERSION=318
 WGET=ftp://invisible-island.net/$NAMESRC/$NAMESRC-$VERSION.tgz
 DESC="Émulateur de terminal pour X11"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige le comportement du "backspace" :
+sed -i '/v0/{n;s/new:/new:kb=^?:/}' termcap
+printf '\tkbs=\\177,\n' >> terminfo
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

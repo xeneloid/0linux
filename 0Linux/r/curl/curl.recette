@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.41.0
+VERSION=7.43.0
 WGET=http://curl.haxx.se/download/$NAMESRC-$VERSION.tar.bz2
 DESC="Outil de téléchargement en ligne de commande"
 
@@ -37,8 +37,6 @@ cflags
 	--without-nghttp2 \
 	--without-nss \
 	--without-polarssl \
-	--without-ssl \
-	--without-zlib \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -68,6 +66,27 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	# Ces tests échoueront et prennent énormément de temps, désactivation :
+	cat >> tests/data/DISABLED << "EOF"
+564
+700
+701
+703
+706
+707
+708
+709
+710
+711
+712
+
+EOF
+	make -k test 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On lie un entête qui a été retiré récemment :

@@ -49,6 +49,12 @@ CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc

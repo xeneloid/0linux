@@ -2,8 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.2.52
-EXT=tar.gz
-WGET=http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.$EXT
+WGET=http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.tar.gz
 DESC="Gestion des listes de contrôle d'accès aux fichiers"
 
 
@@ -20,6 +19,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On force le respect de nos CFLAGS :
 	export OPTIMIZER=${FLAGS}
 	
+	# On corrige un segfault en cas de nom de groupe long :
+	sed -i -e "/TABS-1;/a if (x > (TABS-1)) x = (TABS-1);" \
+		libacl/__acl_to_any_text.c
+
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
@@ -45,6 +48,13 @@ cflags
 # On force le respect de nos CFLAGS :
 export OPTIMIZER=${FLAGS}
 
+# On corrige la suite de tests :
+sed -i "s:| sed.*::g" test/{sbits-restore,cp,misc}.test
+
+# On corrige un segfault en cas de nom de groupe long :
+sed -i -e "/TABS-1;/a if (x > (TABS-1)) x = (TABS-1);" \
+	libacl/__acl_to_any_text.c
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -59,6 +69,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance les suites de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k tests 2>&1 || true
+fi
+
 fakeroot make install install-dev install-lib DIST_ROOT=${PKG}
 
 installer_doc

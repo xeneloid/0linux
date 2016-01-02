@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.4.21
-EXT=tar.bz2
-WGET=http://www.netfilter.org/projects/$NAMESRC/files/$NAMESRC-$VERSION.$EXT
+WGET=http://www.netfilter.org/projects/$NAMESRC/files/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils de filtrage de paquets pour Linux"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.86
-EXT=tar.gz
-WGET=http://ftp.igh.cnrs.fr/pub/os/linux/0linux/archives_sources/$NAMETGZ/$NAMESRC-$VERSION.$EXT
+VERSION=008
+WGET=http://ftp.kernel.org/pub/linux/utils/usb/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outils pour matériel USB"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

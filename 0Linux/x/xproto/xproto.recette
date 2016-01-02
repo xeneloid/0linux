@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.0.27
+VERSION=7.0.28
 WGET=http://xorg.freedesktop.org/releases/individual/proto/$NAMESRC-$VERSION.tar.bz2
 DESC="Fichiers d'en-têtes de protocole pour X11"
 

@@ -3,7 +3,6 @@
 
 NAMESRC=unzip
 VERSION=6.0
-EXT=tgz
 WGET=ftp://ftp.info-zip.org/pub/infozip/src/${NAMESRC}$(echo $VERSION | tr -d '.').tgz
 DESC="Outil de décompression 'unzip'"
 
@@ -13,13 +12,10 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On force nos drapeaux :
-sed -i "s@CFLAGS_OPT='-O3'@CFLAGS_OPT='${FLAGS} -O3'@g" unix/configure
+sed -i "s@CFLAGS_OPT='-O3'@CFLAGS_OPT='$(echo ${FLAGS} | sed "s/-O2/-O3/")'@g" unix/configure
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -f unix/Makefile generic
-
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 fakeroot make -f unix/Makefile install prefix=${PKG}/usr
 
 installer_doc

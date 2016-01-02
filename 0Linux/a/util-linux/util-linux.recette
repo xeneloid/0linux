@@ -39,7 +39,7 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Les programmmes 'login', 'init' et 'mountpoint' ne sont pas compilés car ils figurent
+# Les programmmes 'login' et 'init' ne sont pas compilés car ils figurent
 # déjà dans d'autres paquets.
 
 # On n'installe pas 'strings' de BSD, seul 'strings' de GNU est
@@ -59,8 +59,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-last \
-	--disable-mountpoint \
+	--enable-last \
+	--enable-mountpoint \
 	--enable-agetty \
 	--enable-kill \
 	--enable-mesg \
@@ -75,6 +75,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On crée un lien générique pour ce manuel :

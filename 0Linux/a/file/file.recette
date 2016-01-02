@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.21
+VERSION=5.22
 WGET=ftp://ftp.astron.com/pub/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Outil de détermination des types de fichier"
 
@@ -29,6 +29,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On conserve le comportement de Slackware, à savoir de multiples fichiers

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4
+VERSION=1.4.2
 WGET=http://freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques d'accès aux périphériques gérés par evdev"
 

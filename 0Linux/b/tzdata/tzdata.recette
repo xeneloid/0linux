@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2015b
-EXT=tar.gz
-WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.${EXT}
-	  http://www.iana.org/time-zones/repository/releases/tzcode${VERSION}.${EXT}
+VERSION=2015e
+WGET=(http://www.iana.org/time-zones/repository/releases/${NAMESRC}${VERSION}.tar.gz
+	  http://www.iana.org/time-zones/repository/releases/tzcode${VERSION}.tar.gz
 	 )
 DESC="Outils et données chronologiques pour l'horloge système et fuseaux horaires"
 
@@ -13,8 +12,8 @@ cflags
 
 # On décompacte tout dans un répertoire commun :
 mkdir -p $TMP/${NAMESRC}-${VERSION}
-tar xf ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}${VERSION}.${EXT} -C $TMP/${NAMESRC}-${VERSION}
-tar xf ${PKGSOURCES}/${NAMETGZ}/tzcode${VERSION}.${EXT}     -C $TMP/${NAMESRC}-${VERSION}
+tar xf ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}${VERSION}.tar.gz -C $TMP/${NAMESRC}-${VERSION}
+tar xf ${PKGSOURCES}/${NAMETGZ}/tzcode${VERSION}.tar.gz     -C $TMP/${NAMESRC}-${VERSION}
 
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/share/zoneinfo
@@ -24,6 +23,11 @@ mkdir -p ${PKG}/usr/man/man{3,5,8}
 # Compilation :
 cd $TMP/${NAMESRC}-${VERSION}
 make
+
+# On lance la suite de tests si $TESTS est positionnée (requiert OpenSP) :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
 
 # Installation à la main :
 for timezone in africa \

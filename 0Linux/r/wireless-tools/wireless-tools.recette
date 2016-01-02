@@ -3,10 +3,8 @@
 
 NAMESRC=wireless_tools
 VERSION=29
-EXT=tar.gz
-WGET=http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/${NAMESRC}.${VERSION}.$EXT
+WGET=http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/${NAMESRC}.${VERSION}.tar.gz
 DESC="Outils pour réseaux sans fil"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

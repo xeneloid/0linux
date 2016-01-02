@@ -10,10 +10,34 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-configure_make_makeinstall
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-gss \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+doxygen Doxyfile
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k verify 2>&1 || true
+fi
+
+fakeroot make install DESTDIR=${PKG}
 
 installer_doc
+
+# On installe de la doc suypplémentaire :
+cp -a doxygen/html $PKG/usr/doc/$NAMETGZ-$VERSION/
+
 creer_post_installation
 stripper
 empaqueter

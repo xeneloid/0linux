@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.8p1
+VERSION=6.9p1
 WGET=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$NAMESRC-$VERSION.tar.gz
 DESC="Serveur et clients sécurisés OpenSSH"
 
@@ -29,10 +29,22 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+# Certains tests seront ignorées si on est pas root.
+if [ ! "${TESTS}" = "" ]; then
+	make -k tests 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On crée le répertoire spécifié dans l'option « PrivilegeSeparation » :
 mkdir -p ${PKG}/var/empty
+
+# On installe ce petit script bien pratique, avec sa doc :
+cp -a contrib/ssh-copy-id $PKG/usr/bin/ssh-copy-id
+chmod 755 $PKG/usr/bin/ssh-copy-id
+cp -a contrib/ssh-copy-id.1 $PKG/usr/man/man1/
 
 # On supprime les clés, elles sont uniques à chaque machine :
 rm -f ${PKG}/etc/ssh/*_key*}

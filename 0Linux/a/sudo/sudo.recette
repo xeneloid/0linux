@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.13
+VERSION=1.8.14p3
 WGET=http://www.sudo.ws/$NAMESRC/dist/$NAMESRC-$VERSION.tar.gz
 DESC="Outil de gestion de privilèges utilisateurs"
 
@@ -30,6 +30,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	LC_ALL=C make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On place notre fichier de config' et on s'assure de ne rien écraser :

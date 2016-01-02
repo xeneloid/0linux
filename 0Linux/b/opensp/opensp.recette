@@ -3,10 +3,8 @@
 
 NAMESRC=OpenSP
 VERSION=1.5.2
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/openjade/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/openjade/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'analyse et de validation SGML et XML"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -32,9 +30,17 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-default-catalog=/etc/sgml/catalog \
 	--enable-default-search-path=/usr/share/sgml \
 	--enable-http \
+	--enable-xml-messages \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make pkgdatadir=/usr/share/sgml/${NAMETGZ}-${VERSION}
+
+# On lance la suite de tests si $TESTS est positionnée :
+# Sur les 23 tests, il est normal que 9 échouent !
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On relie OpenJade à OpenSP :

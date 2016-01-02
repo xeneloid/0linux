@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=6.0.0a
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques arithmétiques « GNU Multiple Precision »"
 
 telecharger_sources
@@ -23,7 +23,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	export ABI=32
 	
 	# Compilation pour i686 :
-	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	CFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
+	CXXFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -61,7 +62,8 @@ if [ ! "${PKGARCH}" = "x86_64" ]; then
 fi
 
 # Compilation :
-CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+CFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
+CXXFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/')" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \

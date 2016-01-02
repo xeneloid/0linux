@@ -3,10 +3,8 @@
 
 NAMESRC=libXau
 VERSION=1.0.8
-EXT=tar.bz2
-WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.$EXT
+WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques d'accès pour X11"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -19,19 +17,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	cflags i686
 	
 	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--build=${PKGARCH}-0linux-linux-gnu
-	
-	make -j${JOBS} || make
-	fakeroot make install DESTDIR=${PKG}
+	configure_make_makeinstall
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
@@ -50,8 +36,14 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--build=${PKGARCH}-0linux-linux-gnu
-	
+
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc

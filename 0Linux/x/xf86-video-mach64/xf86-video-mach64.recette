@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.9.4
+VERSION=6.9.5
 WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.tar.bz2
 DESC="Pilotes graphiques pour X11"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# Correctifs en provenance du dépot git officiel :
-cat $CWD/git-fixes.patch | patch -p1
 
 # Compilation :
 configure_make_makeinstall

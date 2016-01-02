@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.2_20140911
+VERSION=1.2_20150225
 WGET=ftp://invisible-island.net/$NAMESRC/$NAMESRC-$(echo $VERSION | tr '_' '-').tgz
 DESC="Boîtes de dialogues pour terminal"
 

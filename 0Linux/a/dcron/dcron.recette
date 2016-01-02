@@ -2,8 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=4.5
-EXT=tar.gz
-WGET=http://www.jimpryor.net/linux/releases/$NAMESRC-$VERSION.$EXT
+WGET=http://www.jimpryor.net/linux/releases/$NAMESRC-$VERSION.tar.gz
 DESC="Planificateur de tâches"
 
 telecharger_sources

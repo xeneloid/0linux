@@ -29,6 +29,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--enable-pcre16 \
 		--enable-pcre32 \
 		--enable-pcregrep-libz \
+		--enable-pcregrep-libbz2 \
 		--enable-pcretest-libreadline \
 		--enable-unicode-properties \
 		--enable-utf8 \
@@ -57,12 +58,19 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-pcre16 \
 	--enable-pcre32 \
 	--enable-pcregrep-libz \
+	--enable-pcregrep-libbz2 \
 	--enable-pcretest-libreadline \
 	--enable-unicode-properties \
 	--enable-utf8 \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 installer_doc

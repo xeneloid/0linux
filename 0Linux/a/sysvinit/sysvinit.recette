@@ -2,8 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.88dsf
-EXT=tar.bz2
-WGET=http://download.savannah.gnu.org/releases/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://download.savannah.gnu.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Programmes d'initialisation du système"
 
 
@@ -11,17 +10,18 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On applique ce patch modifié de LFS qui francise et modernise ce paquet :
+# Ce patch enlève également des programmes fournis par d'autre paquets, plus à jour :
+# pidof dans procps, last, lastb, mountpoint et wall dans util-linux
+cat $CWD/sysvinit.consolidated.patch | patch -p1
+
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/usr/man/man{1,5,8}
-
-# On ne compile pas 'wall' car "util-linux-ng" l'inclut déjà :
-sed -i -e 's/utmpdump wall/utmpdump/' -e 's/mountpoint.1 wall.1/mountpoint.1/' src/Makefile
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} -C src || make -C src
 fakeroot make -C src install MANDIR=/usr/man ROOT=${PKG}
-
 
 installer_doc
 

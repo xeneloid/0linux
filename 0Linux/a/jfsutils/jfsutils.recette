@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.1.15
-EXT=tar.gz
-WGET=http://jfs.sourceforge.net/project/pub/$NAMESRC-$VERSION.$EXT
+WGET=http://jfs.sourceforge.net/project/pub/$NAMESRC-$VERSION.tar.gz
 DESC="Outils pour le système de fichiers JFS d'IBM"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4.0
+VERSION=2.4.1
 WGET=http://www.nano-editor.org/dist/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz
 DESC="Éditeur en mode texte facile d'utilisation"
 

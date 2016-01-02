@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.42.2
+VERSION=2.44.1
 WGET=http://ftp.gnome.org/pub/GNOME/sources/${NAMESRC}/$(echo $VERSION | cut -d'.' -f1-2)/${NAMESRC}-$VERSION.tar.xz
 DESC="Bibliothèques de fonctions C pour GTK+"
 
@@ -72,6 +72,12 @@ chmod 644 ${PKG}/usr/share/bash-completion/completions/*
 mkdir -p ${PKG}/etc/profile.d
 cp -a $CWD/glib.sh ${PKG}/etc/profile.d/glib.sh.0nouveau
 chmod 755 ${PKG}/etc/profile.d/*
+
+# On lance la suite de tests si $TESTS est positionnée :
+# Note : la suite de test ne peut être lancé qu'après installation (sic !)
+if [ ! "${TESTS}" = "" ]; then
+	make -k check 2>&1 || true
+fi
 
 installer_doc
 creer_post_installation
