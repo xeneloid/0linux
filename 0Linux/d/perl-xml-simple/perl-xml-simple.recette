@@ -3,10 +3,8 @@
 
 NAMESRC=XML-Simple
 VERSION=2.20
-EXT=tar.gz
-WGET=http://cpan.cict.fr/authors/id/G/GR/GRANTM/$NAMESRC-$VERSION.$EXT
+WGET=http://cpan.cict.fr/authors/id/G/GR/GRANTM/$NAMESRC-$VERSION.tar.gz
 DESC="Module XML-Simple pour Perl"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

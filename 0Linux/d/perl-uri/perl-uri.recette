@@ -2,9 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=URI
-VERSION=1.60
-EXT=tar.gz
-WGET=http://cpan.enstimac.fr/authors/id/G/GA/GAAS/$NAMESRC-$VERSION.$EXT
+VERSION=1.69
+WGET=http://cpan.metacpan.org/authors/id/E/ET/ETHER/$NAMESRC-$VERSION.tar.gz
 DESC="Module URI pour Perl"
 
 
@@ -17,10 +16,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 perl Makefile.PL INSTALLDIRS=vendor
 
 make -j${JOBS} || make
+
+# On lance la suite de tests si $TESTS est positionnée :
+if [ ! "${TESTS}" = "" ]; then
+	TEST_JOBS=${JOBS} make test 2>&1 || true
+fi
+
 fakeroot make install DESTDIR=${PKG}
 
 # On supprime ce fichier Perl en doublon :
-find ${PKG} -type f -name "perllocal.pod" -delete
+#find ${PKG} -type f -name "perllocal.pod" -delete
 
 installer_doc
 creer_post_installation

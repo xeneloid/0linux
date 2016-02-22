@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.19
+VERSION=1.0.20
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques USB"
 

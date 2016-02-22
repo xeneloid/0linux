@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.1.24+nmu4
+WGET=http://ftp.de.debian.org/debian/pool/main/libp/$NAMESRC/${NAMESRC}_$VERSION.tar.gz
+DESC="Bibliothèque de gestion de formats de papier"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On ajoute le fichier de configuration par défaut :
+mkdir -p $PKG/etc
+echo '# Ajouter le nom du papier. Voir papersize(5) pour vérifier les valeurs possibles.' > $PKG/etc/papersize.0nouveau
+
+# On ajoute le répertoire d'accueil pour des paramêtres par application :
+mkdir -p $PKG/etc/libpaper.d
+
+# On ajoute la localisation
+pushd debian/po
+for i in `ls *.po`; do
+        mkdir -p ${PKG}/usr/share/locale/${i%.po}/LC_MESSAGES/
+        msgfmt $i -o ${PKG}/usr/share/locale/${i%.po}/LC_MESSAGES/${NAMETGZ}.mo
+done
+popd
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=20141019
+VERSION=20150426
 WGET=http://ftp.debian.org/debian/pool/main/c/${NAMESRC}/${NAMESRC}_${VERSION}.tar.xz
 DESC="Ensembles de certificats CA pour SSL"
 EXTRADEPS="dcron"

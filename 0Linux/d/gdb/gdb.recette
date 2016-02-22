@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.10
+VERSION=7.10.1
 WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Le débogueur de GNU"
 

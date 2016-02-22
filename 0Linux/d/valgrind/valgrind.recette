@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.10.1
+VERSION=3.11.0
 WGET=http://valgrind.org/downloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils d'analyse de l'utilisation de la mémoire dans les programmes"
 

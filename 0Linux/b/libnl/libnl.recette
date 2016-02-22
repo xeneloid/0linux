@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.2.25
-WGET=http://www.infradead.org/~tgr/$NAMESRC/files/$NAMESRC-$VERSION.tar.gz
+VERSION=3.2.27
+WGET=https://github.com/thom311/$NAMESRC/releases/download/${NAMESRC}$(echo $VERSION | sed 's|\.|_|g')/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques réseau pour le protocole netlink"
 
 telecharger_sources

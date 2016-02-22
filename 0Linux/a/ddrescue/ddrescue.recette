@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.19
+VERSION=1.20
 WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.lz
 DESC="Génération d'images pour disques durs endommagés"
 

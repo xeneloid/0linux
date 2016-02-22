@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.8
+VERSION=1.7.0
 WGET=https://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de chiffrement des périphériques de type bloc"
 

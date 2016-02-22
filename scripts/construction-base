@@ -90,9 +90,9 @@ gpm
 inetutils
 iproute2
 iptables
-iwlwifi-ucode
 jfsutils
 kbd
+vlock
 kmod
 less
 lftp
@@ -105,6 +105,7 @@ libusb-compat
 usbutils
 lsof
 lvm2
+popt
 cryptsetup
 man-db
 nano
@@ -113,9 +114,11 @@ net-tools
 kerberos
 libevent
 libgssapi
+libgssglue
 libtirpc
 rpcbind
 libnfsidmap
+librpcsecgss
 nfs-utils
 fuse
 ntfs-3g_ntfsprogs
@@ -146,3 +149,4 @@ wpa_supplicant
 xfsprogs
 sysvinit
 initialisation-systeme
+bash-completion

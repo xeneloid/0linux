@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.14
+VERSION=0.10.0
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Ensemble de tests unitaires pour C"
 

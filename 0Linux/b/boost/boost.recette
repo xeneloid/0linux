@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.59.0
+VERSION=1.60.0
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_$(echo $VERSION | sed 's/\./_/g').tar.bz2
 DESC="Ensemble de bibliothèques C++ portables"
 
@@ -18,14 +18,20 @@ sed -e '1 i#ifndef Q_MOC_RUN' \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./bootstrap.sh \
 	--prefix=${PKG}/usr \
-	--libdir=${PKG}/usr/lib${LIBDIRSUFFIX}
+	--libdir=${PKG}/usr/lib${LIBDIRSUFFIX} \
+	--with-icu
 
 ./b2 -j${JOBS} stage threading=multi link=shared || ./b2 stage threading=multi link=shared
 
-# On lance les tests de régression :
-# Attention, ils sont très long, certains vont échouer et 40Go d'espace disque sont requis
+# On lance la suite de tests si $TEST est positionné :
+#
+# Attention, cette suite de test est très longue, requiert de grandes
+# quantité de mémoire et environ 40Go d'espace disque.
+#
+# On utilise le nombre de processeurs divisés par deux à cause de la quantité
+# astronomique de mémoire que requièrent certains tests.
 if [ ! "${TESTS}" = "" ]; then
-	pushd status; ../b2 -j${JOBS}; popd
+	pushd status; ../b2 -j$(echo $JOBS / 2 | bc) || true ; popd
 fi
 
 fakeroot ./b2 install threading=multi link=shared

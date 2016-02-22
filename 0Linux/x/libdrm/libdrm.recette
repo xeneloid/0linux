@@ -15,7 +15,11 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 	cflags i686
 	
+	# PThread est inutile et pose problèmes :
+	sed -i "/pthread-stubs/d" configure.ac
+	
 	# Compilation pour i686 :
+	autoreconf -vif
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
 		--prefix=/usr \
@@ -37,7 +41,11 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# PThread est inutile et pose problèmes :
+sed -i "/pthread-stubs/d" configure.ac
+
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \

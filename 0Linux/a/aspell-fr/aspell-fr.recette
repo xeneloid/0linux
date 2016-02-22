@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.50
-WGET=http://mirror-fr1.bbln.org/gnu/aspell/dict/fr/$NAMESRC-$VERSION-3.tar.bz2
+WGET=http://mirror1.babylon.network/gnu/aspell/dict/fr/$NAMESRC-$VERSION-3.tar.bz2
 DESC="Outils de correction orthographique et dictionnaires français"
 
 telecharger_sources

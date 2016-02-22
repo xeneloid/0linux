@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.6.1
+VERSION=1.0.1
 WGET=http://prdownloads.sourceforge.net/lxde/$NAMESRC-$VERSION.tar.xz
 DESC="Système de cache pour les menus Freedesktop"
 

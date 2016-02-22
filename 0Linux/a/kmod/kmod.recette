@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=21
+VERSION=22
 WGET=http://www.kernel.org/pub/linux/utils/kernel/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de gestion des modules noyau"
 

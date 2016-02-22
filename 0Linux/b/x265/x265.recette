@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.5
-WGET=https://0linux.geoffray-levasseur.org/src/$NAMETGZ-$VERSION.tar.xz
+VERSION=1.8
+WGET=https://bitbucket.org/multicoreware/$NAMESRC/downloads/${NAMESRC}_$VERSION.tar.gz
 DESC="Décodeur pour le format vidéo x265"
 
 telecharger_sources

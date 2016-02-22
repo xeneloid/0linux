@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.0
-EXT=tar.xz
-WGET=http://freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.$EXT
+VERSION=7.1
+WGET=http://freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Serveur audio avec fonctionnalités réseau"
 
 

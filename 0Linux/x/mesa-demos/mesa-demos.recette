@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=8.2.0
+VERSION=8.3.0
 WGET=ftp://ftp.freedesktop.org/pub/mesa/demos/$VERSION/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils et applications de démonstration pour Mesa"
 
@@ -19,6 +19,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-system-data-files=/usr/share/mesa-demos \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

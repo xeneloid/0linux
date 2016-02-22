@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.6
-WGET=http://ftp.gnu.org/pub/gnu/plotutils/plotutils-$VERSION.tar.gz
+WGET=http://mirror1.babylon.network/pub/gnu/plotutils/plotutils-$VERSION.tar.gz
 DESC="Outils et bibliothèques pour le traçage de courbes"
 
 

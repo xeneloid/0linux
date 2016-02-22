@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=475
+VERSION=481
 WGET=http://www.greenwoodsoftware.com/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Visionneuse de fichiers texte"
 

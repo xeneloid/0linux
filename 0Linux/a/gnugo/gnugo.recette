@@ -3,7 +3,7 @@
 
 VERSION=3.8
 EXT=tar.gz
-WGET=http://ftp.gnu.org/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://mirror1.babylon.network/pub/gnu/$NAMESRC/$NAMESRC-$VERSION.$EXT
 DESC="Jeu de Go"
 
 

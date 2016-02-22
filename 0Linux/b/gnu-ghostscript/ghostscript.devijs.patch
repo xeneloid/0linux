@@ -1,0 +1,42 @@
+From: Chris Liddell <chris.liddell@artifex.com>
+Date: Fri, 9 Oct 2015 09:54:10 +0000 (+0100)
+Subject: Bug 696246: devijs account for device sublassing.
+X-Git-Url: http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff_plain;h=b68e05c3
+
+Bug 696246: devijs account for device sublassing.
+
+The IJS device wasn't coping with the possibility it had been subclassed.
+
+No cluster differences
+---
+
+diff --git a/devices/gdevijs.c b/devices/gdevijs.c
+index 5520716..a2e21ea 100644
+--- a/devices/gdevijs.c
++++ b/devices/gdevijs.c
+@@ -827,6 +827,10 @@ gsijs_open(gx_device *dev)
+     if (code < 0)
+         return code;
+ 
++    while (dev->child)
++        dev = dev->child;
++    ijsdev = (gx_device_ijs *)dev;
++
+     if (use_outputfd) {
+         /* Note: dup() may not be portable to all interesting IJS
+            platforms. In that case, this branch should be #ifdef'ed out.
+From: Chris Liddell <chris.liddell@artifex.com>
+Date: Fri, 9 Oct 2015 11:54:44 +0000 (+0100)
+Subject: Bug 696246: patch the memory manager fields for sublassed devices.
+X-Git-Url: http://git.ghostscript.com/?p=ghostpdl.git;a=commitdiff_plain;h=95553954
+
+Bug 696246: patch the memory manager fields for sublassed devices.
+
+When we subclass a device, we were patching the "visible" type field - that is,
+the one referenced directly in the device structure. We were not patching
+the type information in the memory object header so, in particular, the
+garbage collector could end up calling the wrong methods for the subclassed
+device.
+
+No cluster differences.
+---

@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.60.6.1
-WGET=http://mirror-fr1.bbln.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Outils de correction orthographique"
 
 telecharger_sources

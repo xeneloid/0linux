@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.9.3
+VERSION=5.3.0
 WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.bz2
 DESC="La suite de compilateurs de GNU"
 
@@ -42,14 +42,22 @@ $TMP/${NAME}/configure \
 	--disable-libstdcxx-pch \
 	--disable-libunwind-exceptions \
 	--disable-ppl-version-check \
+	--disable-werror \
 	--enable-__cxa_atexit \
 	--enable-checking=release \
 	--enable-clocale=gnu \
 	--enable-cloog-backend=isl \
 	--enable-languages=c,c++,fortran,go,lto,objc,obj-c++ \
+	--enable-libmpx \
+	--enable-gnu-indirect-function \
+	--enable-gnu-unique-object \
 	--enable-libstdcxx-time \
+	--enable-linker-build-id \
+	--enable-lto \
+	--enable-plugin \
 	--enable-shared \
 	--enable-threads=posix \
+	--with-linker-hash-style=gnu \
 	--with-system-zlib \
 	--build=${PKGARCH}-0linux-linux-gnu
 
@@ -61,15 +69,15 @@ if [ ! "${TESTS}" = "" ]; then
 	# Pour éviter les échecs de la suite de tests :
 	# (cf. http://gcc.gnu.org/bugzilla/show_bug.cgi?id=31827)
 	ulimit -s 32768 || true
-	make -k check 2>&1 || true
+	make -k -j${JOBS} check 2>&1 || true
 	
 	# On se fait également un résumé concis des tests :
 	$TMP/${NAME}/contrib/test_summary 2>&1 || true
 fi
 
 make -j${JOBS} info
-fakeroot make -j${JOBS} install DESTDIR=${PKG}
-fakeroot make -j${JOBS} -i install-info DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make -i install-info DESTDIR=${PKG}
 
 # Certains paramètres changent selon l'architecture :
 if [ "${PKGARCH}" = "x86_64" ]; then

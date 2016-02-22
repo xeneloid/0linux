@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.5
+VERSION=0.9.6.1
 WGET=http://telepathy.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'interfaçage Qt pour Telepathy"
 
@@ -16,10 +16,11 @@ cd build
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
-	-DCMAKE_BUILD_TYPE=Release \
-	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DENABLE_TESTS=OFF \
-	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D CMAKE_BUILD_TYPE=Release \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D DISABLE_WERROR=ON \
+	-D ENABLE_TESTS=OFF \
+	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
 	./ ../
 
 make -j${JOBS} || make

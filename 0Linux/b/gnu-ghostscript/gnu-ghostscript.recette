@@ -2,16 +2,25 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=ghostscript
-VERSION=9.16
+VERSION=9.18
 WGET=(http://downloads.ghostscript.com/public/$NAMESRC-$VERSION.tar.bz2
       http://prdownloads.sourceforge.net/gs-fonts/$NAMESRC-fonts-std-8.11.tar.gz
-      http://ftp.gnu.org/pub/gnu/ghostscript/gnu-gs-fonts-other-6.0.tar.gz
+      http://mirror1.babylon.network/gnu/ghostscript/gnu-gs-fonts-other-6.0.tar.gz
      )
 DESC="Bibliothèques, interpréteurs et pilotes PostScript et PDF"
 
 telecharger_sources
 preparer_sources $NAMESRC-$VERSION.tar.bz2 # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
+
+# On corrige un appel à la ZLib :
+cat $CWD/ghostscript.zlib.recette | patch -p1
+
+# On corrige un bug génant avec DevIjs :
+cat $CWD/ghostscript.devijs.recette | patch -p1
+
+# On ajoute un en-tête manquant :
+cat $CWD/ghostscript.gsensor.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -37,7 +46,7 @@ cd ijs
 # On corrige pour les systèmes de construction récents :
 sed -i "s:AM_PROG_CC_STDC:AC_PROG_CC:g" configure.ac
 
-# On régénère le système d econstruction :
+# On régénère le système de construction :
 ./autogen.sh
 
 # Compilation :

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.32.6
+VERSION=0.32.8
 WGET=http://xorg.freedesktop.org/releases/individual/lib/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques natives de X11"
 

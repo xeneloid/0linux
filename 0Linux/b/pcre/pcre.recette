@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=8.36
+VERSION=8.38
 WGET=ftp://ftp.csx.cam.ac.uk/pub/software/programming/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Fonctions pour expressions régulières de type Perl"
 

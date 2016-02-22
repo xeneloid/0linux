@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.25
+VERSION=2.25.1
 WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Binaires de développement GNU"
 
@@ -21,9 +21,6 @@ fi
 # On corrige le comportement de l'installation de la libiberty, qui a disparu
 # dans 'binutils' 2.24 :
 sed -i '/^target_header_dir=$/d' libiberty/configure
-
-# On corrige plusieurs problème avec ce patch de l'upstream :
-cat $CWD/binutils-2.25-upstream.patch | patch -p1
 
 # Compilation :
 CC="${CC} -isystem /usr/include" \

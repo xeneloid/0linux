@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.6.0
-WGET=ftp://ftp.kde.org/pub/kde/stable/frameworks/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
+VERSION=5.16.0
+WGET=http://download.kde.org/stable/frameworks/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques d'accès au système de fenêtrage pour KDE"
 
 telecharger_sources

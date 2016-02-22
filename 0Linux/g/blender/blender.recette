@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.73a
+VERSION=2.74
 WGET=http://download.blender.org/source/blender-$VERSION.tar.gz
 DESC="Modéliseur 3D avancé de référence"
 EXTRADEPS="desktop-file-utils hicolor-icon-theme jack python shared-mime-info xdg-utils"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.16.3
+VERSION=1.17.1
 WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outil de téléchargement en ligne de commande"
 

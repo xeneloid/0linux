@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.21
+VERSION=1.6.0
 WGET=http://www.netfilter.org/projects/$NAMESRC/files/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils de filtrage de paquets pour Linux"
 

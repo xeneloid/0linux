@@ -13,6 +13,12 @@ cflags
 sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c &&
 sed -i "/error = getaddrinfo/s:rpcbind:sunrpc:" src/rpcinfo.c
 
+# On corrige une fuite mémoire :
+cat $CWD/rpcbind.memory.patch | patch -p1
+
+# On corrige un appel :
+cat $CWD/rpcbind-svc_xp_auth.patch | patch -p1
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

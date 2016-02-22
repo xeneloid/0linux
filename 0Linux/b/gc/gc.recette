@@ -9,6 +9,15 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# Corrige des bugs ennuyeux :
+cat $CWD/gc.noelision.patch | patch -p1
+
+# Publie une fonction requise par certains programme :
+cat $CWD/gc.add_export.patch | patch -p1
+
+# Corrige le chemin d'accès à la doc :
+sed -i 's#pkgdata#doc#' doc/doc.am
+
 # Compilation :
 autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -25,9 +34,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On déplace le manuel où il faut :
+# On installe le manuel où il faut :
 mkdir -p ${PKG}/usr/man/man1
-mv ${PKG}/usr/share/gc/gc.man ${PKG}/usr/man/man1/gc.1
+cp -a doc/gc.man ${PKG}/usr/man/man1/gc.1
 
 installer_doc
 creer_post_installation

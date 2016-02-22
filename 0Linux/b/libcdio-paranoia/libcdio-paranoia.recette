@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=10.2+0.93+1
-WGET=http://mirror-fr1.bbln.org/gnu/libcdio/$NAMESRC-$VERSION.tar.gz
+WGET=http://mirror1.babylon.network/gnu/libcdio/$NAMESRC-$VERSION.tar.gz
 DESC="Extention « paranoia » pour libcdio"
 
 telecharger_sources

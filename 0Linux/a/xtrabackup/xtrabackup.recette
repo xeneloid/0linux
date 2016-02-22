@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.2.9
+VERSION=2.2.10
 WGET=http://www.percona.com/downloads/XtraBackup/LATEST/source/tarball/percona-$NAMESRC-$VERSION.tar.gz
 DESC="Système de sauvegarde à chaud pour MySQL / MariaDB"
 

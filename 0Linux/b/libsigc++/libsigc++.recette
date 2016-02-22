@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4.0
+VERSION=2.6.1
 WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Système d'appels et de fonctions pour C++"
 

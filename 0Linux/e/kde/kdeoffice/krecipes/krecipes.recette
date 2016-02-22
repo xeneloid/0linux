@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.0.0
-WGET=ftp://ftp.kde.org/pub/kde/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.tar.xz
+VERSION=2.1.0
+WGET=http://download.kde.org/stable/$NAMESRC/$VERSION/src/$NAMESRC-$VERSION.tar.xz
 DESC="Gestionnaire de recettes de cuisine"
 
 telecharger_sources

@@ -91,7 +91,6 @@ opus
 orc
 ortp
 pm-utils
-popt
 psutils
 pth
 serd
@@ -121,6 +120,7 @@ bullet
 cdrtools
 cln
 clucene
+cmatrix
 cppunit
 cracklib
 dbus-c++

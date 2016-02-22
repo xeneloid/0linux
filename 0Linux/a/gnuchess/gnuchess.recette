@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=6.2.1
-WGET=http://ftp.gnu.org/pub/gnu/chess/$NAMESRC-$VERSION.tar.gz
+VERSION=6.2.2
+WGET=http://mirror1.babylon.network/gnu/chess/$NAMESRC-$VERSION.tar.gz
 DESC="Jeu d'échec"
 
 telecharger_sources

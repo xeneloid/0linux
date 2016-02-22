@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.6
+VERSION=2.6.2
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Moteur de rendu pour polices TrueType"
 

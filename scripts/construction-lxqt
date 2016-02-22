@@ -2,8 +2,9 @@ libqtxdg
 extra-cmake-modules
 kwindowsystem
 kguiaddons
+solid
+libkscreen
 liblxqt
-liblxqt-mount
 lxqt-globalkeys
 lxqt-notificationd
 libsysstat
@@ -21,6 +22,7 @@ lxqt-openssh-askpass
 lxqt-powermanagement
 lxqt-config
 lxqt-about
+lxqt-sudo
 lximage-qt
 obconf-qt
 lxqt-admin

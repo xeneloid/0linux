@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.22
+VERSION=5.25
 WGET=ftp://ftp.astron.com/pub/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Outil de détermination des types de fichier"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=7.4.797
+VERSION=7.4.884
 VERREELLE=$(echo ${VERSION} | cut -d'.' -f1-2)
 WGET=(
       ftp://ftp.vim.org/pub/vim/unix/$NAMESRC-$VERREELLE.tar.bz2
@@ -19,7 +19,7 @@ cflags
 # On télécharge chaque correctif :
 mkdir -p ${PKGSOURCES}/${NAMETGZ}/patches
 
-for correctif in {001..797}; do # Indiquer ici le nombre de correctifs à appliquer.
+for correctif in {001..884}; do # Indiquer ici le nombre de correctifs à appliquer.
 	if [ ! -r ${PKGSOURCES}/${NAMETGZ}/patches/$VERREELLE.${correctif} ]; then
 		wget -vc "ftp://ftp.vim.org/pub/vim/patches/$VERREELLE/$VERREELLE.${correctif}" \
 			-O ${PKGSOURCES}/${NAMETGZ}/patches/$VERREELLE.${correctif}.part

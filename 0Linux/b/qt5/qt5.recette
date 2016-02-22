@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=qt-everywhere-opensource-src
-VERSION=5.4.1
+VERSION=5.5.1
 WGET=http://download.qt-project.org/official_releases/qt/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/single/$NAMESRC-$VERSION.tar.xz
 DESC="Qt 5 : outils et bibliothèques de création d'applications graphiques"
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=20140525
+VERSION=20150521
 WGET=(
       ftp://tug.org/historic/systems/$NAMESRC/$(echo $VERSION | cut -c 1-4)/$NAMESRC-$VERSION-source.tar.xz
-      ftp://tug.org/historic/systems/$NAMESRC/$(echo $VERSION | cut -c 1-4)/$NAMESRC-$VERSION-texmf.tar.xz
-      http://downloads.sourceforge.net/project/biblatex-biber/biblatex-biber/1.8/binaries/Linux/biber-linux_x86_32.tar.gz
-      http://downloads.sourceforge.net/project/biblatex-biber/biblatex-biber/1.8/binaries/Linux/biber-linux_x86_64.tar.gz
+      ftp://tug.org/historic/systems/$NAMESRC/$(echo $VERSION | cut -c 1-4)/$NAMESRC-20150523-texmf.tar.xz
+      http://downloads.sourceforge.net/project/biblatex-biber/biblatex-biber/2.2/binaries/Linux/biber-linux_x86_32.tar.gz
+      http://downloads.sourceforge.net/project/biblatex-biber/biblatex-biber/2.2/binaries/Linux/biber-linux_x86_64.tar.gz
      )
 DESC="TeXLive, la distribution complète pour TeX"
 
@@ -14,13 +14,13 @@ telecharger_sources
 preparer_sources $NAMESRC-$VERSION-source.tar.xz
 cflags
 
-# On corrige l'édition de liens pour xdvik :
-cat ${CWD}/texlive.xaw3d.patch | patch -p1
-
 # On corrige quelques chemins dans la configuration :
 sed -i -e 's@TEXMFROOT = .*@TEXMFROOT = $SELFAUTODIR/share@' \
 	-e 's@TEXMFLOCALROOT = .*@TEXMFLOCAL = $TEXMFROOT/texmf-local@' \
 	texk/kpathsea/texmf.cnf
+
+# Corrige un problème avec l'UTF-8 :
+sed -i "s/SELFAUTOPARENT/TEXMFROOT/" texk/tex4htk/t4ht.c
 
 # On compile dans un répertoire dédié :
 mkdir build && cd build
@@ -36,6 +36,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-missing \
+	--disable-multiplatform \
 	--disable-native-texlive-build \
 	--enable-largefile \
 	--enable-shared \
@@ -48,14 +49,22 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-freetype2-include=/usr/include/freetype2 \
 	--with-system-cairo \
 	--with-system-freetype2 \
+	--with-system-gd \
+	--with-system-gmp \
+	--with-system-graphite \
 	--with-system-harfbuzz \
 	--with-system-icu \
+	--with-system-libpaper \
 	--with-system-libpng \
+        --with-system-mpfr \
+	--with-system-ncurses \
 	--with-system-pixman \
 	--with-system-poppler \
+        --with-system-potrace \
 	--with-system-t1lib \
 	--with-system-xpdf \
 	--with-system-zlib \
+	--with-system-zziplib \
 	--with-x \
 	--with-xdvi-x-toolkit=xaw \
 	--without-etex \
@@ -89,11 +98,11 @@ mkdir -p ${PKG}/usr/share/{texmf-config,texmf-var}
 
 # On décompacte la gigantesque archive des «texmf »et on copie le tout dans notre '/usr/share/texmf-dist' :
 cd ${TMP}
-tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-$VERSION-texmf.tar.xz
-cp -ar $NAMESRC-$VERSION-texmf/texmf-dist/* ${PKG}/usr/share/texmf-dist/
+tar xf ${PKGSOURCES}/${NAMETGZ}/$NAMESRC-20150523-texmf.tar.xz
+cp -ar $NAMESRC-20150523-texmf/texmf-dist/* ${PKG}/usr/share/texmf-dist/
 
 # On nettoie ce monstre :
-rm -rf $NAMESRC-$VERSION-texmf
+rm -rf $NAMESRC-20150523-texmf
 
 # On s'assure des permissions (normalement c'est effectué par preparer_sources()) :
 find ${PKG}/usr/share \

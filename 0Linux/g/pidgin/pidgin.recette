@@ -10,6 +10,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
+autoreconf -vif
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -19,7 +20,11 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-nm \
+	--enable-cyrus-sasl \
+	--enable-nm \
+	--disable-gnutls \
+        --disable-schemas-install \
+        --disable-meanwhile \	
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

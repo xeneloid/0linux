@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.93
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'accès aux CD-ROM et images CD"
 
 telecharger_sources

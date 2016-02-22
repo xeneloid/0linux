@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.10
-WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques de détection de problèmes de gestion de mémoire"
 
 telecharger_sources

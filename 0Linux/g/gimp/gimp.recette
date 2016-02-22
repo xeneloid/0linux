@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.8.14
-WGET=http://de-mirror.gimper.net/pub/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
+VERSION=2.8.16
+WGET=https://ftp.fau.de/$NAMESRC/$NAMESRC/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Le programme de manipulation et de retouche d'images GIMP"
 
 telecharger_sources

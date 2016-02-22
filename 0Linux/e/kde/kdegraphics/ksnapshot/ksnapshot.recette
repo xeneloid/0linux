@@ -3,7 +3,7 @@
 
 VERSION=4.14.3
 WGET=http://download.kde.org/stable/$VERSION/src/$NAMESRC-$VERSION.tar.xz
-DESC="Outil de capture d'écran pour KDE"
+DESC="Outil de capture d'�cran pour KDE"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

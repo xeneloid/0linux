@@ -21,7 +21,7 @@ orage
 xfce4-terminal
 tumbler
 ristretto
-parole 
+parole
 xarchiver
 xfburn
 midori
@@ -37,7 +37,6 @@ xfce4-diskperf-plugin
 xfce4-fsguard-plugin
 xfce4-mixer
 xfce4-netload-plugin
-xfce4-notes-plugin
 xfce4-sensors-plugin
 xfce4-vala
 xfce4-weather-plugin

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.21
+VERSION=2.22
 WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques C système vitales"
 EXTRADEPS="base-systeme busybox"
@@ -13,6 +13,9 @@ cflags
 # On crée les répertoires d'accueil :
 mkdir -p ${PKG}/var/{db,run}/nscd
 
+# On corrige un nombre important de bugs :
+cat $CWD/glibc-2.22-bugfix.patch | patch -p1
+
 # On ne compile pas les fuseaux horaires, le paquet 'tzdata' s'en charge :
 sed -i 's/localedata timezone rt/localedata rt/' Makeconfig
 
@@ -23,62 +26,6 @@ sed -i "s@# PARALLELMFLAGS = -j 4@PARALLELMFLAGS = -j${JOBS}@" Makefile.in
 # qu'une grosse archive, ça nous permettra d'alléger le live :
 sed -i 's@--alias-file=\.\./intl/locale\.alias@--alias-file=../intl/locale.alias --no-archive@' localedata/Makefile
 
-# On compile pour la prise en charge du multilib en i686 pour x86_64 uniquement :
-if [ "${PKGARCH}" = "x86_64" ]; then
-	
-	# On passe en 32 bits :
-	cflags i686
-	
-	# On crée un répertoire séparé pour la compilation 32 bits :
-	rm -rf $TMP/${NAMESRC}-build-${PKGARCH}
-	mkdir -p $TMP/${NAMESRC}-build-${PKGARCH}
-	cd $TMP/${NAMESRC}-build-${PKGARCH}
-	
-	# Ce lien aide dans le processus de compilation selon l'hôte et la machine ciblée :
-	ln -sf ${NAMESRC}-build-${PKGARCH} $TMP/${PKGARCH}
-	
-	# On ajoute notre répertoire de bibliothèques à la config' :
-	echo "slibdir=/usr/lib${LIBDIRSUFFIX}" >> configparms
-	
-	# Sur i686, ce drapeau permet de régler certains problèmes avec Xen :
-	EXTRAFLAG="-mno-tls-direct-seg-refs"
-	
-	# Compilation 32 bits avec une optimisation maximale :
-	CFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/') ${EXTRAFLAG}" \
-	CXXFLAGS="$(echo "${FLAGS}" | sed 's/-O2/-O3/') ${EXTRAFLAG}" \
-	$TMP/${NAME}/configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--libexecdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--disable-profile \
-		--enable-add-ons \
-		--enable-bind-now \
-		--enable-kernel=3.1.0 \
-		--enable-lock-elision \
-		--enable-stackguard-randomization \
-		--build=${PKGARCH}-0linux-linux-gnu
-	
-	make -j${JOBS} || make
-	fakeroot make -j${JOBS} install install_root=${PKG}
-	
-	cd -
-	
-	cat >> ${PKG}/etc/ld.so.conf << EOF
-/usr/local/lib${LIBDIRSUFFIX}
-/usr/lib${LIBDIRSUFFIX}
-/opt/lib${LIBDIRSUFFIX}
-
-EOF
-
-fi
-
-# On repasse en natif :
-cflags
-
 # On crée un répertoire séparé pour la compilation :
 rm -rf $TMP/${NAMESRC}-build-${PKGARCH}
 mkdir -p $TMP/${NAMESRC}-build-${PKGARCH}
@@ -87,8 +34,11 @@ cd $TMP/${NAMESRC}-build-${PKGARCH}
 # Ce lien aide dans le processus de compilation selon l'hôte et la machine ciblée :
 ln -sf ${NAMESRC}-build-${PKGARCH} $TMP/${PKGARCH}
 
-# On ajoute notre répertoire de bibliothèques à la config' :
+# On configure nos répertoire de bibliothèques :
 echo "slibdir=/usr/lib${LIBDIRSUFFIX}" >> configparms
+echo "rtlddir=/usr/lib${LIBDIRSUFFIX}" >> configparms
+echo "sbindir=/usr/bin" >> configparms
+echo "rootsbindir=/usr/bin" >> configparms
 
 # Sur i686, ce drapeau permet de régler certains problèmes avec Xen :
 if [ "${PKGARCH}" = "i686" ]; then
@@ -107,18 +57,29 @@ $TMP/${NAME}/configure \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--disable-profile \
+	--disable-werror \
 	--enable-add-ons \
 	--enable-bind-now \
 	--enable-kernel=3.4.0 \
 	--enable-lock-elision \
 	--enable-obsolete-rpc \
+	--enable-multi-arch \
 	--enable-stackguard-randomization \
 	--build=${PKGARCH}-0linux-linux-gnu
 
+# build libraries with hardening disabled
+echo "build-programs=no" >> configparms
+make -j${JOBS} || make
+
+# re-enable hardening for programs
+sed -i "/build-programs=/s#no#yes#" configparms
+echo "CC += -fstack-protector-strong -D_FORTIFY_SOURCE=2" >> configparms
+echo "CXX += -fstack-protector-strong -D_FORTIFY_SOURCE=2" >> configparms
 make -j${JOBS} || make
 
 # On lance la suite de tests si $TESTS est positionnée :
 if [ ! "${TESTS}" = "" ]; then
+        sed -i '5,7d' configparms
 	cp  $TMP/${NAME}/iconvdata/gconv-modules iconvdata
 	make -k check 2>&1 || true # On ne quitte pas sur les erreurs rencontrées
 fi

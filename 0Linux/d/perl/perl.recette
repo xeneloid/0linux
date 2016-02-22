@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.20.2
+VERSION=5.22.1
 WGET=http://www.cpan.org/src/$NAMESRC-$VERSION.tar.gz
 DESC="Le « Langage pratique d'extraction et de rapport »"
 
@@ -34,10 +34,14 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./Configure -des \
+	        -Dlddlflags="-shared ${LDFLAGS}" \
+        	-Dldflags="${LDFLAGS}" \
 		-Dprefix=/usr \
 		-Dinstallprefix=/usr \
 		-Dvendorprefix=/usr \
 		-Darchlib="/usr/lib${LIBDIRSUFFIX}/perl5" \
+	        -Dcccdlflags='-fPIC' \
+	        -Dinc_version_list=none \
 		-Dman1dir=/usr/man/man1 \
 		-Dman3dir=/usr/man/man3 \
 		-Dpager="/usr/bin/less -isR" \
@@ -54,8 +58,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		-Dusethreads \
 		-Dvendorarch="/usr/lib${LIBDIRSUFFIX}/perl5/vendor_perl" \
 		-Dvendorlib="/usr/share/perl5/vendor_perl" \
-		-Ubincompat5005 \
-		-Uversiononly \
 		-Dbuild=${PKGARCH}-0linux-linux-gnu
 
 	make -j${JOBS} || make
@@ -97,10 +99,14 @@ echo 'installstyle="lib${LIBDIRSUFFIX}/perl5"' >> hints/linux.sh
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./Configure -des \
+        -Dlddlflags="-shared ${LDFLAGS}" \
+        -Dldflags="${LDFLAGS}" \
 	-Dprefix=/usr \
 	-Dinstallprefix=/usr \
 	-Dvendorprefix=/usr \
 	-Darchlib="/usr/lib${LIBDIRSUFFIX}/perl5" \
+	-Dcccdlflags='-fPIC' \
+	-Dinc_version_list=none \
 	-Dman1dir=/usr/man/man1 \
 	-Dman3dir=/usr/man/man3 \
 	-Dpager="/usr/bin/less -isR" \
@@ -116,8 +122,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	-Dusethreads \
 	-Dvendorarch="/usr/lib${LIBDIRSUFFIX}/perl5/vendor_perl" \
 	-Dvendorlib="/usr/share/perl5/vendor_perl" \
-	-Ubincompat5005 \
-	-Uversiononly \
 	-Dbuild=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
