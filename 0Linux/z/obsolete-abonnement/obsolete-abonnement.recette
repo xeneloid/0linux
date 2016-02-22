@@ -47,6 +47,7 @@ cat > ${PKG}/usr/bin/0ex.sh << "EOF"
 	kdnssd \
 	kwallet \
 	lcms2 \
+	liblxqt-mount \
 	libqtgtl \
 	libssh2 \
 	libutemper \
@@ -134,6 +135,7 @@ kdesdk: supprimé dans la distribution de KDE (splitté)
 kdetoys: supprimé dans la distribution de KDE (splitté)
 kwallet: remplacé par 'kwalletmanager'
 lcms2: fusionné dans 'lcms'
+liblxqt-mount: remplacé par solid de KDE
 libqtgtl: lié à 'opengtl', projet mort
 libssh2: fusionné dans 'libssh'
 libutemper: corrigé en 'libutempter'
