@@ -15,7 +15,7 @@ for f in qt4/*.moc; do
 done
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS} -std=c++11" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -26,10 +26,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-fallback-curses \
 	--enable-pinentry-curses \
-	--disable-pinentry-gtk \
-	--disable-pinentry-qt \
 	--enable-pinentry-gtk2 \
 	--enable-pinentry-qt4 \
+	--enable-pinentry-qt4 \
+	--enable-pinentry-tty \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

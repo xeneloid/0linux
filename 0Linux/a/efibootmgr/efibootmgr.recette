@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.11.0
+VERSION=0.12
 WGET=https://github.com/vathpela/$NAMESRC/archive/$NAMESRC-$VERSION.tar.gz
 DESC="Outil de gestion des variables d'amorçage UEFI"
 EXTRADEPS="efivar"
@@ -12,7 +12,6 @@ cflags
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-EXTRA_CFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 
 # 'make install' à la main !

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.29
+VERSION=1.1.1
 WGET=ftp://ftp.alsa-project.org/pub/plugins/$NAMESRC-$VERSION.tar.bz2
 DESC="Jeu de greffons pour ALSA"
 
@@ -14,6 +14,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
+	
+	# On a besoin de ces drapeaux pour que la compilation passe avec 'speex' :
+	export FLAGS="${FLAGS} -DHAVE_STDINT_H -DUSE_LIBSPEEX"
 	
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -35,6 +38,9 @@ fi
 # On refait la préparation des sources en natif :
 preparer_sources 
 cflags
+
+# On a besoin de ces drapeaux pour que la compilation passe avec 'speex' :
+export FLAGS="${FLAGS} -DHAVE_STDINT_H -DUSE_LIBSPEEX"
 
 # Compilation :
 configure_make_makeinstall

@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.29
-EXT=tar.bz2
-WGET=http://v2v.cc/~j/$NAMESRC/downloads/$NAMESRC-$VERSION.$EXT
+VERSION=0.30
+WGET=http://v2v.cc/~j/$NAMESRC/downloads/$NAMESRC-$VERSION.tar.bz2
 DESC="Convertisseur vers le format Ogg Theora"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On corrige la compilation avec les 'ffmpeg' les plus récents :
-cat $CWD/ffmpeg2theora.ffmpeg2.patch | patch -p1
 
 # On force des drapeaux dans ce truc qui sent :
 sed -i "/env\.Append(LIBS=\['m', 'dl'\])/a \

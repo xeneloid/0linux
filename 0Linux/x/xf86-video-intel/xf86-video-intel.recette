@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.99.917
-WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.tar.bz2
+VERSION=74cd4d0
+WGET=git://anongit.freedesktop.org/xorg/driver/xf86-video-intel.git
 DESC="Pilotes graphiques Intel pour X11"
 
 telecharger_sources
@@ -10,6 +10,8 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # Compilation :
+NOCONFIGURE=1 ./autogen.sh
+
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -20,6 +22,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--enable-glamor \
+	--enable-kms-only \
+	--enable-uxa \
+	--with-default-dri=2 \
+	--with-default-accel=uxa \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4.61
+VERSION=2.4.67
 WGET=http://dri.freedesktop.org/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques graphiques d'interfaçage DRM pour X11"
 
@@ -25,9 +25,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--enable-exynos-experimental-api \
-		--enable-freedreno-experimental-api \
-		--enable-omap-experimental-api \
+		--enable-udev \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -50,6 +48,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-exynos-experimental-api \
 	--enable-freedreno-experimental-api \
 	--enable-omap-experimental-api \
+	--enable-udev \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

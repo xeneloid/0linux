@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.4
+VERSION=6.0.0
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Framework multimédia"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-# On crée le répertoire d'accueil :
-PYTHONLIB=$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
-	sed 's#/site-packages##')
-mkdir -p ${PKG}/${PYTHONLIB}
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -28,8 +23,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--avformat-vdpau \
 	--enable-gpl \
 	--enable-gpl3 \
-	--qimage-includedir=/usr/include/Qt \
-	--qimage-libdir=/usr/lib${LIBDIRSUFFIX}/ \
+	--enable-motion-est \
+	--luma-compress \
+	--qt-includedir=/usr/include/Qt \
+	--qt-libdir=/usr/lib${LIBDIRSUFFIX}/ \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -37,6 +34,11 @@ fakeroot make install DESTDIR=${PKG}
 
 # On compile l'interfaçage avec Python :
 (
+	# On crée le répertoire d'accueil :
+	PYTHONLIB=$(python -c 'from distutils.sysconfig import get_python_lib; print get_python_lib()' | \
+		sed 's#/site-packages##')
+	mkdir -p ${PKG}/${PYTHONLIB}
+	
 	cd src/swig/python
 	./build
 	cp -a mlt.py _mlt.so mlt_wrap.o ${PKG}/${PYTHONLIB}/

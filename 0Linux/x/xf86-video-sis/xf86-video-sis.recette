@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.10.7
+VERSION=0.10.8
 WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.tar.bz2
 DESC="Pilotes graphiques pour X11"
 
@@ -10,12 +10,7 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On applique des correctifs des développeurs :
-cat $CWD/xf86-video-sis.git.patch | patch -p1
 cat $CWD/xf86-video-sis.xi.patch | patch -p1
-
-# Certaine fonctions d'accélération matérielle ne fonctionne plus,
-# on reviens à l'implémentation logicielle de Xorg :
-cat $CWD/disable_from-to_screen.patch | patch -p1
 
 # Compilation :
 configure_make_makeinstall

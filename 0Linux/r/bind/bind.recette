@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=9.10.2
+VERSION=9.10.3_P4
 WGET=(
       ftp://ftp.isc.org/isc/${NAMESRC}$(echo $VERSION | cut -d'.' -f1)/$(echo $VERSION | sed 's/_/-/')/$NAMESRC-$(echo $VERSION | sed 's/_/-/').tar.gz
       http://www.internic.net/zones/named.root
@@ -13,7 +13,7 @@ preparer_sources $NAMESRC-$(echo $VERSION | sed 's/_/-/').tar.gz
 cflags
 
 # Compilation :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS} -DDIG_SIGCHASE" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -26,6 +26,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-libtool \
 	--with-libxml2 \
 	--with-openssl \
+	--without-libjson \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -40,7 +41,6 @@ mkdir -p ${PKG}/etc/default
 
 # On crée un fichier service, désactivé par défaut :
 mkdir -p ${PKG}/etc/rc.d
-
 cat > ${PKG}/etc/rc.d/rc.bind << "EOF"
 #!/usr/bin/env bash
 

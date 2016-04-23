@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.3.2
+VERSION=1.0.1
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques de transport réseau RPC"
 
@@ -9,8 +9,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On restaure des fonctions retirée de l'API :
-cat $CWD/libtirpc-api_fixes.patch | patch -p1
+# On corrige le fonctionnement de 'rpcbind':
+cat $CWD/libtirpc.rpcbind.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

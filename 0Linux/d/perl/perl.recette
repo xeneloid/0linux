@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.20.2
+VERSION=5.22.1
 WGET=http://www.cpan.org/src/$NAMESRC-$VERSION.tar.gz
 DESC="Le « Langage pratique d'extraction et de rapport »"
 

@@ -3,7 +3,7 @@
 
 VERSION=1.2
 WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
-DESC="Bibliothèque évoluée de gestion de Threads"
+DESC="Bibliothèque évoluée de gestion des threads"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

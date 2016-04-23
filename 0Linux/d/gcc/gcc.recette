@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.9.3
-WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.bz2
+VERSION=5.3.0
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.bz2
 DESC="La suite de compilateurs de GNU"
 
 telecharger_sources
@@ -13,13 +13,6 @@ cflags
 
 # On se débarrasse du script 'fixincludes' :
 sed -i 's@\./fixinc\.sh@-c true@' gcc/Makefile.in
-
-# On empêche l'installation de la libffi, obsolète et en conflit avec 'libffi' :
-sed -i 's/\(install.*:\) install-.*recursive/\1/' libffi/Makefile.in
-sed -i 's/\(install-data-am:\).*/\1/' libffi/include/Makefile.in
-
-# On se passe de 'libiberty' (présente dans 'binutils') :
-sed -i 's/install_to_$(INSTALL_DEST) //' libiberty/Makefile.in
 
 # On s'assure de la bonne version dans ce fichier spécial :
 echo $VERSION > gcc/BASE-VER
@@ -37,19 +30,20 @@ $TMP/${NAME}/configure \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--disable-cloog-version-check \
-	--disable-install-libiberty \
-	--disable-libstdcxx-pch \
 	--disable-libunwind-exceptions \
-	--disable-ppl-version-check \
 	--enable-__cxa_atexit \
+	--enable-bootstrap \
 	--enable-checking=release \
 	--enable-clocale=gnu \
-	--enable-cloog-backend=isl \
+	--enable-gnu-unique-object \
+	--enable-install-libiberty \
 	--enable-languages=c,c++,fortran,go,lto,objc,obj-c++ \
+	--enable-libssp \
 	--enable-libstdcxx-time \
+	--enable-lto \
 	--enable-shared \
 	--enable-threads=posix \
+	--with-isl \
 	--with-system-zlib \
 	--build=${PKGARCH}-0linux-linux-gnu
 
@@ -68,8 +62,8 @@ if [ ! "${TESTS}" = "" ]; then
 fi
 
 make -j${JOBS} info
-fakeroot make -j${JOBS} install DESTDIR=${PKG}
-fakeroot make -j${JOBS} -i install-info DESTDIR=${PKG}
+fakeroot make install DESTDIR=${PKG}
+fakeroot make -i install-info DESTDIR=${PKG}
 
 # Certains paramètres changent selon l'architecture :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -92,6 +86,10 @@ ln -sf ../bin/cpp ${PKG}/usr/lib${LIBDIRSUFFIX}/cpp
 
 # On crée le lien 'cc' vers 'gcc' :
 ln -sf gcc ${PKG}/usr/bin/cc
+
+# On crée un lien générique pour le plugin LTO :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/bfd-plugins
+ln -sf ../gcc/${PKGARCH}-0linux-linux-gnu/${VERSION}/liblto_plugin.so ${PKG}/usr/lib${LIBDIRSUFFIX}/bfd-plugins/
 
 installer_doc
 creer_post_installation

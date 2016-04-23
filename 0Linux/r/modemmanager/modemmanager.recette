@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=ModemManager
-VERSION=1.4.6
+VERSION=1.4.12
 WGET=http://www.freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Service de gestion de connexions réseau par modem"
 EXTRADEPS="libmbim libqmi"
@@ -14,7 +14,7 @@ cflags
 # On corrige le service, on n'a pas 'systemd' :
 sed -i -e 's|Exec=@sbindir@/ModemManager|Exec=/usr/sbin/ModemManager|' \
 	-e '/SystemdService=.*$/d' \
-		data/org.freedesktop.ModemManager1.service.in
+	data/org.freedesktop.ModemManager1.service.in
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.10
+VERSION=1.8.11
 WGET=ftp://ftp.stack.nl/pub/users/dimitri/$NAMESRC-${VERSION}.src.tar.gz
 DESC="Système de documentation pour de nombreux langages"
 
@@ -36,7 +36,7 @@ installer_doc
 mkdir -p $PKG/usr/man/man1
 cp -a doc/*.{doc,png,dot,eps,txt,gif,css,tex,fig,tpl} \
 	$PKG/usr/doc/$NAMETGZ-$VERSION
-cp -a doc/*.1 /$PKG/usr/man/man1
+cp -a doc/*.1 $PKG/usr/man/man1
 rm $PKG/usr/doc/$NAMETGZ-$VERSION/CMakeLists.txt
 
 creer_post_installation

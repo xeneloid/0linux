@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=2.21
-WGET=http://www.xs4all.nl/~carlo17/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Affiche le chemin complet d'exécutables"
 
 telecharger_sources

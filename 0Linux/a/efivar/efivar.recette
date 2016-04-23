@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.15
-WGET=https://github.com/vathpela/$NAMESRC/archive/$VERSION.tar.gz
+VERSION=0.22
+WGET=https://github.com/vathpela/efivar-devel/archive/$VERSION.tar.gz
 DESC="Outil de manipulation de variables d'amorçage EFI"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige l'édition des liens pour prendre en charge notre « libdir »: :
-sed -i 's@-rpath=$(TOPDIR)/src/@-rpath=$(libdir)@g' src/test/Makefile
-
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} libdir=/usr/lib${LIBDIRSUFFIX} bindir=/usr/bin mandir=/usr/man includedir=/usr/include || \
 make libdir=/usr/lib${LIBDIRSUFFIX} bindir=/usr/bin mandir=/usr/man includedir=/usr/include
 fakeroot make install libdir=/usr/lib${LIBDIRSUFFIX} bindir=/usr/bin mandir=/usr/man includedir=/usr/include DESTDIR=${PKG}
+
+# On ajoute le binaire de tests :
+cp -a src/test/tester ${PKG}/usr/bin/efivar-tester
 
 installer_doc
 creer_post_installation

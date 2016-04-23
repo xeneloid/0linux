@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.2d
+VERSION=1.0.2g
 WGET=ftp://openssl.org/source/$NAMESRC-$VERSION.tar.gz
 DESC="Protocoles et algorithmes OpenSSL"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.13
+VERSION=0.9.14
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Outil graphique de surveillance et d'analyse réseau"
 EXTRADEPS="gksu"
@@ -12,7 +12,7 @@ cflags
 configure_make_makeinstall
 
 # On place l'appel à 'gksu' dans le raccourci :
-sed -i 's/Exec=etherape/Exec=kdesu etherape/' ${PKG}/usr/share/applications/etherape.desktop
+sed -i 's/Exec=etherape/Exec=gksu etherape/' ${PKG}/usr/share/applications/etherape.desktop
   
 installer_doc
 creer_post_installation

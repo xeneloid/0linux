@@ -24,7 +24,7 @@ cd gnu
 aclocal
 autoconf
 rm -f config.{guess,sub}
-cp /usr/share/automake-1.14/config.{guess,sub} .
+cp /usr/share/automake-"$(automake --version|head -n1|sed -r 's/.*\) (.*)/\1/')"/config.{guess,sub} .
 
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 ./configure \
@@ -38,7 +38,8 @@ CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 	--program-prefix="" \
 	--program-suffix="" \
 	--build=${PKGARCH}-0linux-linux-gnu
-cd ..
+
+cd -
 
 make prepare
 make -j${JOBS} || make

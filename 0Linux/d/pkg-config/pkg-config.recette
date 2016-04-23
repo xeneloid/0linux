@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.28
-WGET=http://pkgconfig.freedesktop.org/releases/$NAMESRC-$VERSION.tar.gz
+WGET=http://prdownloads.sourceforge.net/pkgconfiglite/pkg-config-lite-$VERSION-1.tar.gz
 DESC="Gestionnaire de bibliothèques pour la compilation"
 
 telecharger_sources

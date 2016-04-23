@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.5
+VERSION=1.6.3
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.36.$EXT
       http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
@@ -12,41 +12,6 @@ telecharger_sources
 cflags
 
 # On compile la version 0.10.36 :
-# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
-if [ "${PKGARCH}" = "x86_64" ]; then
-	
-	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
-	preparer_sources $NAMESRC-0.10.36.$EXT
-	cflags i686
-	
-	# On permet la compilation avec Bison 3 :
-	cat $CWD/gstreamer.bison3.patch | patch -p1
-	
-	# Permet l'usage des auto-tools modernes :
-	sed -e 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' -i configure.ac
-	
-	# Regénération du script configure :
-	NOCONFIGURE=1 ./autogen.sh
-	
-	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--libexecdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--with-package-name="GStreamer 0.10 (0Linux)" \
-		--with-package-origin="http://0linux.org" \
-		--build=${PKGARCH}-0linux-linux-gnu
-	
-	make -j${JOBS} || make
-	fakeroot make install DESTDIR=${PKG}
-fi
-
 preparer_sources $NAMESRC-0.10.36.$EXT
 cflags
 
@@ -85,7 +50,35 @@ done
 # On installe la doc dans un sous-répertoire dédié :
 installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-0.10.36
 
-# On compile maintenant la version normale de la recette :
+# On compile maintenant la version de la recette :
+preparer_sources
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--with-package-name="GStreamer (0Linux)" \
+		--with-package-origin="http://0linux.org" \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
 preparer_sources
 cflags
 

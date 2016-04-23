@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.14.8
-EXT=tar.xz
-WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.27.$EXT
-      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+VERSION=3.18.7
+WGET=(http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/2.24/$NAMESRC-2.24.29.tar.xz
+      http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
      )
 DESC="Suite d'outils pour la création d'interfaces graphiques"
 EXTRADEPS="adwaita-icon-theme icon-naming-utils"
@@ -13,7 +12,7 @@ telecharger_sources
 cflags
 
 # On compile GTK+ 2 :
-preparer_sources $NAMESRC-2.24.27.$EXT
+preparer_sources $NAMESRC-2.24.29.tar.xz
 
 # On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
@@ -21,11 +20,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On corrige la génération de la doc, boguée avec nos 'docbook*' :
-	sed -i 's#l \(gtk-.*\).sgml#& -o \1#' docs/{faq,tutorial}/Makefile.in
-	
-	# Ainsi que quelques manuels manquants :
-	sed -i 's#.*@man_#man_#' docs/reference/gtk/Makefile.in
+	# On corrige la génération de la doc, en la supprimant :
+	sed -i "s/) docs m4macros/) /" Makefile.in
 	
 	# On supprime ce message inquiétant et inutile :
 	sed -i -e '/if (g_hash_table_lookup (display_x11->xid_ht, xid))/d' \
@@ -33,6 +29,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		gdk/x11/gdkxid.c
 	
 	# Compilation pour i686 :
+	CXX=/usr/bin/false \
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
 		--prefix=/usr \
@@ -41,7 +38,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-gtk-doc-html \
+		--enable-gtk-doc-html=no \
 		--with-xinput=yes \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
@@ -57,14 +55,11 @@ fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
 # compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources $NAMESRC-2.24.27.$EXT
+preparer_sources $NAMESRC-2.24.29.tar.xz
 cflags
 
-# On corrige la génération de la doc, boguée avec nos 'docbook*' :
-sed -i 's#l \(gtk-.*\).sgml#& -o \1#' docs/{faq,tutorial}/Makefile.in
-
-# Ainsi que quelques manuels manquants :
-sed -i 's#.*@man_#man_#' docs/reference/gtk/Makefile.in
+# On corrige la génération de la doc, en la supprimant :
+sed -i "s/) docs m4macros/) /" Makefile.in
 
 # On supprime ce message inquiétant et inutile :
 sed -i -e '/if (g_hash_table_lookup (display_x11->xid_ht, xid))/d' \
@@ -72,6 +67,7 @@ sed -i -e '/if (g_hash_table_lookup (display_x11->xid_ht, xid))/d' \
 	gdk/x11/gdkxid.c
 
 # Compilation :
+CXX=/usr/bin/false \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -80,7 +76,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-gtk-doc-html \
+	--enable-gtk-doc-html=no \
 	--enable-introspection \
 	--with-xinput=yes \
 	--build=${PKGARCH}-0linux-linux-gnu
@@ -107,10 +104,50 @@ fi
 echo 'gtk-theme-name="GTK+"' > ${PKG}/etc/gtk-2.0/gtkrc
 
 # On place la doc dans un sous-répertoire dédié :
-installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.24.27
+installer_doc ${NAMETGZ}-${VERSION}/${NAMETGZ}-2.24.29
 
 # On compile GTK+ 3 :
-preparer_sources
+preparer_sources $NAMESRC-$VERSION.tar.xz
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige la génération de la doc, en la supprimant :
+	sed -i "s/) docs m4macros/) /" Makefile.in
+	
+	# Compilation pour i686 :
+	CXX=/usr/bin/false \
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-libcanberra \
+		--disable-schemas-compile \
+		--enable-broadway-backend \
+		--enable-wayland-backend \
+		--enable-x11-backend \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	
+	# On renomme ce binaire spécifique à l'architecture pour l'envelopper :
+	mv ${PKG}/usr/bin/gtk-query-immodules-3.0{,-32}
+	
+	# On renomme la configuration :
+	mv ${PKG}/etc/gtk-3.0{,-32}
+fi
+
+preparer_sources $NAMESRC-$VERSION.tar.xz
 cflags
 
 # Compilation :
@@ -125,7 +162,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-schemas-compile \
 	--enable-broadway-backend \
-	--enable-gtk2-dependency \
 	--enable-introspection \
 	--enable-wayland-backend \
 	--enable-x11-backend \
@@ -134,6 +170,21 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On renomme la configuration :
+	mv ${PKG}/etc/gtk-3.0{,-64}
+	
+	# On crée un lien générique pour la configuration :
+	ln -sf gtk-3.0-64 ${PKG}/etc/gtk-3.0
+	
+	# On renomme ce binaire spécifique à l'architecture pour l'envelopper :
+	mv ${PKG}/usr/bin/gtk-query-immodules-2.0{,-64}
+	
+	# on lie un binaire générique au programme enveloppe :
+	ln -sf enveloppe_multiarch ${PKG}/usr/bin/gtk-query-immodules-3.0
+fi
 
 # On affecte un thème par défaut :
 echo 'gtk-theme-name="Adwaita"' > ${PKG}/etc/gtk-3.0/gtkrc

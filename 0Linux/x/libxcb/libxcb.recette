@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.11
+VERSION=1.11.1
 WGET=http://xcb.freedesktop.org/dist/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques d'interfaçage pour X11"
 
@@ -38,13 +38,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 # On lance la suite de tests si $TESTS est positionnée :
 if [ ! "${TESTS}" = "" ]; then
 	make -k check 2>&1 || true
 fi
-
-fakeroot make install DESTDIR=${PKG}
 
 installer_doc
 creer_post_installation

@@ -9,16 +9,61 @@ WGET=(http://ftp.mozilla.org/pub/mozilla.org/js/$NAMESRC-$VERSION.$EXT
      )
 DESC="Bibliothèques et interpréteur Javascript de Mozilla"
 
-
 telecharger_sources
 
 # On compile d'abord mozjs 17 :
 preparer_sources mozjs17.0.0.tar.gz
 cflags
 
-cd js/src
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# On corrige une incompatibilité avec Perl 5.22+ :
+	sed -i 's/(defined\((@TEMPLATE_FILE)\))/\1/' js/src/config/milestone.pl
+	
+	# Compilation pour i686 :
+	cd js/src
+	
+	unset CPPFLAGS
+	export RANLIB='ranlib'
+	export AR='ar'
+	export AS='as'
+	export LD='ld'
+	export STRIP='strip'
+	
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--enable-readline \
+		--enable-threadsafe \
+		--with-system-ffi \
+		--with-system-nspr \
+		--build=${PKGARCH}-0linux-linux-gnu \
+		--target=${PKGARCH}-0linux-linux-gnu
+
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	cd -
+fi
+
+preparer_sources mozjs17.0.0.tar.gz
+cflags
+
+# On corrige une incompatibilité avec Perl 5.22+ :
+sed -i 's/(defined\((@TEMPLATE_FILE)\))/\1/' js/src/config/milestone.pl
 
 # Compilation :
+cd js/src
+
+unset CPPFLAGS
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -27,6 +72,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--enable-readline \
 	--enable-threadsafe \
 	--with-system-ffi \
 	--with-system-nspr \
@@ -34,6 +80,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+cd -
 
 # on place la doc dans un sous-répertoire :
 installer_doc ${NAMETGZ}-${VERSION}/mozjs17.0.0
@@ -42,9 +89,51 @@ installer_doc ${NAMETGZ}-${VERSION}/mozjs17.0.0
 preparer_sources js185-1.0.0.tar.gz
 cflags
 
-cd js/src
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	cd js/src
+	
+	unset CPPFLAGS
+	export RANLIB='ranlib'
+	export AR='ar'
+	export AS='as'
+	export LD='ld'
+	export STRIP='strip'
+	
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--enable-threadsafe \
+		--with-system-ffi \
+		--with-system-nspr \
+		--build=${PKGARCH}-0linux-linux-gnu \
+		--target=${PKGARCH}-0linux-linux-gnu
+
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	cd -
+
+	# On doit recréer les liens, ils sont erronés :
+	ln -sf libmozjs185.so.1.0.0 ${PKG}/usr/lib${LIBDIRSUFFIX}/libmozjs185.so.1.0
+	ln -sf libmozjs185.so.1.0   ${PKG}/usr/lib${LIBDIRSUFFIX}/libmozjs185.so
+fi
+
+preparer_sources js185-1.0.0.tar.gz
+cflags
 
 # Compilation :
+cd js/src
+
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -60,6 +149,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+cd -
 
 # On doit recréer les liens, ils sont erronés :
 ln -sf libmozjs185.so.1.0.0 ${PKG}/usr/lib${LIBDIRSUFFIX}/libmozjs185.so.1.0
@@ -72,9 +162,51 @@ installer_doc ${NAMETGZ}-${VERSION}/js185
 preparer_sources
 cflags
 
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	cd js/src
+	
+	unset CPPFLAGS
+	export RANLIB='ranlib'
+	export AR='ar'
+	export AS='as'
+	export LD='ld'
+	export STRIP='strip'
+	
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--enable-threadsafe \
+		--with-system-ffi \
+		--with-system-nspr \
+		--build=${PKGARCH}-0linux-linux-gnu \
+		--target=${PKGARCH}-0linux-linux-gnu
+
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+	cd -
+
+	# On doit recréer les liens, ils sont erronés :
+	ln -sf libmozjs185.so.1.0.0 ${PKG}/usr/lib${LIBDIRSUFFIX}/libmozjs185.so.1.0
+	ln -sf libmozjs185.so.1.0   ${PKG}/usr/lib${LIBDIRSUFFIX}/libmozjs185.so
+fi
+
+preparer_sources
+cflags
+
 cd js/src
 
-# On supprime ce sfihcier spour forcer à lier sur les bibliothèques du système :
+# On supprime ces fichiers pour forcer à lier sur les bibliothèques du système :
 rm -rf editline
 rm -rf ctypes/libffi
 
@@ -95,6 +227,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+cd -
 
 installer_doc
 creer_post_installation

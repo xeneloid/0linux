@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Thunar
-VERSION=1.6.6
+VERSION=1.6.10
 WGET=http://archive.xfce.org/src/xfce/thunar/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Gestionnaire de fichiers d'Xfce"
 

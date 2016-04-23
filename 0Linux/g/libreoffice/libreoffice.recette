@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=LibreOffice
-VERSION=4.4.2
+VERSION=5.1.2
 EXT=tar.gz
 cflags
 if [ "${PKGARCH}" = "i686" ]; then

@@ -14,45 +14,42 @@ mkdir -p ${PKG}/usr/share/applications
 mkdir -p ${PKG}/usr/share/icons/hicolor/128x128/apps
 mkdir -p ${PKG}/usr/include
 
-# On corrige ce capharnaüm avec ces correctifs de Gentoo :
-cat $CWD/portmidi-200-Makefile.patch | patch -p1
-cat $CWD/portmidi-python.patch | patch -p1
+# On corrige ce capharnaüm :
+sed -i "s#/usr/local#/usr#" */CMakeLists.txt pm_python/setup.py
+mkdir -p pm_java/Release
+cat $CWD/portmidi.build.patch | patch -p1
 
 # On passe LIBDIRSUFFFIX aux références à Java :
 sed -i "#set(JAVAVM_LIB .*$#JAVAVM_LIB /usr/lib${LIBDIRSUFFIX}/libjvm.so#" pm_common/CMakeLists.txt
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-cmake . \
+cmake \
 	-DCMAKE_C_FLAGS="${FLAGS}" \
 	-DCMAKE_CXX_FLAGS="${FLAGS}" \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DCMAKE_CACHEFILE_DIR=${PKG} \
 	-DCMAKE_ARCHIVE_OUTPUT_DIRECTORY="${PKG}/usr/lib$LIBDIRSUFFIX" \
 	-DCMAKE_INSTALL_LIBDIR="${PKG}/usr/lib${LIBDIRSUFFIX}" \
 	-DCMAKE_LIBRARY_OUTPUT_DIRECTORY="${PKG}/usr/lib$LIBDIRSUFFIX" \
 	-DCMAKE_RUNTIME_OUTPUT_DIRECTORY="${PKG}/usr/bin" \
-	-DJAVA_AWT_INCLUDE_PATH="/usr/lib$LIBDIRSUFFIX/jdk/include" \
-	-DJAVA_INCLUDE_PATH="/usr/lib$LIBDIRSUFFIX/jdk/include" \
-	-DJAVA_INCLUDE_PATH2="/usr/lib$LIBDIRSUFFIX/jdk/include/linux" \
-	-DJAVA_JVM_LIBRARY="/usr/lib$LIBDIRSUFFIX/libjvm.so"
+	.
 
 make -j${JOBS} all PMFLAGS="-DNEWBUFFER" || make all PMFLAGS="-DNEWBUFFER"
 fakeroot make install DESTDIR=${PKG}
 
-# On renomme ce binaire au nom beaucoup trop générique :
-mv ${PKG}/usr/bin/{,portmidi}test
-
 # On installe un entête manquant  :
-cp -a pm_common/pmutil.h ${PKG}/usr/include
+cp -a pm_common/pmutil.h ${PKG}/usr/include/
+
+# Ce lien est manquant :
+ln -sf libportmidi.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libporttime.so
 
 # on crée le raccourci pour 'pmdefaults' :
 cat > ${PKG}/usr/share/applications/pmdefaults.desktop << "EOF"
 [Desktop Entry]
 Comment=Spécifier les entrées/sorties par défaut pour Portmidi
 Exec=pmdefaults
-GenericName=Paramètres PortMidi
+GenericName=Paramètres par défaut PortMidi
 Icon=/usr/share/icons/hicolor/128x128/apps/pmdefaults-icon.png
 Name=PM Defaults
 NoDisplay=false
@@ -69,7 +66,7 @@ EOF
 install -m 0644 -D pm_java/pmdefaults/pmdefaults-icon.png ${PKG}/usr/share/icons/hicolor/128x128/apps/pmdefaults-icon.png
 
 # Bibliothèques en double dans '/usr/lib', pffff... :
-rm -rf ${PKG}/usr/lib
+[ ! "${LIBDIRSUFFIX}" = "" ] && rm -rf ${PKG}/usr/lib
 
 installer_doc
 creer_post_installation

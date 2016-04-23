@@ -2,10 +2,10 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=NetworkManager
-VERSION=1.0.0
+VERSION=1.0.10
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Démon de gestion du réseau"
-EXTRADEPS="dhcpcd iptables iproute2 modemmanager polkit ppp wpa_supplicant"
+EXTRADEPS="dhcpcd iptables iproute2 modemmanager ppp wpa_supplicant"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -26,7 +26,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-crypto=nss \
 	--with-dhcpcd=/usr/sbin/dhcpcd \
 	--with-modem-manager-1 \
-	--with-pppg-plugin-dir="$(basename $(find /usr/lib${LIBDIRSUFFIX}/pppd -maxdepth 1 -mindepth 1 -type d))" \
+	--with-nmtui=yes \
+	--with-pppd-plugin-dir="$(find /usr/lib${LIBDIRSUFFIX}/pppd -mindepth 1 -maxdepth 1 -type d)" \
 	--with-udev-dir=/usr/lib${LIBDIRSUFFIX}/udev \
 	--without-resolvconf \
 	--build=${PKGARCH}-0linux-linux-gnu
@@ -43,7 +44,7 @@ PIDFILE="/var/run/NetworkManager/NetworkManager.pid"
 
 nm_start() {
 	echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du démon NetworkManager.."
-	[ ! -e ${PIDFILE} ] && NetworkManager
+	NetworkManager
 }
 
 nm_stop() {
@@ -62,7 +63,13 @@ nm_stop() {
 
 case "$1" in
 	'start')
-		nm_start
+		if [ ! -e ${PIDFILE} ]; then
+			nm_start
+		else
+			nm_stop
+			sleep 1
+			nm_start
+		fi
 	;;
 	
 	'stop')
@@ -90,33 +97,63 @@ cat > ${PKG}/etc/NetworkManager/NetworkManager.conf.0nouveau << "EOF"
 [main]
 plugins=keyfile
 dhcp=dhcpcd
+managed=true
+
+[keyfile]
+hostname=pingouin
 
 EOF
 
 # On place les règles pour 'polkit' permettant aux utilisateurs du groupe
-# 'netev' de manipuler 'networkmanager' :
+# 'netdev' de manipuler 'networkmanager' :
 mkdir -p ${PKG}/etc/polkit-1/rules.d
 cat > ${PKG}/etc/polkit-1/rules.d/10-networkmanager.rules << "EOF"
 polkit.addRule(function(action, subject) {
-	if (action.id == 'org.freedesktop.NetworkManager.' && subject.isInGroup('netdev')) {
+	if (action.id.indexOf("org.freedesktop.NetworkManager.") == 0 && subject.isInGroup('netdev')) {
 		return polkit.Result.YES;
 	}
 });
 
 EOF
 
-installer_doc
-creer_post_installation
+# On place la règle pour 'pm-utils' pour la mise en veille :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/sleep.d
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/sleep.d/55networkmanager << "EOF"
+#!/bin/sh
+. "${PM_FUNCTIONS}"
 
-# On complète la post-installation :
-cat >> ${PKG}/post-install.sh << "EOF"
+suspend_nm()
+{
+	dbus_send --system                         \
+		--dest=org.freedesktop.NetworkManager  \
+		/org/freedesktop/NetworkManager        \
+		org.freedesktop.NetworkManager.sleep
+}
 
-# On corrige une bétise du mainteneur (désolé !) :
-rm -f etc/NetworkManager/NetworkManager
-rm -f etc/NetworkManager/NetworkManager.0nouveau
+resume_nm()
+{
+	dbus_send --system                        \
+		--dest=org.freedesktop.NetworkManager \
+		/org/freedesktop/NetworkManager       \
+		org.freedesktop.NetworkManager.wake
+}
+
+case "$1" in
+	hibernate|suspend)
+		suspend_nm
+		;;
+	thaw|resume)
+		resume_nm
+		;;
+	*) exit $NA
+		;;
+esac
 
 EOF
+chmod 0755 ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/sleep.d/55networkmanager
 
+installer_doc
+creer_post_installation
 stripper
 empaqueter
 

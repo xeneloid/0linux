@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.0u75_2.5.4
+VERSION=7_icedtea_2.6.2
 WGET=(
-      http://icedtea.classpath.org/download/source/icedtea-$(echo $VERSION | cut -d'_' -f2).tar.gz
-      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/corba.tar.bz2
-      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/hotspot.tar.bz2
-      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/jaxp.tar.bz2
-      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/jaxws.tar.bz2
-      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/jdk.tar.bz2
-      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/langtools.tar.bz2
-      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f2)/openjdk.tar.bz2
+      http://icedtea.classpath.org/download/source/icedtea-$(echo $VERSION | cut -d'_' -f3).tar.gz
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f3)/corba.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f3)/hotspot.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f3)/jaxp.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f3)/jaxws.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f3)/jdk.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f3)/langtools.tar.bz2
+      http://icedtea.classpath.org/download/drops/icedtea7/$(echo $VERSION | cut -d'_' -f3)/openjdk.tar.bz2
      )
-DESC="Distribution libre de l'environnement « Java Platform Standard Edition Development Kit »"
+DESC="Distribution libre de l'environnement « Java Platform Standard Edition Software Development Kit »"
 EXTRADEPS="apache-ant rhino"
 
-# Merci à AlienBOB pour avoir été assez autiste pour s'occuper d'un machin pareil.
+# Merci à AlienBOB d'avoir été assez autiste pour s'occuper de ce machin.
 
 # On empêche le téléchargement si on trouve les bonnes versions en les renommant :
 for archive_source in corba hotspot jaxp jaxws jdk langtools openjdk; do
-	if [ -r ${PKGSOURCES}/${NAMETGZ}/${archive_source}-$(echo $VERSION | cut -d'_' -f2).tar.bz2 ]; then
-		mv ${PKGSOURCES}/${NAMETGZ}/${archive_source}{-$(echo $VERSION | cut -d'_' -f2),}.tar.bz2
+	if [ -r ${PKGSOURCES}/${NAMETGZ}/${archive_source}-$(echo $VERSION | cut -d'_' -f3).tar.bz2 ]; then
+		mv ${PKGSOURCES}/${NAMETGZ}/${archive_source}{-$(echo $VERSION | cut -d'_' -f3),}.tar.bz2
 	fi
 done
 
@@ -29,11 +29,11 @@ telecharger_sources
 # On renomme les sources avec la version :
 for archive_source in corba hotspot jaxp jaxws jdk langtools openjdk; do
 	if [ -r ${PKGSOURCES}/${NAMETGZ}/${archive_source}.tar.bz2 ]; then
-		mv ${PKGSOURCES}/${NAMETGZ}/${archive_source}{,-$(echo $VERSION | cut -d'_' -f2)}.tar.bz2
+		mv ${PKGSOURCES}/${NAMETGZ}/${archive_source}{,-$(echo $VERSION | cut -d'_' -f3)}.tar.bz2
 	fi
 done
 
-preparer_sources icedtea-$(echo $VERSION | cut -d'_' -f2).tar.gz
+preparer_sources icedtea-$(echo $VERSION | cut -d'_' -f3).tar.gz
 cflags
 
 # Les sous-répertoires sont différents selon l'architecture :
@@ -45,16 +45,16 @@ else
 	ARCHIDIR="${PKGARCH}" # L'espoir fait vivre
 fi
 
-# On définit ces variables pour s'adapter ua système de construction :
+# On définit ces variables pour s'adapter au système de construction :
 export ALT_FREETYPE_LIB_PATH=/usr/lib${LIBDIRSUFFIX}
 export LC_ALL=C LANG=C # Indispensable pour openjdk !
 export OS_VARIANT_NAME="0Linux"
 export OS_VARIANT_VERSION=$(grep -E '^VERSION=' /etc/os-release | cut -d'=' -f2)
 export JAVA_HOME="/usr/lib${LIBDIRSUFFIX}/java" # compatible OpenJDK + Oracle JDK
 
-# On corrige la compilation avec 'giflib' 5 et plus :
-cp $CWD/openjdk.giflib.patch patches/
-export DISTRIBUTION_PATCHES="patches/openjdk.giflib.patch"
+# Cette variable permet d'éviter un plantage car 0Linux est prétendument
+# « non prise en charge » :
+export DISABLE_HOTSPOT_OS_VERSION_CHECK=ok
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -65,15 +65,17 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--disable-docs \
 	--disable-jdk-tests \
 	--disable-langtools-tests \
+	--disable-system-pcsc \
+	--disable-system-sctp \
 	--enable-nss \
-	--with-corba-src-zip=${PKGSOURCES}/${NAMETGZ}/corba-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
-	--with-hotspot-src-zip=${PKGSOURCES}/${NAMETGZ}/hotspot-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
-	--with-jaxp-src-zip=${PKGSOURCES}/${NAMETGZ}/jaxp-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
-	--with-jaxws-src-zip=${PKGSOURCES}/${NAMETGZ}/jaxws-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-corba-src-zip=${PKGSOURCES}/${NAMETGZ}/corba-$(echo $VERSION | cut -d'_' -f3).tar.bz2 \
+	--with-hotspot-src-zip=${PKGSOURCES}/${NAMETGZ}/hotspot-$(echo $VERSION | cut -d'_' -f3).tar.bz2 \
+	--with-jaxp-src-zip=${PKGSOURCES}/${NAMETGZ}/jaxp-$(echo $VERSION | cut -d'_' -f3).tar.bz2 \
+	--with-jaxws-src-zip=${PKGSOURCES}/${NAMETGZ}/jaxws-$(echo $VERSION | cut -d'_' -f3).tar.bz2 \
 	--with-jdk-home=/usr/lib${LIBDIRSUFFIX}/java \
-	--with-jdk-src-zip=${PKGSOURCES}/${NAMETGZ}/jdk-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
-	--with-langtools-src-zip=${PKGSOURCES}/${NAMETGZ}/langtools-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
-	--with-openjdk-src-zip=${PKGSOURCES}/${NAMETGZ}/openjdk-$(echo $VERSION | cut -d'_' -f2).tar.bz2 \
+	--with-jdk-src-zip=${PKGSOURCES}/${NAMETGZ}/jdk-$(echo $VERSION | cut -d'_' -f3).tar.bz2 \
+	--with-langtools-src-zip=${PKGSOURCES}/${NAMETGZ}/langtools-$(echo $VERSION | cut -d'_' -f3).tar.bz2 \
+	--with-openjdk-src-zip=${PKGSOURCES}/${NAMETGZ}/openjdk-$(echo $VERSION | cut -d'_' -f3).tar.bz2 \
 	--with-parallel-jobs=${JOBS} \
 	--with-pkgversion=0Linux \
 	--build=${PKGARCH}-0linux-linux-gnu
@@ -160,7 +162,7 @@ creer_post_installation
 cat >> ${PKG}/post-install.sh << EOF
 
 # On laisse la priorité au JDK d'Oracle s'il est présent :
-if [ -e usr/lib${LIBDIRSUFFIX}/jdk]; then
+if [ -e usr/lib${LIBDIRSUFFIX}/jdk ]; then
 	chmod -x etc/profile.d/openjdk.sh
 else
 	# Un lien de compatibilité ne fait pas de mal s'il est absent :

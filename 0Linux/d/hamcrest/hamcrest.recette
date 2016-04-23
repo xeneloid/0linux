@@ -18,8 +18,8 @@ cflags
 mkdir -p ${PKG}/usr/share/java/${NAMESRC}
 
 for p in core library generator integration; do
-	cp ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${p}-${VERSION}.jar ${PKG}/usr/share/java/${NAMESRC}
-	ln -sf ${NAMESRC}/${NAMESRC}-${p}-${VERSION}.jar ${PKG}/usr/share/java/${NAMESRC}-${p}.jar
+	cp ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${p}-${VERSION}.${EXT} ${PKG}/usr/share/java/${NAMESRC}
+	ln -sf ${NAMESRC}/${NAMESRC}-${p}-${VERSION}.${EXT} ${PKG}/usr/share/java/${NAMESRC}-${p}.${EXT}
 done
 
 installer_doc

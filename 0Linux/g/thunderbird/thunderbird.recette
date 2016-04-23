@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=31.6.0
+# On appelle cflags pour l'architecture car l'archive source est déjà
+# compilée :
 cflags
+
+VERSION=45.0
 WGET=http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.tar.bz2
 DESC="Client de messagerie électronique de la fondation Mozilla"
 

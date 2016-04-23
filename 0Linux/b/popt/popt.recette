@@ -37,7 +37,7 @@ fakeroot make install usrlibdir=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
 installer_doc
 
 # On installe la doc supplémentaire :
-cp -a doxygen/html $PKG/usr/doc/$NAMESRC-$VERSION/
+cp -a doxygen/html ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
 creer_post_installation
 stripper

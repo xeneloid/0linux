@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.0.29
+VERSION=1.1.1
 WGET=ftp://ftp.alsa-project.org/pub/lib/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques audio « Advanced Linux Sound Architecture »"
 
@@ -39,6 +39,15 @@ cflags
 
 # Compilation :
 configure_make_makeinstall
+
+# On crée la configuration pour activer 'pulseaudio' par défaut :
+mkdir -p ${PKG}/etc
+cat > ${PKG}/etc/asound.conf.0nouveau << "EOF"
+# Paramètres ALSA par défaut sur 'pulseaudio' :
+pcm.default pulse
+ctl.default pulse
+
+EOF
 
 installer_doc
 creer_post_installation

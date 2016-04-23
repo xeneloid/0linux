@@ -27,7 +27,6 @@ perl
 autoconf
 automake
 isl
-cloog
 libffi
 gperf
 binutils

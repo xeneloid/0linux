@@ -6,7 +6,7 @@
 # On charge les variables d'identification du système :
 source /etc/os-release
 
-# On exporte la variable pour la couleur des messages, utilisée par les '/etc/rc.d.rc*' :
+# On exporte la variable pour la couleur des messages, utilisée par les '/etc/rc.d/rc*' :
 export ANSI_COLOR="${ANSI_COLOR}"
 
 echo -e "[ \033[${ANSI_COLOR}m$(basename $0)\033[0;0m ] Démarrage du mode multi-utilisateur..."
@@ -31,6 +31,10 @@ fi
 # L'écran se vide au bout de 15 minutes et entre en veille au bout d'une heure :
 setterm -blank 15 -powersave powerdown -powerdown 60
 
+# Correction des permissions au cas où :
+chmod 755 /
+chmod 1777 /tmp /var/lock /var/tmp
+
 # On spécifie le nom de l'hôte si celui-ci n'existe pas :
 if [ -r /etc/hostname ]; then
 	hostname $(cat /etc/hostname | cut -f1 -d .)
@@ -47,14 +51,26 @@ if [ -x /etc/rc.d/rc.syslog -a -x /usr/sbin/syslogd -a -d /var/log ]; then
 	/etc/rc.d/rc.syslog start
 fi
 
+# Configuration du réseau, un seul service ne devrait être exécutable :
 # Lancement du réseau :
 if [ -x /etc/rc.d/rc.reseau ]; then
 	/etc/rc.d/rc.reseau start
 fi
 
-# Correction des permissions au cas où :
-chmod 755 /
-chmod 1777 /tmp /var/lock /var/tmp
+# Lancement de NetworkManager :
+if [ -x /etc/rc.d/rc.networkmanager ]; then
+	. /etc/rc.d/rc.networkmanager start
+fi
+
+# Lancement de wicd :
+if [ -x /etc/rc.d/rc.wicd ]; then
+	. /etc/rc.d/rc.wicd start
+fi
+
+# Lancement de D-Bus :
+if [ -x /etc/rc.d/rc.messagebus ]; then
+	/etc/rc.d/rc.messagebus start
+fi
 
 # Lancement de SSH :
 if [ -x /etc/rc.d/rc.sshd ]; then
@@ -76,11 +92,6 @@ if [ -x /etc/rc.d/rc.ntp ]; then
 	/etc/rc.d/rc.ntp start
 fi
 
-# Lancement de D-Bus :
-if [ -x /etc/rc.d/rc.messagebus ]; then
-	/etc/rc.d/rc.messagebus start
-fi
-
 # Lancement de Bluez :
 if [ -x /etc/rc.d/rc.bluetoothd ]; then
 	/etc/rc.d/rc.bluetoothd start
@@ -94,11 +105,6 @@ fi
 # Lancement des programmes pour les modules GTK+ :
 if [ -x /etc/rc.d/rc.gtk+ ]; then
 	/etc/rc.d/rc.gtk+ start
-fi
-
-# Lancement des programmes pour les modules Pango :
-if [ -x /etc/rc.d/rc.pango ]; then
-	/etc/rc.d/rc.pango start
 fi
 
 # Lancement de ConsoleKit :
@@ -121,22 +127,12 @@ if [ -x /etc/rc.d/rc.sasl ]; then
 	/etc/rc.d/rc.sasl start
 fi
 
-# Lancement de wicd :
-if [ -x /etc/rc.d/rc.wicd ]; then
-	. /etc/rc.d/rc.wicd start
-fi
-
-# Lancement de NetworkManager :
-if [ -x /etc/rc.d/rc.networkmanager ]; then
-	. /etc/rc.d/rc.networkmanager start
-fi
-
 # Lancement de dcron :
 if [ -x /usr/sbin/crond ]; then
 	/usr/sbin/crond -l10 >> /var/log/cron 2>&1
 fi
 
-# Lancement de MySQL :
+# Lancement de MySQL/MariaDB :
 if [ -x /etc/rc.d/rc.mysqld ]; then
 	/etc/rc.d/rc.mysqld start
 fi

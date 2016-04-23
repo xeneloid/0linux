@@ -21,7 +21,9 @@ sed -i 's@#define TMPDIR		"/tmp"@#define TMPDIR		"/var/spool/cron"@' defs.h
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-make PREFIX=/usr MANDIR=/usr/man
+make -j${JOBS} PREFIX=/usr MANDIR=/usr/man ||
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	make PREFIX=/usr MANDIR=/usr/man
 
 fakeroot make install DESTDIR=${PKG}
 

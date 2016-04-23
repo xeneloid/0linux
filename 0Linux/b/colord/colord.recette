@@ -9,6 +9,39 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-bash-completion \
+		--disable-schemas-compile \
+		--disable-systemd-login \
+		--disable-volume-search \
+		--enable-vala \
+		--with-daemon-user=colord \
+		--with-udevrulesdir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -21,7 +54,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-schemas-compile \
-	--disable-systemd \
 	--disable-systemd-login \
 	--enable-polkit \
 	--enable-sane \

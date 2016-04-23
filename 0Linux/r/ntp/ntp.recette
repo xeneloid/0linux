@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=4.2.8p2
-WGET=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz
+VERSION=4.2.8p6
+WGET=http://www.eecis.udel.edu/~ntp/ntp_spool/${NAMESRC}$(echo $VERSION | cut -d'.' -f1)/$NAMESRC-$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz
 DESC="Service permettant de synchroniser l'heure avec des serveurs de temps"
 
 telecharger_sources
@@ -13,6 +13,8 @@ cflags
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
+	--bindir=/usr/sbin \
+	--sbindir=/usr/sbin \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
@@ -25,20 +27,18 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On déplace dans sbin car il faut être root pour utiliser les binaires :
-mv ${PKG}/usr/bin/* ${PKG}/usr/sbin
-rm -rf ${PKG}/usr/bin
-
 # Ce dossier est vide ; on l'efface si présent :
-rm -rf ${PKG}/usr/lib
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	rm -rf ${PKG}/usr/lib
+fi
 
 # On crée la configuration du serveur et on veille à ne rien écraser :
 mkdir -p ${PKG}/etc/ntp
 cp -a $CWD/ntp.conf ${PKG}/etc/ntp.conf.0nouveau
-cp -a $CWD/ntp.keys ${PKG}/etc/ntp/ntp.keys.0nouveau
+cp -a $CWD/ntp.keys ${PKG}/etc/ntp/keys.0nouveau
 
-# On définit des permissions restrictives sur 'ntp.keys' :
-chmod 600 ${PKG}/etc/ntp/ntp.keys.0nouveau
+# On définit des permissions restrictives sur 'keys' :
+chmod 600 ${PKG}/etc/ntp/keys.0nouveau
 
 # Ce fichier est nécessaire, on le crée vide :
 touch ${PKG}/etc/ntp/step-tickers
@@ -78,6 +78,7 @@ case "$1" in
 esac
 
 EOF
+chmod +x ${PKG}/etc/rc.d/rc.ntp
 
 installer_doc
 creer_post_installation

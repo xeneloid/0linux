@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.3.2
+VERSION=1.3.3
 WGET=http://prdownloads.sourceforge.net/nfs/$NAMESRC-$VERSION.tar.bz2
 DESC="Outils de partage NFS"
 
@@ -15,7 +15,7 @@ mkdir -p ${PKG}/etc/exports.d
 mkdir -p -m 555 ${PKG}/var/lib/nfs/rpc_pipefs
 mkdir ${PKG}/var/lib/nfs/v4recovery
 
-# On corrige le comportement lorsque '/etc/mtab' est un liens symbolique vers '/proc/mounts' :
+# On corrige le comportement lorsque '/etc/mtab' est un lien symbolique vers '/proc/mounts' :
 cat $CWD/nfs-utils.mtab.patch | patch -p1
 
 # Compilation :
@@ -35,13 +35,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 # On lance la suite de tests si $TESTS est positionnée :
 if [ ! "${TESTS}" = "" ]; then
 	make -k check 2>&1 || true
 fi
-
-fakeroot make install DESTDIR=${PKG}
 
 # À FAIRE : ajouter /usr/sbin/blkmapd ?
 

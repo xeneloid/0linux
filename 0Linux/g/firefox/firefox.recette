@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=37.0.2
+# On appelle cflags pour l'architecture car l'archive source est déjà
+# compilée :
 cflags
+
+VERSION=45.0.2
 WGET=http://ftp.mozilla.org/pub/$NAMESRC/releases/$VERSION/linux-${PKGARCH}/fr/$NAMESRC-$VERSION.tar.bz2
 DESC="Navigateur Web de la fondation Mozilla"
 
@@ -43,7 +46,7 @@ ln -sf ../../usr/lib${LIBDIRSUFFIX}/${NAMESRC}/firefox ${PKG}/usr/bin/
 # On crée le répertoire général pour les plugins :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
 
-# On crée le répertoire local à Firefox pour les plugins (merci Mozilla d'avoir déplacé ce répertoire, z'en faites exprès ?) :
+# On crée le répertoire local à Firefox pour les plugins :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/${NAMESRC}/browser/
 
 # On lie le répertoire local au général :

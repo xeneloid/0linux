@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=VirtualBox
-VERSION=4.3.26
+VERSION=5.0.16
 EXT=tar.bz2
 WGET=(http://download.virtualbox.org/virtualbox/$VERSION/$NAMESRC-$VERSION.$EXT
       http://download.virtualbox.org/virtualbox/$VERSION/VBoxGuestAdditions_${VERSION}.iso
@@ -98,7 +98,7 @@ export PATH="${CWD}:${PATH}"
 fakeroot ./configure \
 	--disable-docs \
 	--disable-kmods \
-	--disable-pulse \
+	--enable-pulse \
 	--enable-vde \
 	--enable-vnc \
 	--enable-webservice \
@@ -110,9 +110,13 @@ source ./env.sh
 kmk -j ${JOBS} || kmk
 
 # On compile maintenant 'rdesktop-vrdp' :
-cd src/VBox/RDP/client
+# On crée un lien générique pour ce répertoire qui a une fâcheuse
+# tendance à changer de nom :
+RDPDIR="$(basename $(find src/VBox/RDP/client -type d -name "client*"))"
+ln -sv src/VBox/RDP/${RDPDIR} src/VBox/RDP/client
 
 # On corrige un chemin erroné :
+cd src/VBox/RDP/client
 sed -i "s@/opt/VirtualBox@/usr/share/virtualbox@" Makefile.kmk
 
 # Compilation :

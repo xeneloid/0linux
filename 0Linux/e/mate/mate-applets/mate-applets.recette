@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.0
+VERSION=1.14.0
 WGET=http://pub.mate-desktop.org/releases/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Ensemble « d'applets » et de menus supplémentaires pour le panneau de MATE"
 
@@ -20,6 +20,8 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-ipv6 \
+	--enable-polkit \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

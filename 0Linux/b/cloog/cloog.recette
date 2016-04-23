@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.18.3
+VERSION=0.18.4
 WGET=http://www.bastoul.net/cloog/pages/download/count.php3?url=./${NAMESRC}-${VERSION}.tar.gz
 DESC="Bibliothèques d'analyse et de génération de boucles optimisées"
 

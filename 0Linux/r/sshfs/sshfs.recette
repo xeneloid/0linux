@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.5
-WGET=http://prdownloads.sourceforge.net/fuse/$NAMESRC-fuse-$VERSION.tar.gz
-DESC="Client FUSE basé sur SSH pour les montages distants"
+VERSION=2.7
+WGET=https://github.com/libfuse/$NAMESRC/releases/download/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.gz
+DESC="Client FUSE basé sur SSH pour montages de volumes distants"
 EXTRADEPS="glib fuse"
 
 telecharger_sources

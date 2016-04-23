@@ -1,34 +1,48 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=Ardour3
-VERSION=3.5.403
-WGET=https://sources.archlinux.org/other/$NAMETGZ/$NAMESRC-$VERSION.tar.bz2
-DESC="Studio de production audio"
+VERSION=d84a8222f2
+WGET=git://git.ardour.org/$NAMESRC/$NAMESRC.git
+DESC="Studio de production audio multipiste"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation avec drapeaux supplémentaires:
+# C'est toujours aussi pénible d'avoir les sources complètes, même via
+# git... On crée le fichier de révision à la mords-moi-le-pif trouvé
+# dans l'archive officielle :
+cat > libs/ardour/revision.cc << "EOF"
+#include "ardour/revision.h"">>
+namespace ARDOUR { const char* revision = "4.6-387-gd84a822"; }
+
+EOF
+
+# Compilation :
 python waf configure \
 	--prefix=/usr \
 	--configdir=/etc \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--freedesktop \
+	--cxx11 \
 	--docs \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libjack=weak \
 	--lv2 \
 	--mandir=/usr/man \
-	--noconfirm \
-	--optimize
+	--nls \
+	--no-phone-home \
+	--optimize \
+	--with-backends="jack,alsa"
 
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" python waf build -j${JOBS} || python waf build
-python waf i18n -j${JOBS} || python waf i18n
-fakeroot python waf install --destdir=${PKG}
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS} -std=c++11" LDFLAGS+=" -lboost_system" \
+python waf build -j${JOBS} || \
+	CXXFLAGS="-std=c++11" LDFLAGS+=" -lboost_system " \
+	python waf build
+
+fakeroot python2 waf install --destdir=${PKG}
 
 # On veille à ne rien écraser :
-for i in ${PKG}/etc/ardour$(echo $VERSION | cut -d'.' -f1)/*; do
+for i in ${PKG}/etc/ardour4/*; do
 	mv ${i}{,.0nouveau}
 done
 
@@ -39,8 +53,8 @@ cat > ${PKG}/usr/share/applications/ardour.desktop << "EOF"
 Name=Ardour
 Comment=Multitrack hard disk recorder
 Comment[fr]=Studio de production audio multipiste
-Exec=ardour3
-Icon=/usr/share/ardour3/icons/ardour_icon_48px.png
+Exec=ardour4
+Icon=/usr/share/ardour4/icons/ardour_icon_256px.png
 Terminal=false
 Type=Application
 X-MultipleArgs=false

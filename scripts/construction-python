@@ -70,7 +70,6 @@ mutagen
 openshot
 subversion
 system-config-printer
-systemd
 gtk-recordmydesktop
 qt-recordmydesktop
 wicd

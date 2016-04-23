@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.5.1
-EXT=tar.xz
-WGET=(http://llvm.org/releases/${VERSION}/${NAMESRC}-${VERSION}.src.${EXT}
-      http://llvm.org/releases/${VERSION}/cfe-${VERSION}.src.${EXT}
+VERSION=3.7.1
+WGET=(http://llvm.org/releases/${VERSION}/${NAMESRC}-${VERSION}.src.tar.xz
+      http://llvm.org/releases/${VERSION}/cfe-${VERSION}.src.tar.xz
+      http://llvm.org/releases/${VERSION}/clang-tools-extra-${VERSION}.src.tar.xz
+      http://llvm.org/releases/${VERSION}/compiler-rt-${VERSION}.src.tar.xz
+      http://llvm.org/releases/${VERSION}/lldb-${VERSION}.src.tar.xz
      )
 DESC="L'environnement LLVM et le compilateur Clang"
 
@@ -17,84 +19,117 @@ cflags
 if [ "${PKGARCH}" = "x86_64" ]; then
 	
 	# On prépare les sources :
-	preparer_sources ${NAMESRC}-${VERSION}.src.${EXT}
+	preparer_sources ${NAMESRC}-${VERSION}.src.tar.xz
 	
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# On supprime et on remplace les sources embarquées de 'clang' :
-	rm -rf tools/clang
-	tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.${EXT} -C tools/
+	# On supprime et on remplace les sources embarquées :
+	rm -rf tools/{clang,lldb} projects/compiler-rt
+	tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.tar.xz
+	tar xf ${PKGSOURCES}/${NAMETGZ}/clang-tools-extra-${VERSION}.src.tar.xz
+	tar xf ${PKGSOURCES}/${NAMETGZ}/compiler-rt-${VERSION}.src.tar.xz
+	tar xf ${PKGSOURCES}/${NAMETGZ}/lldb-${VERSION}.src.tar.xz
 	
-	# On renomme sans la version :
-	mv tools/{cfe-${VERSION}.src,clang}
+	# On renomme/déplace sans la version :
+	mv cfe-${VERSION}.src tools/clang
+	mkdir -p tools/clang/tools
+	mv clang-tools-extra-${VERSION}.src tools/clang/tools/extra
+	mv compiler-rt-${VERSION}.src tools/lldb
+	mv lldb-${VERSION}.src tools/lldb
 	
-	# Compilation pour i686 en forçant GCC :
-	CC=gcc CXX=g++ \
+	# On corrige les bogues connus de ce foutoir :
+	cat $CWD/llvm.libllvm.patch | patch -p1
+	cat $CWD/llvm.export-symbols.patch | patch -p0
+	
+	(
+		cd tools/clang/tools/extra
+		cat $CWD/llvm.clang-query.patch | patch -p0
+	)
+	
+	# Compilation  dans un répertoire dédié :
+	mkdir build && cd build
+	
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--disable-assertions \
-		--disable-expensive-checks \
-		--enable-optimized \
-		--enable-shared \
-		--enable-targets=all \
-		--with-clang-resource-dir="../lib${LIBDIRSUFFIX}/clang/${VERSION}" \
-		--build=${PKGARCH}-0-linux-gnu
-	
+	cmake \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_C_FLAGS:STRING="${FLAGS}" \
+		-DCMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DFFI_INCLUDE_DIR=$(pkg-config --variable=includedir libffi) \
+		-DLLVM_BINUTILS_INCDIR=/usr/include \
+		-DLLVM_BUILD_LLVM_DYLIB=ON \
+		-DLLVM_DYLIB_EXPORT_ALL=ON \
+		-DLLVM_LIBDIR_SUFFIX=${LIBDIRSUFFIX} \
+		-DLLVM_LINK_LLVM_DYLIB=ON \
+		-DLLVM_ENABLE_RTTI=ON \
+		-DLLVM_ENABLE_FFI=ON \
+		-DLLVM_ENABLE_ASSERTIONS=OFF \
+		-DCLANG_RESOURCE_DIR="../lib${LIBDIRSUFFIX}/clang/${VERSION}" \
+		..
+
 	# On corrige pour notre $LIBDIRSUFFIX :
 	sed -i "s@\$(PROJ_prefix)/lib@&${LIBDIRSUFFIX}@" $(find . -type f -name "Makefile*")
 	sed -i "s|\"lib\"|\"lib${LIBDIRSUFFIX}\"|" $(find . -type f -name "*.cpp")
 	sed -i "s|ActiveLibDir = ActivePrefix + \"/lib\"|ActiveLibDir = ActivePrefix + \"/lib${LIBDIRSUFFIX}\"|g" $(find . -type f -name "*.cpp")
-	
+
 	make -j${JOBS} || make
 	fakeroot make install DESTDIR=${PKG}
-	
-	# On corrige une référence à 'lib' dans 'llvm-config' :
-	sed -i -e "s@ABS_RUN_DIR/lib\"@ABS_RUN_DIR/lib$LIBDIRSUFFIX\"@" ${PKG}/usr/bin/llvm-config
+
+	cd -
 	
 	# On renomme ces fichiers spécifiques à l'architecture :
 	mv ${PKG}/usr/bin/llvm-config{,-32}
-	mv ${PKG}/usr/include/llvm/Config/config{,-32}.h
 	mv ${PKG}/usr/include/llvm/Config/llvm-config{,-32}.h
 fi
 
-# On compile en natif :
-preparer_sources ${NAMESRC}-${VERSION}.src.${EXT}
+# On prépare les sources :
+preparer_sources ${NAMESRC}-${VERSION}.src.tar.xz
 cflags
 
-# On supprime et on remplace les sources embarquées de 'clang' :
-rm -rf tools/clang
-tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.${EXT} -C tools/
+# On supprime et on remplace les sources embarquées :
+rm -rf tools/{clang,lldb} projects/compiler-rt
+tar xf ${PKGSOURCES}/${NAMETGZ}/cfe-${VERSION}.src.tar.xz
+tar xf ${PKGSOURCES}/${NAMETGZ}/clang-tools-extra-${VERSION}.src.tar.xz
+tar xf ${PKGSOURCES}/${NAMETGZ}/compiler-rt-${VERSION}.src.tar.xz
+tar xf ${PKGSOURCES}/${NAMETGZ}/lldb-${VERSION}.src.tar.xz
 
-# On renomme sans la version :
-mv tools/{cfe-${VERSION}.src,clang}
+# On renomme/déplace sans la version :
+mv cfe-${VERSION}.src tools/clang
+mkdir -p tools/clang/tools
+mv clang-tools-extra-${VERSION}.src tools/clang/tools/extra
+mv compiler-rt-${VERSION}.src tools/lldb
+mv lldb-${VERSION}.src tools/lldb
 
-# Compilation en forçant GCC :
-CC=gcc CXX=g++ \
+# On corrige les bogues connus de ce foutoir :
+cat $CWD/llvm.libllvm.patch | patch -p1
+cat $CWD/llvm.export-symbols.patch | patch -p0
+
+(
+	cd tools/clang/tools/extra
+	cat $CWD/llvm.clang-query.patch | patch -p0
+)
+
+# Compilation  dans un répertoire dédié :
+mkdir build && cd build
+
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-	--prefix=/usr \
-	--sysconfdir=/etc \
-	--localstatedir=/var \
-	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--mandir=/usr/man \
-	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-assertions \
-	--disable-expensive-checks \
-	--enable-experimental-targets=R600 \
-	--enable-optimized \
-	--enable-shared \
-	--enable-targets=all \
-	--with-clang-resource-dir="../lib${LIBDIRSUFFIX}/clang/${VERSION}" \
-	--build=${PKGARCH}-0-linux-gnu
+cmake \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_C_FLAGS:STRING="${FLAGS}" \
+	-DCMAKE_CXX_FLAGS:STRING="${FLAGS}" \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DFFI_INCLUDE_DIR=$(pkg-config --variable=includedir libffi) \
+	-DLLVM_BINUTILS_INCDIR=/usr/include \
+	-DLLVM_BUILD_LLVM_DYLIB=ON \
+	-DLLVM_DYLIB_EXPORT_ALL=ON \
+	-DLLVM_LIBDIR_SUFFIX=${LIBDIRSUFFIX} \
+	-DLLVM_LINK_LLVM_DYLIB=ON \
+	-DLLVM_ENABLE_RTTI=ON \
+	-DLLVM_ENABLE_FFI=ON \
+	-DLLVM_ENABLE_ASSERTIONS=OFF \
+	-DCLANG_RESOURCE_DIR="../lib${LIBDIRSUFFIX}/clang/${VERSION}" \
+	..
 
 # On corrige pour notre $LIBDIRSUFFIX :
 sed -i "s@\$(PROJ_prefix)/lib@&${LIBDIRSUFFIX}@" $(find . -type f -name "Makefile*")
@@ -104,47 +139,20 @@ sed -i "s|ActiveLibDir = ActivePrefix + \"/lib\"|ActiveLibDir = ActivePrefix + \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On place les binaires du 'clang-analyzer' :
-mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer
-cp -ar tools/clang/tools/scan-{build,view} ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/
-
-# On crée les liens symboliques dans le répertoire standard des binaires :
-ln -sf /usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build ${PKG}/usr/bin/
-ln -sf /usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-view/scan-view ${PKG}/usr/bin/
-ln -sf /usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/ccc-analyzer ${PKG}/usr/bin/
-ln -sf /usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/c++-analyzer ${PKG}/usr/bin/
+cd -
 
 # On corrige une référence à 'lib' dans 'llvm-config' :
 sed -i -e "s@ABS_RUN_DIR/lib\"@ABS_RUN_DIR/lib$LIBDIRSUFFIX\"@" ${PKG}/usr/bin/llvm-config
 
-# On corrige pour notre $LIBDIRSUFFIX :
-sed -i "s|\$RealBin/bin|/usr/bin|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
-sed -i "s|\$RealBin/sorttable.js|/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/sorttable.js|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
-sed -i "s|\$RealBin/scanview.css|/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scanview.css|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
-
 if [ "${PKGARCH}" = "x86_64" ]; then
 	# On renomme ces fichiers spécifiques à l'architecture :
 	mv ${PKG}/usr/bin/llvm-config{,-64}
-	mv ${PKG}/usr/include/llvm/Config/config{,-64}.h
 	mv ${PKG}/usr/include/llvm/Config/llvm-config{,-64}.h
 
 	# On lie un binaire générique au progamme enveloppe :
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/llvm-config
 
-	# On crée les entêtes génériques :
-	cat > ${PKG}/usr/include/llvm/Config/config.h << "EOF"
-#ifndef __STUB__LLVM_CONFIG_H__
-#define __STUB__LLVM_CONFIG_H__
-
-#if defined(__x86_64__)
-#	include "config-64.h"
-#else
-#	include "config-32.h"
-#endif
-
-#endif
-EOF
-	
+	# On crée l'entête générique :
 	cat > ${PKG}/usr/include/llvm/Config/llvm-config.h << "EOF"
 #ifndef __STUB__LLVM_LLVMCONFIG_H__
 #define __STUB__LLVM_LLVMCONFIG_H__
@@ -159,16 +167,40 @@ EOF
 EOF
 fi
 
+# On place les binaires du 'clang-analyzer' :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer
+cp -ar tools/clang/tools/scan-{build,view} ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/
+
+# On corrige pour notre $LIBDIRSUFFIX :
+sed -i "s|\$RealBin/bin|/usr/bin|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
+sed -i "s|\$RealBin/sorttable.js|/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/sorttable.js|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
+sed -i "s|\$RealBin/scanview.css|/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scanview.css|" ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build
+
+# On crée les liens symboliques dans le répertoire standard des binaires :
+ln -sf /usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/scan-build ${PKG}/usr/bin/
+ln -sf /usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-view/scan-view ${PKG}/usr/bin/
+ln -sf /usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/ccc-analyzer ${PKG}/usr/bin/
+ln -sf /usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build/c++-analyzer ${PKG}/usr/bin/
+
+# On corrige les permissions :
+chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-build || true
+chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-view || true
+chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer/scan-view/Resources || true
+
+# On installe l'interfaçage Python (2.7) :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages
+cp -a tools/clang/bindings/python/clang ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages/
+python -m compileall    ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer
+python -O -m compileall ${PKG}/usr/lib${LIBDIRSUFFIX}/clang-analyzer
+python -m compileall    ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages/clang
+python -O -m compileall ${PKG}/usr/lib${LIBDIRSUFFIX}/python2.7/site-packages/clang
+
 installer_doc
 
 # On complète la documentation s'il y en a :
 mkdir -p ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang
 cp -a tools/clang/{docs,*.txt} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/clang/ || true
-mv ${PKG}/usr/docs/llvm/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
-
-# On supprime les archives redondantes :
-rm -f ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/*.tar.*
-rm -rf ${PKG}/usr/docs
+mv ${PKG}/usr/docs/llvm/* ${PKG}/usr/doc/${NAMETGZ}-${VERSION} || true
 
 creer_post_installation
 stripper

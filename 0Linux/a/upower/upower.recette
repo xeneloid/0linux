@@ -16,7 +16,7 @@ sed -i -e 's|Cflags: |&-DUPOWER_ENABLE_DEPRECATED |' upower-glib.pc.in
 sed -i 's@#define LOGIND_AVAILABLE.*@#define LOGIND_AVAILABLE() (FALSE)@' src/linux/up-backend.c
 
 # On corrige le niveau de batterie qui peut parfois dépasser les 100% 
-# qu'une erreur de segmentation :
+# ainsi qu'une erreur de segmentation :
 cat $CWD/upower.overfull_battery.patch | patch -p1
 cat $CWD/upower.fix-segfault.patch | patch -p1
 
