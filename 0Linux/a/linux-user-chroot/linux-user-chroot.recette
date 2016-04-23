@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2013.1
+EXT=tar.gz
+WGET=https://git.gnome.org/browse/$NAMESRC/snapshot/$NAMESRC-$VERSION.$EXT
+DESC="Des bibliothèques et outils pour faire fonctionner quelque chose de précis..."
+
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./autogen.sh \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-documentation \
+	--enable-newnet-helper \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+
+# On complète la post-installation en spécifiant l'appartenance :
+cat >> ${PKG}/post-install.sh << "EOF"
+# On fait confiance au groupe 'users' en leur permettant de manipuler le
+# binaire en tant que root (discutable question sécurité) :
+chown root:users usr/bin/linux-user-chroot
+chmod 1750 usr/bin/linux-user-chroot
+chmod +t,u+s,g+s usr/bin/linux-user-chroot
+
+EOF
+
+stripper
+empaqueter
+
+# C'est fini.

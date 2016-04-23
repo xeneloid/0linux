@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=6.3
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="Outils d'inspection et de surveillance de volumes de stockage"
+
+telecharger_sources
+preparer_sources
+cflags
+configure_make_makeinstall
+
+# On n'utilise pas ça :
+rm -rf ${PKG}/etc/rc.d
+rm -rf ${PKG}/etc/init.d
+
+# On évite d'écraser toute configuration existante :
+mv ${PKG}/etc/smartd.conf{,.0nouveau}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
