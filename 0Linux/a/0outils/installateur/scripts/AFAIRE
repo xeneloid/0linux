@@ -1,0 +1,1 @@
+LABEL/PARTLABEL ou UUID/PARTUUID : scanner les 2 pour root=LABEL ou root=UUID dans l'initrd
