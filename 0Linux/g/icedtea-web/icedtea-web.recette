@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.6.2
+WGET=http://icedtea.classpath.org/download/source/$NAMESRC-$VERSION.tar.gz
+DESC="Implémentation libre du greffon Java pour navigateurs Web"
+EXTRADEPS="openjdk"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+MOZILLA_CFLAGS="-L/usr/lib${LIBDIRSUFFIX}/firefox" \
+MOZILLA_LIBS="-L/usr/lib${LIBDIRSUFFIX}/firefox" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-docs \
+	--with-jdk-home=/usr/lib${LIBDIRSUFFIX}/java \
+	--with-jre-home=/usr/lib${LIBDIRSUFFIX}/java/jre \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+# On corrige un chemin manquant :
+sed -i 's@-I/usr/include/glib-2.0@& -I/usr/include/npapi-sdk@' Makefile
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On crée un lien générique pour les greffons de navigateurs Web :
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins
+ln -sf ../../IcedTeaPlugin.so ${PKG}/usr/lib${LIBDIRSUFFIX}/mozilla/plugins/
+
+# On installe les raccourcis bureau :
+mkdir -p ${PKG}/usr/share/{applications,pixmaps}
+cp javaws.png ${PKG}/usr/share/pixmaps/
+cp {javaws,itweb-settings}.desktop ${PKG}/usr/share/applications/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
