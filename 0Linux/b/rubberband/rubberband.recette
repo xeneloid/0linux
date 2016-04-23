@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.8.1
+WGET=http://code.breakfastquay.com/attachments/download/34/$NAMESRC-$VERSION.tar.bz2
+DESC="Outils et bibliothèques de déformation de signal audio"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+# Le Makefile contient des chemins codés en dur :
+sed -i \
+	-e "s@^INSTALL_LIBDIR.*@INSTALL_LIBDIR          := /usr/lib${LIBDIRSUFFIX}@" \
+	-e "s@^INSTALL_VAMPDIR.*@INSTALL_VAMPDIR         := /usr/lib${LIBDIRSUFFIX}/vamp@" \
+	-e "s@^INSTALL_LADSPADIR.*@INSTALL_LADSPADIR       := /usr/lib${LIBDIRSUFFIX}/ladspa@" \
+	-e "s@^INSTALL_PKGDIR.*@INSTALL_PKGDIR          := /usr/lib${LIBDIRSUFFIX}/pkgconfig@" \
+	Makefile
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

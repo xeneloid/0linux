@@ -1,0 +1,28 @@
+diff --git a/nptl/tst-cancel-wrappers.sh b/nptl/tst-cancel-wrappers.sh
+index b2d8302..d492a54 100644
+--- a/nptl/tst-cancel-wrappers.sh
++++ b/nptl/tst-cancel-wrappers.sh
+@@ -74,7 +74,7 @@ C["__xpg_sigpause"]=1
+   seen=""
+   seen_enable=""
+   seen_disable=""
+-  object=gensub(/^.*\[(.*)\]:$/,"\\1","",$0)
++  object=gensub(/^.*\[(.*)\]:$/, "\\1", 1, $0)
+   next
+ }
+ {
+diff --git a/scripts/sysd-rules.awk b/scripts/sysd-rules.awk
+index cc14334..cebc9d3 100644
+--- a/scripts/sysd-rules.awk
++++ b/scripts/sysd-rules.awk
+@@ -53,7 +53,7 @@ BEGIN {
+         if (target_pattern == "%") {
+           command_suffix = "";
+         } else {
+-          prefix = gensub(/%/, "", "", target_pattern);
++          prefix = gensub(/%/, "", 1, target_pattern);
+           command_suffix = " $(" prefix  "CPPFLAGS)";
+         }
+         target = "$(objpfx)" target_pattern o ":";
+-- 
+2.4.4

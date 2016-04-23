@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=1.4.0
+WGET=(
+      http://download.savannah.gnu.org/releases/linphone/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+      https://github.com/antlr/website-antlr3/blob/gh-pages/download/antlr-3.4-complete.jar?raw=true
+     )
+DESC="Bibliothèques C pour le protocole de VoIP SIP"
+
+telecharger_sources
+preparer_sources $NAMESRC-$VERSION.tar.gz
+cflags
+
+# On copie et on renomme l'archive Java dans notre répertoire courant :
+cp -a "${PKGSOURCES}/${NAMETGZ}/antlr-3.4-complete.jar?raw=true" antlr.jar
+
+# On corrige le 'configure.ac' pour notre suffixe ainsi que pour rechercher
+# 'antlr.jar' dans le répertoire courant :
+sed -i -e "s|/lib\"|/lib${LIBDIRSUFFIX}\"|g" \
+	-e "/^antlr_java_prefixes=/s|=.*$|=\"$(pwd)\"|g" \
+	-e "s|-Werror||g" \
+	configure.ac
+
+# On doit régénérer les fichiers de construction ('configure.ac' modifié) :
+autoreconf -vif
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--disable-tests \
+	--enable-tls \
+	--with-antlr=/usr \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
