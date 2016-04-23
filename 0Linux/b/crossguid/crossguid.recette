@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=8f399e8
+WGET=https://github.com/graeme-hill/$NAMESRC.git
+DESC="Bibliothèques C++ multiplate-forme de prise en charge GUID/UUID"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation manuelle :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+g++ -c guid.cpp -o guid.o $CXXFLAGS -std=c++11 -DGUID_LIBUUID
+ar rvs libcrossguid.a guid.o
+
+#Installation manuelle
+mkdir -p ${PKG}/usr/{include,lib${LIBDIRSUFFIX}}
+cp libcrossguid.a ${PKG}/usr/lib${LIBDIRSUFFIX}
+cp guid.h ${PKG}/usr/include/
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.

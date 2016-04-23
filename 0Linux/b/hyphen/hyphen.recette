@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=2.8.8
+WGET=(
+      http://prdownloads.sourceforge.net/hunspell/$NAMESRC-$VERSION.tar.gz
+      http://www.dicollecte.org/download/fr/hyph-fr-v3.0.zip
+     )
+DESC="Bibliothèques de gestion des césures et de la justification de textes"
+
+telecharger_sources
+preparer_sources $NAMESRC-$VERSION.tar.gz
+cflags
+configure_make_makeinstall
+
+# On crée les dictionnaires pour l'anglais et le français :
+mkdir -p  ${PKG}/usr/share/myspell/dicts
+
+pushd ${PKG}/usr/share/hyphen/
+	en_US_aliases="en_AG en_AU en_BS en_BW en_BZ en_CA en_DK en_GB en_GH en_HK en_IE en_IN en_JM en_NA en_NZ en_PH en_SG en_TT en_ZA en_ZW"
+	for lang in $en_US_aliases; do
+		ln -sf hyph_en_US.dic hyph_$lang.dic
+	done
+popd
+
+pushd ${PKG}/usr/share/myspell/dicts
+	for file in ${PKG}/usr/share/hyphen/*; do
+		ln -sf /usr/share/hyphen/$(basename $file) .
+	done
+popd
+
+preparer_sources hyph-fr-v3.0.zip
+
+cp hyph_fr.dic ${PKG}/usr/share/hyphen/hyph_fr_FR.dic
+
+pushd ${PKG}/usr/share/hyphen/
+	fr_FR_aliases="fr_BE fr_CA fr_CH fr_LU"
+	for lang in ${fr_FR_aliases}; do
+		ln -sf hyph_fr_FR.dic hyph_${lang}.dic
+	done
+popd
+
+pushd ${PKG}/usr/share/myspell/dicts
+	for file in ${PKG}/usr/share/hyphen/*; do
+		ln -sf /usr/share/hyphen/$(basename ${file}) .
+	done
+popd
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
