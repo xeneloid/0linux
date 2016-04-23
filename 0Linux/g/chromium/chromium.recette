@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=36.0.1976.2
+WGET=https://commondatastorage.googleapis.com/chromium-browser-official/$NAMESRC-$VERSION.tar.xz
+DESC="Des bibliothèques et outils pour faire fonctionner quelque chose de précis..."
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# N.B. : N'utilisez jamais les clefs pour l'API Google pour compiler autre chose que
+# Chromium pour 0Linux. Créez vos propres clés, ne recopiez jamais celles de 0Linux !
+# http://www.chromium.org/developers/how-tos/api-keys
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+build/gyp_chromium -f make build/all.gyp --depth=. \
+	-Ddisable_nacl=1 \
+	-Ddisable_sse2=1 \
+	-Dwerror= \
+	-Dlinux_link_gnome_keyring=1 \
+	-Dlinux_sandbox_path=/usr/lib${LIBDIRSUFFIX}/chromium/chrome-sandbox \
+	-Dlinux_strip_binary=1 \
+	-Dlinux_use_bundled_gold=0 \
+	-Dlinux_use_gold_binary=0 \
+	-Dlinux_use_gold_flags=0 \
+	-Dno_strict_aliasing=1 \
+	-Dffmpeg_branding=Chrome \
+	-Dgoogle_api_key=AIzaSyCmn4x2trm4lcrkVaQF3lvKeHm2lBovDo8 \
+	-Dgoogle_default_client_id=178722478680-tl6d51g0f63rr6ul47h6ucj2n3spgg8n.apps.googleusercontent.com \
+	-Dgoogle_default_client_secret=UbBBq1p68x7RHb6JVJ6m6QJI \
+	-Dlogging_like_official_build=1 \
+	-Dproprietary_codecs=1 \
+	-Drelease_extra_cflags="${FLAGS}" \
+	-Dsystem_libdir=/usr/lib${LIBDIRSUFFIX} \
+	-Dusb_ids_path=/usr/share/usb.ids \
+	-Duse_gconf=1 \
+	-Duse_gnome_keyring=1 \
+	-Duse_kerberos=1 \
+	-Duse_pulseaudio=0 \
+	-Duse_system_bzip2=1 \
+	-Duse_system_ffmpeg=1 \
+	-Duse_system_libevent=1 \
+	-Duse_system_libpng=1 \
+	-Duse_system_libjpeg=1 \
+	-Duse_system_libxslt=1 \
+	-Duse_system_libxml=1 \
+	-Duse_system_ssl=1 \
+	-Duse_system_zlib=1 \
+	-Duse_system_yasm=1
+
+make -j${JOBS} chrome chrome_sandbox BUILDTYPE=Release V=1 || make chrome chrome_sandbox BUILDTYPE=Release V=1
+
+# On place le tout, merci à SlackBuilds.org :
+cd out/Release/
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/chromium
+mkdir -p ${PKG}/usr/bin
+install -m 0755 -D chrome ${PKG}/usr/lib${LIBDIRSUFFIX}/chromium/chromium
+install -m 4755 -D chrome_sandbox ${PKG}/usr/lib${LIBDIRSUFFIX}/chromium/chrome-sandbox
+install -m 0755 -D libffmpegsumo.so $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+cp *.pak $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+cp -a locales/ $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+cp -a resources/ $PKG/usr/lib${LIBDIRSUFFIX}/chromium
+find $PKG -name '*.d' -type f -delete
+mkdir -p $PKG/usr/man/man1
+install -m 0644 -D chrome.1 $PKG/usr/man/man1/chromium.1
+mkdir -p $PKG/usr/share/pixmaps
+cp product_logo_48.png $PKG/usr/share/pixmaps/chromium.png
+
+# On crée le raccourci bureau :
+mkdir -p $PKG/usr/share/applications
+cat > ${PKG}/usr/share/applications/chromium.desktop << "EOF"
+[Desktop Entry]
+Exec=/usr/bin/chromium %U
+Icon=/usr/share/pixmaps/chromium.png
+Type=Application
+Categories=Network;
+Name=Chromium
+GenericName=Web Browser
+GenericName[fr]=Navigateur web
+MimeType=text/html;
+X-KDE-StartupNotify=true
+
+EOF
+
+cd -
+
+ln -sf ../lib${LIBDIRSUFFIX}/chromium/chromium ${PKG}/usr/bin/chromium
+ln -sf ../lib${LIBDIRSUFFIX}/chromium/chrome-sandbox ${PKG}/usr/bin/chrome-sandbox
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
