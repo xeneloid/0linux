@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-<<<<<<< HEAD
-VERSION=2.6.1
-=======
 VERSION=2.8.0
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://ftp.acc.umu.se/pub/GNOME/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Système d'appels et de fonctions pour C++"
 

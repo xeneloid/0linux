@@ -12,11 +12,7 @@ cflags
 
 # On corrige cette vieillerie :
 cat $CWD/gnome-vfs.gnutls-config.patch | patch -p1
-<<<<<<< HEAD
-cat $CWD/gnome-vfs.gnutls-3.4.patch | patch -p1
-=======
 cat $CWD/gnome-vfs.gnutls3.patch | patch -p1
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 cat $CWD/gnome-vfs.gcrypt-config.patch | patch -p1
 cat $CWD/gnome-vfs.enable-deprecated.patch | patch -p1
 

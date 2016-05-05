@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-<<<<<<< HEAD
-VERSION=0.15.0
-=======
 VERSION=0.17.0
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://xorg.freedesktop.org/releases/individual/driver/$NAMESRC-$VERSION.tar.bz2
 DESC="Pilotes graphiques pour X11"
 

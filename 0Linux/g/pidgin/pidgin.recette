@@ -20,13 +20,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-<<<<<<< HEAD
-	--enable-cyrus-sasl \
-	--enable-nm \
-	--disable-gnutls \
-        --disable-schemas-install \
-        --disable-meanwhile \	
-=======
 	--disable-meanwhile \
 	--disable-gnutls \
 	--disable-doxygen \
@@ -34,7 +27,6 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-cyrus-sasl \
 	--enable-nm \
 	--with-system-ssl-certs=/etc/ssl/certs \
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

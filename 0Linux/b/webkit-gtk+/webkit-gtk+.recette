@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=webkitgtk
-<<<<<<< HEAD
-VERSION=2.4.8
-WGET=http://webkitgtk.org/releases/$NAMESRC-$VERSION.tar.xz
-=======
 VERSION=2.12.1
 WGET=(
       http://webkitgtk.org/releases/$NAMESRC-$VERSION.tar.xz
       http://webkitgtk.org/releases/$NAMESRC-2.4.10.tar.xz
      )
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 DESC="Port GTK+ du moteur de navigateur web WebKit"
 
 telecharger_sources

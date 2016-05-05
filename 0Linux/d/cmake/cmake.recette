@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-<<<<<<< HEAD
-VERSION=3.4.0
-=======
 VERSION=3.5.0
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://www.cmake.org/files/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz
 DESC="Système de compilation multiplateforme"
 

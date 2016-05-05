@@ -15,14 +15,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-<<<<<<< HEAD
-	# On corrige l'appel aux include du système :
-	cat $CWD/speesdsp.include_fix.patch | patch -p1
-	autoreconf -vif
-=======
 	# On corrige la compilation :
 	cat $CWD/speexdsp.fix.patch | patch -p1
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 	
 	# Compilation pour i686 :
 	autoreconf -vif

@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-<<<<<<< HEAD
-VERSION=0.29
-WGET=http://pkgconfig.freedesktop.org/releases/$NAMESRC-$VERSION.tar.gz
-=======
 VERSION=0.28
 WGET=http://prdownloads.sourceforge.net/pkgconfiglite/pkg-config-lite-$VERSION-1.tar.gz
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 DESC="Gestionnaire de bibliothèques pour la compilation"
 
 telecharger_sources

@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=NetworkManager
-<<<<<<< HEAD
-VERSION=1.0.8
-=======
 VERSION=1.0.10
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Démon de gestion du réseau"
 EXTRADEPS="dhcpcd iptables iproute2 modemmanager ppp wpa_supplicant"

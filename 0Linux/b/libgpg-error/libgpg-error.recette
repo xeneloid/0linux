@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-<<<<<<< HEAD
-VERSION=1.20
-=======
 VERSION=1.21
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=ftp://ftp.gnupg.org/gcrypt/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Bibliothèques de gestion des erreurs GnuPG"
 

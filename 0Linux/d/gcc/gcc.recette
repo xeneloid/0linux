@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.3.0
-<<<<<<< HEAD
-WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.bz2
-=======
 WGET=http://ftp.gnu.org/gnu/$NAMESRC/$NAMESRC-$VERSION/$NAMESRC-$VERSION.tar.bz2
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 DESC="La suite de compilateurs de GNU"
 
 telecharger_sources
@@ -35,11 +30,6 @@ $TMP/${NAME}/configure \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--disable-libunwind-exceptions \
-<<<<<<< HEAD
-	--disable-ppl-version-check \
-	--disable-werror \
-=======
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 	--enable-__cxa_atexit \
 	--enable-bootstrap \
 	--enable-checking=release \
@@ -47,25 +37,12 @@ $TMP/${NAME}/configure \
 	--enable-gnu-unique-object \
 	--enable-install-libiberty \
 	--enable-languages=c,c++,fortran,go,lto,objc,obj-c++ \
-<<<<<<< HEAD
-	--enable-libmpx \
-	--enable-gnu-indirect-function \
-	--enable-gnu-unique-object \
-	--enable-libstdcxx-time \
-	--enable-linker-build-id \
-	--enable-lto \
-	--enable-plugin \
-	--enable-shared \
-	--enable-threads=posix \
-	--with-linker-hash-style=gnu \
-=======
 	--enable-libssp \
 	--enable-libstdcxx-time \
 	--enable-lto \
 	--enable-shared \
 	--enable-threads=posix \
 	--with-isl \
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 	--with-system-zlib \
 	--build=${PKGARCH}-0linux-linux-gnu
 

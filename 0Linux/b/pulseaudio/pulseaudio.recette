@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-<<<<<<< HEAD
-VERSION=7.1
-=======
 VERSION=8.0
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Serveur audio avec fonctionnalités réseau"
 

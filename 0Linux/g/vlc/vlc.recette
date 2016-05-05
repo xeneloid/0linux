@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-<<<<<<< HEAD
-VERSION=2.2.1
-=======
 VERSION=2.2.2
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Le lecteur multimédia polyvalent VLC"
 

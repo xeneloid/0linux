@@ -9,13 +9,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-<<<<<<< HEAD
-# On corrige les appels à rpcbind :
-cat $CWD/libtirpc-api_fixes.patch | patch -p1
-=======
 # On corrige le fonctionnement de 'rpcbind':
 cat $CWD/libtirpc.rpcbind.patch | patch -p1
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \

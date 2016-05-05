@@ -1,27 +1,16 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-<<<<<<< HEAD
-VERSION=0.6.4
-WGET=(https://red.libssh.org/attachments/download/107/$NAMESRC-$VERSION.tar.gz
-      http://www.libssh2.org/download/libssh2-1.6.0.tar.gz
-=======
 VERSION=0.7.3
 WGET=(https://red.libssh.org/attachments/download/195/$NAMESRC-$VERSION.tar.xz
       http://www.libssh2.org/download/libssh2-1.7.0.tar.gz
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
      )
 DESC="Outils et bibliothèques d'accès aux services et clients SSH"
 
 telecharger_sources
 
-<<<<<<< HEAD
-# On compile 'libssh2' !
-preparer_sources libssh2-1.6.0.tar.gz
-=======
 # On compile 'libssh2' :
 preparer_sources libssh2-1.7.0.tar.gz
->>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 cflags
 
 # Compilation :
