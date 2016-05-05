@@ -34,6 +34,9 @@ fi
 
 fakeroot make install DESTDIR=${PKG}
 
+# Ce répertoire est vide :
+rm -rf ${PKG}/usr/libexec
+
 installer_doc
 creer_post_installation
 stripper
