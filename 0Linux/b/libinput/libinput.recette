@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
+<<<<<<< HEAD
 VERSION=1.1.2
+=======
+VERSION=1.2.2
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://freedesktop.org/software/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Bibliothèques d'accès aux périphériques d'entrée"
 

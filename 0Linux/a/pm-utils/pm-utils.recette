@@ -36,10 +36,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On crée un lien générique :
+ln -sf pm-suspend ${PKG}/usr/bin/suspend
+
 # On décompresse les « quirks » vidéo où il faut :
 tar xf ${PKGSOURCES}/${NAMETGZ}/pm-quirks-20100619.$EXT -C ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/
 
-# 'networkmanager' s ebase sur les règles udev, on supprime :
+# 'networkmanager' se base sur les règles udev, on supprime :
 rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/pm-utils/sleep.d/55NetworkManager
 
 # Ces « hooks » posent problème, on les supprime :

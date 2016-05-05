@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
+<<<<<<< HEAD
 VERSION=3.4.0
+=======
+VERSION=3.5.0
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://www.cmake.org/files/v$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.gz
 DESC="Système de compilation multiplateforme"
 
@@ -18,28 +22,30 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ../bootstrap \
 	--prefix=/usr \
 	--docdir=/doc/${NAMETGZ}-${VERSION} \
+	--no-system-jsoncpp \
 	--parallel=${JOBS} \
-	--qt-gui \
-	--system-libs
+	--system-bzip2 \
+	--system-curl \
+	--system-expat \
+	--system-libarchive \
+	--system-zlib
 
 make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 # On lance la suite de tests si $TESTS est positionnée :
 if [ ! "${TESTS}" = "" ]; then
-	mkdir -p $PKG/usr/doc/$NAMESRC-$VERSION
-	bin/ctest -j${JOBS} -O $PKG/usr/doc/$NAMESRC-$VERSION/$NAMETGZ-$VERSION-test.log || true
+	mkdir -p $PKG/usr/doc/$NAMETGZ-$VERSION
+	bin/ctest -j${JOBS} -O $PKG/usr/doc/$NAMETGZ-$VERSION/$NAMETGZ-$VERSION-test.log || true
 fi
-
-fakeroot make install DESTDIR=${PKG}
 
 cd -
 
-# La bonne blague avec ce renommage récent du répertoire partagé :
+# On crée un lien générique :
 ln -sf cmake-$(echo ${VERSION} | cut -d'.' -f1-2) ${PKG}/usr/share/cmake
 
 # On place les fichiers syntaxe pour 'vim' et 'emacs' :
 mkdir -p ${PKG}/usr/share/{emacs/site-lisp,vim/{indent,syntax}}
-
 cp Auxiliary/cmake-indent.vim ${PKG}/usr/share/vim/indent/
 cp Auxiliary/cmake-syntax.vim ${PKG}/usr/share/vim/syntax/
 cp Auxiliary/cmake-mode.el ${PKG}/usr/share/emacs/site-lisp/

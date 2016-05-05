@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.4.4
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.xz
+VERSION=2.5.4
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Synthétiseur virtuel avancé en temps réel et aux capacités étendues"
 EXTRADEPS="dssi jack lash"
 
@@ -10,7 +10,7 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On ajouter un entête manquant :
+# On ajoute un entête manquant :
 sed -i '1,1i#include <unistd.h>' src/Nio/NulEngine.cpp
 
 # On compile dans un répertoire dédié :
@@ -19,6 +19,7 @@ cd build
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+LDFLAGS="${LDFLAGS} -lm " \
 cmake \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DDefaultInput=jack \
@@ -51,6 +52,15 @@ chmod 755 ${PKG}/usr/bin/*
 mkdir -p ${PKG}/usr/share/${NAMESRC}
 cp -a ../instruments/banks ${PKG}/usr/share/${NAMESRC}/
 cp -a ../instruments/examples ${PKG}/usr/share/${NAMESRC}/
+
+# On déplace les modules LV2, DSSI et les VST le cas échéant :
+if [ ! "${LIBDIRSUFFIX}" = "" ]; then
+	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+	for d in ${PKG}/usr/lib/*; do
+		cp -a ${d} ${PKG}/usr/lib${LIBDIRSUFFIX}/
+	done
+	rm -rf ${PKG}/usr/lib
+fi
 
 installer_doc
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.4.4
+VERSION=1.6.5
 WGET=https://github.com/open-source-parsers/jsoncpp/archive/$VERSION.tar.gz
 DESC="Analyseur JSon en C++"
 

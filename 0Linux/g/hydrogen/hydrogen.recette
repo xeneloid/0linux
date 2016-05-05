@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.6
+VERSION=0.9.6.1
 WGET=https://github.com/hydrogen-music/$NAMESRC/archive/${VERSION}.tar.gz
 DESC="Éditeur et boîte à rythmes"
 
@@ -9,18 +9,20 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On ajoute une inclusion manquante pour raptor2 :
-cat $CWD/hydrogen.lrdf_raptor2.patch | patch -p1
-
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 cmake \
 	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DWANT_CPPUNIT=OFF \
 	-DWANT_LRDF=ON \
 	.
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On corrige une icône pour se conformer à Freedesktop :
+sed -i 's@Icon=h2-icon@Icon=/usr/share/hydrogen/data/img/gray/h2-icon.svg:' \
+	${PKG}/usr/share/applications/hydrogen.desktop
 
 installer_doc
 creer_post_installation

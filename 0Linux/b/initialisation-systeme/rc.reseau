@@ -2,7 +2,7 @@
 # Script de lancement/arrêt/redémarrage de l'ensemble du réseau.
 
 # On lit les paramètres réseau :
-. /etc/0linux/reseau
+[ -e /etc/0linux/reseau ] && . /etc/0linux/reseau
 
 lancer_reseau() {
 	# On active la boucle locale « loopback ». Si le réseau est disponible :
@@ -33,7 +33,7 @@ lancer_reseau() {
 			fi
 			
 			# Si l'IP, le masque et la passerelle sont configurés, on se connecte en statique :
-			if [ ! "${PASSERELLE}" = "" -a ! "${IP[${i}]}" = "" -a ! "${SOUSRESEAU[${i}]}" = "" ]; then
+			if [ -n ${PASSERELLE} -a -n ${IP[${i}]} -a -n ${SOUSRESEAU[${i}]} ]; then
 				
 				# On utilise 'ipmask' pour définir l'adresse à envoyer en « broadcast » :
 				BROADCAST[${i}]="$(ipmask ${SOUSRESEAU[${i}]} ${IP[${i}]} | cut -d' ' -f1)"
@@ -43,10 +43,10 @@ lancer_reseau() {
 			
 			# Sinon, on suppose qu'on doit utiliser DHCP. On récupère les options à passer : :
 			else
-				if [ ! "${HOTEDHCP[${i}]}" = "" ]; then
+				if [ -n ${HOTEDHCP[${i}]} ]; then
 					OPTIONH="-h ${HOTEDHCP[${i}]}"
 				fi
-				if [ ! "${IP[${i}]}" = "" ]; then
+				if [ -n ${IP[${i}]} ]; then
 					OPTIONS="-s ${IP[${i}]}"
 				fi
 				
@@ -58,7 +58,7 @@ lancer_reseau() {
 	
 	# Si un routeur/passerelle spécifique a été configuré :
 	if [ "$(route -n | grep \"^0.0.0.0\")" = "" ]; then
-		if [ ! "${PASSERELLE}" = "" ]; then
+		if [ -n ${PASSERELLE} ]; then
 			route add default gw ${PASSERELLE} metric 1
 		fi
 	fi
@@ -66,7 +66,7 @@ lancer_reseau() {
 
 stopper_reseau() {
 	# On stoppe le routage de la passerelle s'il y en a une :
-	if [ ! "${PASSERELLE}" = "" ]; then
+	if [ -n ${PASSERELLE} ]; then
 		if [ ! "$(route -n | grep \"^0.0.0.0\")" = "" ]; then
 			route del default
 		fi

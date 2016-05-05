@@ -10,10 +10,11 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On adapte 'jw' à 'grep' 2.7 :
-sed -i 's@\[:space:\]@\[\[:space:\]\]@g' bin/jw.in
+sed -i 's@\[:space:\]@[[:space:]]@g' bin/jw.in
 
 # On corrige un chemin erroné :
 sed -i -e 's/install-htmlDATA//' doc/HTML/Makefile.in
+sed -i -e 's:/html::' doc/HTML/Makefile.in
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -27,7 +28,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
+
+mkdir -p /usr/doc/${NAMETGZ}-${VERSION}
+fakeroot make install docdir=/usr/doc/${NAMETGZ}-${VERSION} DESTDIR=${PKG}
 
 # On crée les alias utilisée par de nombreux paquets :
 for type in html ps dvi man pdf rtf tex texi txt; do

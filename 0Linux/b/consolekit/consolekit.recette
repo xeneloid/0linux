@@ -1,22 +1,28 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-NAMESRC=ConsoleKit
-VERSION=0.4.5
-WGET=http://www.freedesktop.org/software/$NAMESRC/dist/$NAMESRC-$VERSION.tar.bz2
+NAMESRC=ConsoleKit2
+VERSION=1.0.2
+WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Service système de gestion de sessions"
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources
 cflags
 
-# On corrige une foule de bogues très gênants pour les activations de sessions
-# ainsi que l'affichage notamment dans GDM :
-cat $CWD/consolekit.truncate.patch | patch -p1
-cat $CWD/consolekit.at_console.patch | patch -p1
-cat $CWD/consolekit.revert042.patch | patch -p1
+# On filtre les utilisateurs de GDM, SDDM et KDM :
+sed -i 's@g_strcmp0 (username, "sddm") == 0) {@g_strcmp0 (username, "sddm") == 0 || g_strcmp0 (username, "kdm") == 0) {@' \
+	src/ck-manager.c
+
+# On s'assure de supprimer tout chemin codé en dur (on commence à avoir
+# l'habitude avec les softs de Poettering ) :
+sed -i 's@PREFIX "/lib/ConsoleKit/run-seat\.d"@LIBDIR "/ConsoleKit/run-seat.d"@' src/ck-seat.c
+sed -i 's@(prefix)/lib/ConsoleKit/run-seat\.d@(libdir)/ConsoleKit/run-seat.d@g' tools/Makefile.am
+sed -i 's@PREFIX "/lib/ConsoleKit/run-session\.d"@LIBDIR "/ConsoleKit/run-session.d"@' src/ck-session.c
 
 # Compilation :
+autoreconf -vif
+
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
@@ -29,22 +35,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-docbook-docs \
 	--enable-pam-module=no \
+	--enable-udev-acl \
 	--with-pid-file=/run/ConsoleKit/pid \
+	--with-run-dir=/run \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
-
-# On copie le fichier de compatibilité pour notre système, dépourvu de 'pam' :
-cp -a $CWD/pam-foreground-compat.ck ${PKG}/usr/lib/ConsoleKit/run-session.d/
-chmod 0755 ${PKG}/usr/lib/ConsoleKit/run-session.d/pam-foreground-compat.ck
-
-# On déplace ce qui est codé en dur et on crée un lien générique, ça ne fait pas de mal :
-if [ ! "${LIBDIRSUFFIX}" = "" ]; then
-	cp -ar ${PKG}/usr/lib/* ${PKG}/usr/lib${LIBDIRSUFFIX}/
-	rm -rf ${PKG}/usr/lib/*
-	ln -sf ../lib${LIBDIRSUFFIX}/ConsoleKit ${PKG}/usr/lib/
-fi
 
 # On crée le fichier service :
 mkdir -p ${PKG}/etc/rc.d
@@ -91,6 +88,9 @@ chmod +x ${PKG}/etc/rc.d/rc.consolekit
 
 # Ce répertoire est vide :
 rm -rf ${PKG}/var/run
+
+# Ce répertoire est inutile :
+rm -r ${PKG}/etc/X11
 
 installer_doc
 creer_post_installation

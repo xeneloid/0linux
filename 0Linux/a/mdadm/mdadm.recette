@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.3.2
+VERSION=3.4
 WGET=https://www.kernel.org/pub/linux/utils/raid/$NAMESRC/$NAMESRC-$VERSION.tar.xz
 DESC="Outils de gestion de volumes RAID logiciels"
 
@@ -15,6 +15,7 @@ sed -i 's/Wall -Werror/Wall/' Makefile
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
+fakeroot make install MANDIR=/usr/man BINDIR=/usr/sbin DESTDIR=${PKG}
 
 # On lance la suite de tests si $TESTS est positionnée :
 # Attention : les tests requiert d'être dans /etc/sudoers
@@ -22,8 +23,6 @@ if [ ! "${TESTS}" = "" ]; then
 	make -k test 2>&1 || true
 	sudo ./test || true
 fi
-
-fakeroot make install MANDIR=/usr/man BINDIR=/usr/sbin DESTDIR=${PKG}
 
 # On prend garde à ne rien écraser :
 if [ -e ${PKG}/etc/mdadm.conf ]; then

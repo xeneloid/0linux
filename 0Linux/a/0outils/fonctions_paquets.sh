@@ -31,7 +31,7 @@ mkdir -p ${MARMITE}
 mkdir -p ${MARMITELOGS}
 
 # On vérifie si on appelle ces fonctions depuis une recette :
-if [ "$(echo $(basename $0) | egrep '\.recette$')" = "" ]; then
+if [ "$(echo $(basename $0) | grep -E '\.recette$')" = "" ]; then
 	# On appelle les 'fonctions_paquets.sh' depuis un script autre qu'une recette.
 	# Emplacement où on compile et on empaquète : :
 	TMP=${TMP:-${MARMITE}}
@@ -41,7 +41,7 @@ else
 	[ -z ${NAMETGZ} ] && NAMETGZ="$(basename $0 .recette)"
 	
 	# Les noms ne doivent comporter ni majuscules, ni espaces :
-	if [ ! "$(echo ${NAMETGZ} | egrep '[A-Z]|[[:space:]]')" = "" ]; then
+	if [ ! "$(echo ${NAMETGZ} | grep -E '[A-Z]|[[:space:]]')" = "" ]; then
 		argh "La variable NAMETGZ ne doit comporter ni majuscules ni espaces."
 	fi
 	
@@ -82,11 +82,13 @@ telecharger_sources() {
 					# Toujours rien ? On continue :
 					OKDEP=0
 				fi
+				[[ ${OKDEP} -eq 0 ]] && BROKENDEP="${BROKENDEP} ${dep}"
 			done
 			
 			# On n'a rien trouvé, les EXTRADEPS sont erronées, on quitte :
 			if [ ${OKDEP} -eq 0 ]; then
-				argh "La variable EXTRADEPS est erronée, certaines dépendances sont absentes du système."
+				echo "La variable EXTRADEPS est erronée, certaines dépendances sont absentes du système :"
+				argh "${BROKENDEP}"
 			fi
 		done
 	fi
@@ -104,8 +106,7 @@ telecharger_sources() {
 		if [ ! -r ${PKGSOURCES}/${NAMETGZ}/$(basename ${wgeturl}) ]; then
 			
 			# On traite différemment les URL de dépôts git :
-			
-			if [ ! "$(echo ${wgeturl} | grep -E '^git')" = "" ]; then
+			if [ ! "$(echo ${wgeturl} | grep -E '(^git|\.git$)')" = "" ]; then
 				if [ ! -r ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}.tar.xz ]; then
 					(
 						# On nettoie et on clone le dépôt git :
@@ -155,7 +156,7 @@ telecharger_sources() {
 		fi
 		
 		# On vérifie l'archive téléchargée (pour les dépôts git, on a créé l'archive) :
-		if [ ! "$(echo ${wgeturl} | grep -E '^git')" = "" ]; then
+		if [ ! "$(echo ${wgeturl} | grep -E '(^git|\.git$)')" = "" ]; then
 			tar ft ${PKGSOURCES}/${NAMETGZ}/${NAMESRC}-${VERSION}.tar.xz 1>/dev/null 2>/dev/null || \
 				argh "L'archive '$(basename ${wgeturl}) 'semble incorrecte."
 		else
@@ -211,10 +212,12 @@ preparer_sources() {
 			# correspond à l'archive voulue (on peut rêver) :
 			else
 				for wgetline in ${WGET[*]}; do
-					if [ ! "$(echo $(basename ${wgetline}) | egrep \"$NAMESRC-$VERSION\..*$\")" = "" ]; then
+					TESTEXT="$(echo $(basename ${wgetline}) | rev | cut -d'.' -f1)"
+					case TESTEXT in tar.*|TAR.*|tgz|TGZ|tbz*|TBZ*|txz|TXZ|zip|ZIP|deb|DEB|rpm|RPM)
 						CURRENTARCHIVE="$(basename ${wgetline})"
 						break
-					fi
+						;;
+					esac
 				done
 			fi
 			
@@ -230,7 +233,7 @@ preparer_sources() {
 		# Si $WGET est une simple variable, c'est beaucoup plus simple : :
 		else
 			# Si on a un dépôt git en URL, on connaît le nom de l'archive puisqu'on l'a créée :
-			if [ ! "$(echo ${WGET} | grep -E '^git')" = "" ]; then
+			if [ ! "$(echo ${WGET} | grep -E '(^git|\.git$)')" = "" ]; then
 				CURRENTARCHIVE="${NAMESRC}-${VERSION}.tar.xz"
 			else
 				CURRENTARCHIVE="$(basename ${WGET})"
@@ -265,8 +268,8 @@ preparer_sources() {
 			fi
 		;;
 		*.zip|*.ZIP)
-			if [ $(unzip -l ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | egrep '/$' | sed 's/^.* \(.*\/$\)/\1/p' -n | cut -d'/' -f1 | uniq | wc -l) -eq 1 ]; then
-				NAME="$(unzip -l ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | egrep '/$' | sed 's/^.* \(.*\/$\)/\1/p' -n | cut -d'/' -f1 | uniq)"
+			if [ $(unzip -l ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | grep -E '/$' | sed 's/^.* \(.*\/$\)/\1/p' -n | cut -d'/' -f1 | uniq | wc -l) -eq 1 ]; then
+				NAME="$(unzip -l ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} | grep -E '/$' | sed 's/^.* \(.*\/$\)/\1/p' -n | cut -d'/' -f1 | uniq)"
 				unzip ${PKGSOURCES}/${NAMETGZ}/${CURRENTARCHIVE} -d $TMP
 			else
 				echo "L'archive contient des fichiers en vrac. Extraction dans :"
@@ -436,7 +439,7 @@ configure_make_makeinstall() {
 	if grep -q "mandir" configure; then        CONFIGURE_OPTIONS+=" --mandir=/usr/man"; fi
 	if grep -q "infodir" configure; then       CONFIGURE_OPTIONS+=" --infodir=/usr/info"; fi
 	if grep -q "docdir" configure; then        CONFIGURE_OPTIONS+=" --docdir=/usr/doc/${NAMETGZ}-${VERSION}"; fi
-	if grep -q "build" configure; then         CONFIGURE_OPTIONS+=" --build=${PKGARCH}-0-linux-gnu"; fi
+	if grep -q "build" configure; then         CONFIGURE_OPTIONS+=" --build=${PKGARCH}-0linux-linux-gnu"; fi
 	
 	# On lance le 'configure' avec nos drapeaux :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" ./configure ${CONFIGURE_OPTIONS}
@@ -658,27 +661,6 @@ stripper() {
 }
 
 empaqueter() {
-	# Inutile de continuer si des dépendances erronées sont indiquées :
-	if [ -n ${EXTRADEPS} ]; then
-		for dep in ${EXTRADEPS}; do
-			for f in $(find /var/log/packages -type f -name "${dep}*"); do
-				if [ $(basename ${f} | sed 's/\(^.*\)-\(.*\)-\(.*\)-\(.*\)$/\1/p' -n) = "${dep}" ]; then
-					# OK, on a trouvé la dépendance installée :
-					OKDEP=1
-					break
-				else
-					# Toujours rien ? On continue :
-					OKDEP=0
-				fi
-			done
-			
-			# On n'a rien trouvé, les EXTRADEPS sont erronées, on quitte :
-			if [ ${OKDEP} -eq 0 ]; then
-				argh "La variable EXTRADEPS est erronée, certaines dépendances sont absentes du système."
-			fi
-		done
-	fi
-	
 	# On peut passer des options à 'spackpkg' via par exemple :
 	# empaqueter -p -z
 	
@@ -735,9 +717,9 @@ empaqueter() {
 		rm -f ${fichiergdb}
 	done
 	
-	# On nettoie ce fichier indésirable des modules Perl :
+	# On nettoie ces fichiers indésirables des **modules** Perl :
 	if [ ! "${NAMETGZ}" = "perl" ]; then
-		find ${PKG} -type f -name "perllocal.pod" -delete 2>/dev/null || true
+		find ${PKG} -type f -name "perllocal.pod" -o -name "*.bs" -o -name ".packlist" -delete 2>/dev/null || true
 	fi
 	
 	# On déduit l'emplacement du paquet selon l'emplacement de la recette elle-même :
@@ -814,11 +796,11 @@ empaqueter() {
 	fi
 	
 	# On extrait les dépendances dynamiques (fichiers) grâce à '0ldd_clean', basé sur '0dep' :
-	0ldd_clean ${PKG}/* > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log
+	0ldd_clean ${PKG}/* > ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/0linux/ldd.log || true
 	
 	# On extrait les dépendances (paquets) grâce à '0dep' (merci Seb) :
 	mkdir -p ${OUT}
-	0dep ${PKG} > ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep
+	0dep ${PKG} > ${OUT}/${NAMETGZ}-${VERSION}-${PKGARCH}-${BUILD}.dep || true
 	
 	# On ajoute les dépendances spécifiées manuellement le cas échéant et on trie :
 	if [ -n "${EXTRADEPS}" ]; then

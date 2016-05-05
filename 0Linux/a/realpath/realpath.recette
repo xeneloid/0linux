@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.19
-EXT=tar.gz
-WGET=http://ftp.de.debian.org/debian/pool/main/r/$NAMESRC/${NAMESRC}_${VERSION}.$EXT
+VERSION=1.18
+WGET=http://ftp.de.debian.org/debian/pool/main/r/$NAMESRC/${NAMESRC}_${VERSION}.tar.gz
 DESC="Outil de détermination de chemins absolus canoniques"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

@@ -16,6 +16,10 @@ preparer_sources $NAMESRC-1.0.5.tar.gz
 # Ces chemins sont codés en dur... :
 sed -i -e "s@slashlibdir=/lib@slashlibdir=/usr/lib${LIBDIRSUFFIX}@" -e "s@slashsbindir=/sbin@slashsbindir=/usr/sbin@" configure
 
+# Cer binaire n'existe plus dans 'eudev' :
+sed -i '/^SUBSYSTEM=="pci", ACTION=="add|change", ENV{ID_MODEL_FROM_DATABASE}=="", ATTR{class}=="0x01\*", IMPORT{program}="pci-db.*/d' \
+	data/80-udisks.rules
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -57,7 +61,7 @@ fakeroot make install DESTDIR=${PKG}
 # On place les règles pour 'polkit' permettant aux utilisateurs du groupe
 # 'plugdev' de monter/éjecter des volumes et de manipuler 'udisks2' :
 mkdir -p ${PKG}/etc/polkit-1/rules.d
-cat > ${PKG}/etc/polkit-1/rules.d/10-udisks2.rules << "EOF"
+cat > ${PKG}/etc/polkit-1/rules.d/20-udisks2.rules << "EOF"
 polkit.addRule(function(action, subject) {
 	if (action.id == 'org.freedesktop.udisks2.' && subject.isInGroup('plugdev')) {
 		return polkit.Result.YES;

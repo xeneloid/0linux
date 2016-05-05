@@ -39,10 +39,10 @@ sed -i -e 's#^confdir.*$#confdir /etc/privoxy#' -e 's#^logdir.*$#logdir /var/log
     ${PKG}/etc/privoxy/config.0nouveau
 
 # On n'écrase pas les logs existant :
-rm $PKG/var/log/privoxy/*
+rm ${PKG}/var/log/privoxy/*
 
 # On évite un conflit avec le système de fichier :
-rmdir $PKG/var/run
+rmdir ${PKG}/var/run
 
 # On crée le fichier service :
 mkdir -p ${PKG}/etc/rc.d
@@ -87,8 +87,8 @@ EOF
 chmod +x ${PKG}/etc/rc.d/rc.privoxy
 
 # On crée le fichier logrotate :
-mkdir -p $PKG/etc/logrotate.d
-cat > $PKG/etc/logrotate.d/privoxy << EOF
+mkdir -p ${PKG}/etc/logrotate.d
+cat > ${PKG}/etc/logrotate.d/privoxy << EOF
 /var/log/privoxy/logfile {
    create 660 root privoxy
    notifempty
@@ -104,20 +104,19 @@ installer_doc
 creer_post_installation
 
 # On gère les droits d'accès
-cat >> ${PKG}/post-install.sh << "EOF"
+cat >> ${PKG}/post-install.sh << EOF
 # On crée un répertoire de travail, s'il n'existe pas déjà :
 mkdir -p /var/spool/privoxy
 
 # On fixe le propriétaire :
 chown -R privoxy:privoxy /etc/privoxy /var/log/privoxy /var/spool/privoxy
 
-# On fixe les permissions (des messages d'erreurs sont possible
-# si find ne trouve rien, ne pas en tenir compte) :
-find "/var/spool/privoxy" -type d | xargs chmod 0770
-find "/var/spool/privoxy" -type f | xargs chmod 0660
-find "/etc/privoxy/" -type d | xargs chmod 0770
-find "/etc/privoxy/" -type f | xargs chmod 0660
-chmod 0700 "/var/log/privoxy"
+# On fixe les permissions :
+find var/spool/privoxy -type d -exec chmod 0770 {} \;
+find var/spool/privoxy -type f -exec chmod 0660 {} \;
+find etc/privoxy -type d -exec chmod 0770 {} \;
+find etc/privoxy -type f -exec chmod 0660 {} \;
+chmod 0700 var/log/privoxy
 
 EOF
 

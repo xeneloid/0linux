@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
+<<<<<<< HEAD
 VERSION=2.2.1
+=======
+VERSION=2.2.2
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://download.videolan.org/pub/videolan/$NAMESRC/$VERSION/$NAMESRC-$VERSION.tar.xz
 DESC="Le lecteur multimédia polyvalent VLC"
 
@@ -13,9 +17,25 @@ cflags
 sed -i -e 's:truetype/freefont:TTF:g' modules/text_renderer/freetype.c
 sed -i -e 's:truetype/ttf-dejavu:TTF:g' modules/visualization/projectm.cpp
 
-# Compilation en forçant les chemins de Samba :
-LDFLAGS+="-I/usr/include/samba-4.0"
+# On supprime des avertissements inutiles :
+sed -i 's/ifndef __FAST_MATH__/if 0/g' configure.ac
+
+# On supprime els tests automatiques :
+find . -name 'Makefile.in' -exec sed -i 's/\(..*\)check-TESTS/\1/' {} \;
+
+# On force la compilation avec Qt 4 :
+cat $CWD/vlc.qt-select.patch | patch -p1
+export QT_SELECT=qt4
+
+# On régénère les outils de compilation :
+autoreconf -vif
+
+# Compilation avec FFMPEG 2.x et Samba 4 :
+PKG_CONFIG_PATH="/usr/lib${LIBDIRSUFFIX}/ffmpeg-2.x/pkgconfig" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+LDFLAGS+=" -I/usr/include/samba-4.0 "
+LUAC=/usr/bin/luac \
+LUA_LIBS="$(pkg-config --libs lua)" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -35,6 +55,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
+	--enable-fast-install \
 	--enable-flac \
 	--enable-libass \
 	--enable-libcddb \
@@ -44,6 +65,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-nls \
 	--enable-ogg \
 	--enable-opus \
+	--enable-qt=4 \
 	--enable-realrtsp \
 	--enable-run-as-root \
 	--enable-schroedinger \
@@ -63,6 +85,12 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On place les icônes dans toutes les résolutions :
+for res in 16 32 48 128; do
+	mkdir -p ${PKG}/usr/share/icons/hicolor/${res}x${res}/apps/
+	cp share/icons/${res}x${res}/vlc.png ${PKG}/usr/share/icons/hicolor/${res}x${res}/apps/
+done
 
 installer_doc
 creer_post_installation

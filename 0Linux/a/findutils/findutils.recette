@@ -33,8 +33,8 @@ fi
 
 fakeroot make install DESTDIR=${PKG}
 
-# On se passe de 'locate 'et 'updatedb' aux performances affreuses, utilisez 'whereis'
-# ou 'find'  ;) :
+# On se passe de 'locate 'et 'updatedb' aux performances affreuses, utilisez
+# 'whereis' ou 'find'  ;) :
 rm -f ${PKG}/usr/bin/{locate,updatedb}
 rm -f ${PKG}/usr/man/man1/{locate,updatedb}*
 rm -f ${PKG}/usr/man/man5/locate*

@@ -25,7 +25,7 @@ makeldd () {
     # Récupère les ld* sous forme de disjonctions imprimées via awk.
     # $f
     local ldd=$(which ldd 2>/dev/null)
-    [ "$ldd" ] || growl 1 "Ne peut trouver ldd."
+    [ "$ldd" ] || local ldd=/usr/bin/ldd
     awk '/^RTLDLIST=/{gsub(/^[^=]+=|"|[\t ]+$/,"");
                       gsub(/[\t ]+/," --list \"$0\" || ");
                       print "print \""$0" --list \"$0"; exit OK=1}

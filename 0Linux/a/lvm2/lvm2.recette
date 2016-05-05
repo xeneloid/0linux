@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.02.118
+VERSION=2.02.145
 WGET=ftp://sources.redhat.com/pub/lvm2/releases/LVM2.${VERSION}.tgz
 DESC="Outils de gestion de volumes logiques « LVM »"
 
@@ -42,11 +42,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
-
-# Une procédure de de tests existe mais ne fonctionne pas sur 0Linux \
-# et est interminable. C'est pourquoi elle ne figure pas ici.
-
 fakeroot make install DESTDIR=${PKG}
+
+# Une procédure de tests existe mais ne fonctionne pas sur 0Linux
+# et est interminable. C'est pourquoi elle ne figure pas ici.
 
 # On veille à ne rien écraser :
 mv ${PKG}/etc/lvm/lvm.conf{,.0nouveau}

@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.3.4
-EXT=tar.gz
-WGET=ftp://ftp.fftw.org/pub/$NAMESRC/$NAMESRC-$VERSION.$EXT
-DESC="Bibliothèque scientifique C de calcul scalaire"
-
+WGET=ftp://ftp.fftw.org/pub/$NAMESRC/$NAMESRC-$VERSION.tar.gz
+DESC="outils et bibliothèques scientifiques de calcul C scalaire"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -17,8 +15,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
-	# Compilation i686 en 3 passes pour avoir les binaires 'fftw3', 'fftw3f' et 'fftw3l' :
+	# Compilation en 3 passes pour avoir les binaires 'fftw3', 'fftw3f' et 'fftw3l' :
 	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	F77=gfortran \
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -27,7 +26,10 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-avx \
+		--enable-openmp \
 		--enable-shared \
+		--enable-sse2 \
 		--enable-threads \
 		--build=${PKGARCH}-0linux-linux-gnu
 
@@ -36,6 +38,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	make clean
 
 	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	F77=gfortran \
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -44,9 +47,12 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--enable-shared \
-		--enable-threads \
+		--enable-avx \
 		--enable-float \
+		--enable-openmp \
+		--enable-shared \
+		--enable-sse \
+		--enable-threads \
 		--build=${PKGARCH}-0linux-linux-gnu
 
 	make -j${JOBS} || make
@@ -54,6 +60,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	make clean
 
 	CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+	F77=gfortran \
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -62,22 +69,22 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--enable-long-double \
+		--enable-openmp \
 		--enable-shared \
 		--enable-threads \
-		--enable-long-double \
 		--build=${PKGARCH}-0linux-linux-gnu
 
 	make -j${JOBS} || make
 	fakeroot make install DESTDIR=${PKG}
 fi
 
-# On refait la préparation des sources, il peut rester des déchets de la
-# compilation en 32 bits (et make 'distclean' ne fonctionne pas toujours) :
-preparer_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # Compilation en 3 passes pour avoir les binaires 'fftw3', 'fftw3f' et 'fftw3l' :
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+F77=gfortran \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -86,7 +93,10 @@ CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-avx \
+	--enable-openmp \
 	--enable-shared \
+	--enable-sse2 \
 	--enable-threads \
 	--build=${PKGARCH}-0linux-linux-gnu
 
@@ -95,6 +105,7 @@ fakeroot make install DESTDIR=${PKG}
 make clean
 
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+F77=gfortran \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -103,9 +114,12 @@ CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-shared \
-	--enable-threads \
+	--enable-avx \
 	--enable-float \
+	--enable-openmp \
+	--enable-shared \
+	--enable-sse \
+	--enable-threads \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -113,6 +127,7 @@ fakeroot make install DESTDIR=${PKG}
 make clean
 
 CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+F77=gfortran \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -121,9 +136,10 @@ CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-long-double \
+	--enable-openmp \
 	--enable-shared \
 	--enable-threads \
-	--enable-long-double \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

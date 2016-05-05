@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.9.14
+VERSION=0.9.16
 WGET=https://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f 1-2)/$VERSION/+download/$NAMESRC-$VERSION.tar.xz
 DESC="Service de surveillance et de journalisation d'évènements"
 
@@ -20,6 +20,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-fts \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

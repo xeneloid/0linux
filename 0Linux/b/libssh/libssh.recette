@@ -1,17 +1,27 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
+<<<<<<< HEAD
 VERSION=0.6.4
 WGET=(https://red.libssh.org/attachments/download/107/$NAMESRC-$VERSION.tar.gz
       http://www.libssh2.org/download/libssh2-1.6.0.tar.gz
+=======
+VERSION=0.7.3
+WGET=(https://red.libssh.org/attachments/download/195/$NAMESRC-$VERSION.tar.xz
+      http://www.libssh2.org/download/libssh2-1.7.0.tar.gz
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
      )
 DESC="Outils et bibliothèques d'accès aux services et clients SSH"
 
-
 telecharger_sources
 
+<<<<<<< HEAD
 # On compile 'libssh2' !
 preparer_sources libssh2-1.6.0.tar.gz
+=======
+# On compile 'libssh2' :
+preparer_sources libssh2-1.7.0.tar.gz
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 cflags
 
 # Compilation :
@@ -23,14 +33,17 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--docdir=/usr/doc/${NAMETGZ}-${VERSION}/${NAMETGZ}2-1.7.0 \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
+# On installe la doc dans un répertoire dédié :
+installer_doc ${NAMETGZ}2-1.7.0
+
 # On compile 'libssh' :
-preparer_sources libssh-$VERSION.tar.gz
+preparer_sources ${NAMESRC}-${VERSION}.tar.xz
 cflags
 
 # La compilation se fait dans un répertoire dédié :
@@ -44,6 +57,11 @@ cmake -D CMAKE_BUILD_TYPE=Release \
 	-D CMAKE_C_FLAGS:STRING="${FLAGS}" \
 	-D CMAKE_CXX_FLAGS:STRING="${FLAGS}" \
 	-D LIB_SUFFIX=${LIBDIRSUFFIX} \
+	-D WITH_GCRYPT=1 \
+	-D WITH_PCAP=1 \
+	-D WITH_SERVER=1 \
+	-D WITH_SFTP=1 \
+	-D WITH_SSH1=1 \
 	..
 
 make -j${JOBS} || make

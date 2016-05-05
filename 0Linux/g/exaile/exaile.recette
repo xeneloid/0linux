@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.4.4
+VERSION=3.4.5
 WGET=https://github.com/$NAMESRC/$NAMESRC/archive/$VERSION.tar.gz
 DESC="Lecteur audio et gestionnaire de bibliothèque musicale"
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.2.0
+VERSION=1.2.4
 WGET=http://dbus.freedesktop.org/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
-DESC="Interfaçage D-Bus - Python"
+DESC="Interfaçage Python pour D-Bus"
 
 telecharger_sources
 

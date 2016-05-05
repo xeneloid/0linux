@@ -4,13 +4,14 @@
 NAMESRC=Clementine
 VERSION=1.2.3
 WGET=https://github.com/clementine-player/$NAMESRC/archive/$VERSION.tar.gz
-DESC="Un lecteur audio moderne avec gestion d'audiothèque"
+DESC="Un lecteur audio moderne et complet avec gestion d'audiothèque"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Corrige un problème avec udisks :
+# On corrige la compilation avec GCC 5 et le comportement avec 'udisks' :
+cat $CWD/clementine.gcc5.patch | patch -p1
 cat $CWD/clementine.udisks-namespace.patch | patch -p1
 
 # On doit compiler dans un répertoire dédié :
@@ -23,8 +24,6 @@ cmake \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DLIB_SUFFIX=${LIBDIRSUFFIX} \
-	-DUSE_SYSTEM_PROJECTM=ON \
-	-DWITH_FFTW3=ON \
 	..
 
 make -j${JOBS} || make

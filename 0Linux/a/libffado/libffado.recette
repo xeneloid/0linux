@@ -9,12 +9,15 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On actve les optimisations uniquement pour x86_64 :
+# On active les optimisations uniquement pour x86_64 :
 if [ "${PKGARCH}" = "x86_64" ]; then
 	OPTIM="True"
 else
 	OPTIM="False"
 fi
+
+# On corrige une erreur dans les tests :
+sed -i 's@int errno = 0;@extern int errno;@g' tests/*.cpp
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -22,7 +25,7 @@ scons -j${JOBS} \
 	PREFIX=/usr \
 	LIBDIR=/usr/lib${LIBDIRSUFFIX} \
 	MANDIR=/usr/man \
-	COMPILE_FLAGS="${FLAGS}" \
+	COMPILE_FLAGS="${FLAGS} -std=gnu++11" \
 	DEBUG=False \
 	ENABLE_OPTIMIZATIONS="${OPTIM}" \
 	UDEVDIR=/usr/lib${LIBDIRSUFFIX}/udev/rules.d || \
@@ -30,7 +33,7 @@ scons -j${JOBS} \
 		PREFIX=/usr \
 		LIBDIR=/usr/lib${LIBDIRSUFFIX} \
 		MANDIR=/usr/man \
-		COMPILE_FLAGS="${FLAGS}" \
+		COMPILE_FLAGS="${FLAGS} -std=gnu++11" \
 		DEBUG=False \
 		ENABLE_OPTIMIZATIONS="${OPTIM}" \
 		UDEVDIR=/usr/lib${LIBDIRSUFFIX}/udev/rules.d

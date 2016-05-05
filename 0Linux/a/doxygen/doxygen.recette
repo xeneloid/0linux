@@ -39,9 +39,9 @@ cd ../
 installer_doc
 
 # La documentation doit être installé munuellement (CMakeFile ultra buggué) :
-cp -a doc/*.{doc,png,dot,eps,txt,gif,css,tex,fig,tpl} \
-	$PKG/usr/doc/$NAMETGZ-$VERSION
-rm $PKG/usr/doc/$NAMETGZ-$VERSION/CMakeLists.txt
+cp -a doc/*.{doc,png,dot,eps,txt,gif,css,tex,fig,tpl} $PKG/usr/doc/$NAMETGZ-$VERSION/
+cp -a doc/*.1 $PKG/usr/man/man1/
+rm -f $PKG/usr/doc/$NAMETGZ-$VERSION/CMakeLists.txt
 
 creer_post_installation
 stripper

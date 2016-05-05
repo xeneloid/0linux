@@ -11,96 +11,94 @@ preparer_sources
 cflags
 
 # On force les drapeaux d'optimisation :
-sed -i -e "s|^\(QMAKE_CFLAGS_RELEASE.*\)|\1 ${FLAGS}|" \
-	qtbase/mkspecs/common/gcc-base.conf
-sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 ${LDFLAGS}|" \
-	qtbase/mkspecs/common/g++-unix.conf
+sed -i "s|^\(QMAKE_CFLAGS_RELEASE.*\)|\1 ${FLAGS}|"   qtbase/mkspecs/common/gcc-base.conf
+sed -i "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 ${LDFLAGS}|" qtbase/mkspecs/common/g++-unix.conf
 
 # Compilation :
 export QT5LINK=/usr
-export CFLAGS=$FLAGS
-export CXXFLAGS=$FLAGS
-export OPENSOURCE_CXXFLAGS=$FLAGS
+export CFLAGS=${FLAGS}
+export CXXFLAGS=${FLAGS}
+export OPENSOURCE_CXXFLAGS=${FLAGS}
 
 # On évite de se lier aux versions installées :
-export LD_LIBRARY_PATH=$PWD/qtbase/lib:$PWD/qttools/lib:${LD_LIBRARY_PATH}
-export QT_PLUGIN_PATH=$PWD/qtbase/plugins
+export LD_LIBRARY_PATH=${CWD}/qtbase/lib:${CWD}/qttools/lib:${LD_LIBRARY_PATH}
+export QT_PLUGIN_PATH=${CWD}/qtbase/plugins
 
-./configure  -v \
-  -confirm-license \
-  -opensource \
-  -prefix "/usr/lib${LIBDIRSUFFIX}/qt5" \
-  -sysconfdir "/etc/xdg" \
-  -headerdir "/usr/include/qt5" \
-  -libdir "/usr/lib${LIBDIRSUFFIX}" \
-  -docdir "/usr/doc/$NAMETGZ-$VERSION" \
-  -system-libpng \
-  -system-libjpeg \
-  -system-zlib \
-  -system-sqlite \
-  -system-pcre \
-  -plugin-sql-sqlite \
-  -icu \
-  -openssl \
-  -verbose \
-  -optimized-qmake \
-  -dbus-linked \
-  -qpa xcb \
-  -xcb \
-  -glib \
-  -accessibility \
-  -no-separate-debug-info \
-  -no-pch \
-  -no-rpath \
-  -no-strip \
-  -release \
-  -reduce-relocations \
-  -pulseaudio \
-  -nomake examples
+./configure \
+	-prefix "/usr/lib${LIBDIRSUFFIX}/qt5" \
+	-sysconfdir "/etc/xdg" \
+	-headerdir "/usr/include/qt5" \
+	-libdir "/usr/lib${LIBDIRSUFFIX}" \
+	-docdir "/usr/doc/${NAMETGZ}-${VERSION}" \
+	-accessibility \
+	-confirm-license \
+	-dbus-linked \
+	-glib \
+	-icu \
+	-no-pch \
+	-no-rpath \
+	-no-separate-debug-info \
+	-no-strip \
+	-nomake examples \
+	-opensource \
+	-openssl \
+	-optimized-qmake \
+	-plugin-sql-sqlite \
+	-qpa xcb \
+	-pulseaudio \
+	-reduce-relocations \
+	-release \
+	-system-libjpeg \
+	-system-libpng \
+	-system-pcre \
+	-system-sqlite \
+	-system-zlib \
+	-xcb
 
 make -j${JOBS} || make
 fakeroot make install INSTALL_ROOT=${PKG}
 
 # On construit la doc :
 for doc in $(find . -name "Makefile*" | xargs egrep "^\s/usr/lib${LIBDIRSUFFIX}/qt5/bin/" | cut -d':' -f1) ; do
-	rm -fv $doc
+	rm -f $doc
 done
-make docs
-make install_docs INSTALL_ROOT=$PKG
+make -j${JOBS} docs || make docs
+fakeroot make install_docs INSTALL_ROOT=${PKG}
 
 # Les binaires doivent recevoir un traitement particulier :
-mkdir -p $PKG/usr/bin
-for BIN in $PKG/usr/lib${LIBDIRSUFFIX}/qt5/bin/*; do
-	TMP_FILE=$(echo $BIN | sed -e "s|$PKG||")
-	case $(basename $BIN) in
+mkdir -p ${PKG}/usr/bin
+for BIN in ${PKG}/usr/lib${LIBDIRSUFFIX}/qt5/bin/*; do
+	TMP_FILE=$(echo ${BIN} | sed -e "s|$PKG||")
+	case $(basename ${BIN}) in
 		syncqt.pl)
-			ln -s $TMP_FILE $PKG/usr/bin/$(basename $BIN)
+			ln -s ${TMP_FILE} ${PKG}/usr/bin/$(basename ${BIN})
 		;;
 		*)
-			ln -s $TMP_FILE $PKG/usr/bin/$(basename $BIN)-qt5
+			ln -s ${TMP_FILE} ${PKG}/usr/bin/$(basename ${BIN})-qt5
 		;;
 	esac
 done
 
-# Pour Noël, je voudrais des fichiers propres pour Qt :
-sed -i "s:$PWD/qtbase:/usr/lib${LIBDIRSUFFIX}/qt5:g" \
+# On supprime des résidus de la compilation.
+# Pour Noël, je voudrais des fichiers propres pour Qt...
+sed -i "s:${CWD}/qtbase:/usr/lib${LIBDIRSUFFIX}/qt5:g" \
 	${PKG}/usr/lib${LIBDIRSUFFIX}/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri || true
 find /usr/lib${LIBDIRSUFFIX}/lib{qgsttools_p,Qt5*}.prl -exec sed -i -r '/^QMAKE_PRL_BUILD_DIR/d;s/(QMAKE_PRL_LIBS =).*/\1/' {} \; || true
 sed -i \
-  -e "s|-Wl,-whole-archive -lWebKit1 -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/WebKit[^ ]* ||" \
-  -e "s|-Wl,-whole-archive -lWebKit2 -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/WebKit2[^ ]* ||" \
-  -e "s|-Wl,-whole-archive -lWebCore -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/WebCore[^ ]* ||" \
-  -e "s|-Wl,-whole-archive -lANGLE -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/ThirdParty/ANGLE[^ ]* ||" \
-  -e "s|-Wl,-whole-archive -lJavaScriptCore -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/JavaScriptCore[^ ]* ||" \
-  -e "s|-Wl,-whole-archive -lWTF -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/WTF[^ ]* ||" \
-  -e "s|-Wl,-whole-archive -lleveldb -Wl,-no-whole-archive -L${PWD}/qtwebkit/Source/ThirdParty/leveldb[^ ]* ||" \
-  $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt5WebKit.pc
+	-e "s|-Wl,-whole-archive -lWebKit1 -Wl,-no-whole-archive -L.*/qtwebkit/Source/WebKit[^ ]* ||" \
+	-e "s|-Wl,-whole-archive -lWebKit2 -Wl,-no-whole-archive -L.*/qtwebkit/Source/WebKit2[^ ]* ||" \
+	-e "s|-Wl,-whole-archive -lWebCore -Wl,-no-whole-archive -L.*/qtwebkit/Source/WebCore[^ ]* ||" \
+	-e "s|-Wl,-whole-archive -lANGLE -Wl,-no-whole-archive -L.*/qtwebkit/Source/ThirdParty/ANGLE[^ ]* ||" \
+	-e "s|-Wl,-whole-archive -lJavaScriptCore -Wl,-no-whole-archive -L.*/qtwebkit/Source/JavaScriptCore[^ ]* ||" \
+	-e "s|-Wl,-whole-archive -lWTF -Wl,-no-whole-archive -L.*/qtwebkit/Source/WTF[^ ]* ||" \
+	-e "s|-Wl,-whole-archive -lleveldb -Wl,-no-whole-archive -L.*/qtwebkit/Source/ThirdParty/leveldb[^ ]* ||" \
+	${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt5WebKit.pc
 
 # On place les icônes :
 mkdir -p ${PKG}/usr/share/icons/hicolor/{16x16,32x32,48x48,64x64,128x128}/apps
-cp -a qttools/src/assistant/assistant/images/assistant.png            ${PKG}/usr/share/icons/hicolor/32x32/apps/qt5-assistant.png || true
-cp -a qttools/src/assistant/assistant/images/assistant-128.png        ${PKG}/usr/share/icons/hicolor/128x128/apps/qt5-assistant.png || true
-cp -a qttools/src/designer/src/designer/images/designer.png           ${PKG}/usr/share/icons/hicolor/128x128/apps/qt5-designer.png || true
+cp -a qttools/src/assistant/assistant/images/assistant.png     ${PKG}/usr/share/icons/hicolor/32x32/apps/qt5-assistant.png || true
+cp -a qttools/src/assistant/assistant/images/assistant-128.png ${PKG}/usr/share/icons/hicolor/128x128/apps/qt5-assistant.png || true
+cp -a qttools/src/designer/src/designer/images/designer.png    ${PKG}/usr/share/icons/hicolor/128x128/apps/qt5-designer.png || true
 
 for icone in qttools/src/linguist/linguist/images/icons/linguist-*-32.png ; do
 	taille=$(echo $(basename ${icone}) | cut -d- -f2)
@@ -127,7 +125,7 @@ sysconfdir=/etc/xdg
 translationdir=\${prefix}/translations
 
 Name: Qt5
-Description: Ensemble de bibliothèque Qt5
+Description: Ensemble de bibliothèques Qt5
 Version: $VERSION
 EOF
 
@@ -194,7 +192,7 @@ EOF
 mkdir -p ${PKG}/etc/profile.d
 cat > ${PKG}/etc/profile.d/qt5.sh << EOF
 #!/usr/bin/env bash
-# Fichier profil pour QT5.
+# Fichier profil pour Qt5.
 QT5DIR=/usr/lib${LIBDIRSUFFIX}/qt5
 
 export QT5DIR

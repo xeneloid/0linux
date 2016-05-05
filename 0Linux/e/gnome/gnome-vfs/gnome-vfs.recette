@@ -6,14 +6,17 @@ WGET=http://ftp.acc.umu.se/pub/gnome/sources/$NAMESRC/$(echo $VERSION | cut -d'.
 DESC="Système d'accès aux systèmes de fichiers pour GNOME"
 EXTRADEPS="gnome-mime-data"
 
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
 # On corrige cette vieillerie :
 cat $CWD/gnome-vfs.gnutls-config.patch | patch -p1
+<<<<<<< HEAD
 cat $CWD/gnome-vfs.gnutls-3.4.patch | patch -p1
+=======
+cat $CWD/gnome-vfs.gnutls3.patch | patch -p1
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 cat $CWD/gnome-vfs.gcrypt-config.patch | patch -p1
 cat $CWD/gnome-vfs.enable-deprecated.patch | patch -p1
 

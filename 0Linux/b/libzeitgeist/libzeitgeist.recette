@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.3.18
-EXT=tar.gz
-WGET=https://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f 1-2)/$VERSION/+download/$NAMESRC-$VERSION.$EXT
+WGET=https://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f 1-2)/$VERSION/+download/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques Zeitgeist pour la journalisation d'évènements"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.

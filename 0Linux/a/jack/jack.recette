@@ -31,7 +31,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--with-html-dir=/usr/doc/${NAMETGZ}-0.124.1 \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} -C libjack || make -C libjack
@@ -54,7 +54,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--with-html-dir=/usr/doc/${NAMETGZ}-0.124.1 \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
@@ -70,7 +70,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits, JACK2 prévoit certes un mode hybride mais il ne marche plus :
 	cflags i686
 	
-	# On fait en sorte d epouvoir compiler uniquement la libjack2 avec ces
+	# On fait en sorte de pouvoir compiler uniquement la libjack2 avec ces
 	# modifications d'Archlinux :
 	sed -i -e '/serverlib/,/clientlib/{/clientlib/!d}' \
 		-e '/clientlib32bit/i\\tclientlib.posted = True' \
@@ -83,18 +83,18 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# Compilation pour i686 (donc 'lib' tout court) :
 	python waf configure \
 		--prefix=/usr \
-		--libdir=/usr/lib \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--mixed
 	
 	cd common
 	python ../waf build ${JOBS} || python ../waf build
 	cd -
 	
-	# On installe la bibliothèque manuellement dans '/usr/lib' et on lie :
-	mkdir -p ${PKG}/usr/lib
-	cp -a build/common/libjack.so ${PKG}/usr/lib/libjack.so.0.1.0
-	ln -sf libjack.so.0.1.0 ${PKG}/usr/lib/libjack.so.0
-	ln -sf libjack.so.0.1.0 ${PKG}/usr/lib/libjack.so
+	# On installe la bibliothèque manuellement dans '/usr/lib${LIBDIRSUFFIX}' et on lie :
+	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}
+	cp -a build/common/libjack.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libjack.so.0.1.0
+	ln -sf libjack.so.0.1.0 ${PKG}/usr/lib${LIBDIRSUFFIX}/libjack.so.0
+	ln -sf libjack.so.0.1.0 ${PKG}/usr/lib${LIBDIRSUFFIX}/libjack.so
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
@@ -114,10 +114,6 @@ python waf configure \
 
 python waf build ${JOBS} || python waf build
 fakeroot python waf install --destdir=${PKG}
-
-# On déplace ces mnauels :
-cp -ar ${PKG}/usr/share/man/*  ${PKG}/usr/man/
-rm -rf ${PKG}/usr/share/man
 
 installer_doc
 creer_post_installation

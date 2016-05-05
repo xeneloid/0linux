@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.2.4
+VERSION=1.7.4
 WGET=https://launchpad.net/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$VERSION/+download/$NAMESRC-$VERSION.tar.gz
 DESC="Gestionnaire graphique de connexions réseau"
 EXTRADEPS="gksu"
@@ -9,8 +9,6 @@ EXTRADEPS="gksu"
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
-
-sed -i "s@return s\.translate(None, table)@return s.encode('ascii', 'replace').translate(None, table)@" wicd/misc.py || exit 1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -20,13 +18,8 @@ python setup.py configure \
 	--distro=slackware \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION}/ \
 	--kdedir=/usr/share/autostart/ \
-	--mandir=/usr/man/
-
-# On blouse le système pour se passer de la dépendance à 'pybabel' :
-for fichierpo in $(find po/ -type f -name "*.po") ; do
-	mkdir -p translations/$(basename ${fichierpo} .po)/LC_MESSAGES
-	msgfmt -o translations/$(basename ${fichierpo} .po)/LC_MESSAGES/wicd.mo ${fichierpo}
-done
+	--mandir=/usr/man/ \
+	--no-install-gnome-shell-extensions
 
 fakeroot python setup.py install --optimize=1 --root=${PKG}
 
@@ -40,7 +33,10 @@ sudo_app = 0
 EOF
 
 # NON !
-find ${PKG} -type d -name "systemd" -exec rm -rf {} \; || true
+rm -rf ${PKG}/lib/systemd
+
+# Le fichier service est en conflit avec 'rc.networkmanager' et 'rc.reseau' :
+chmod -x ${PKG}/etc/rc.d/rc.wicd
 
 installer_doc
 creer_post_installation

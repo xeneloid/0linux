@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=openldap
-VERSION=2.4.40
+VERSION=2.4.44
 WGET=ftp://ftp.openldap.org/pub/OpenLDAP/$NAMESRC-release/$NAMESRC-$VERSION.tgz
 DESC="Outils et bibliothèques pour le protocole OpenLDAP"
 
@@ -10,7 +10,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# Compilation :
+# Compilation avec un drapeau CPP pour détecter la version de 'berkeley' :
+CPP='cpp -P' \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \

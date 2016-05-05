@@ -144,6 +144,77 @@ EOF
 
 	# Boucle de configuration du réseau :
 	while [ 0 ]; do
+		
+		# On gère les conflits inter-outils de configuration réseau :
+		if [ -e /etc/rc.d/rc.wicd -o -e /etc/rc.d/rc.networkmanager ]; then
+			if [ "${NETCONFIG}" = "ok" ]; then
+				break
+			fi
+			if [ "${INSTALLDEBUG}" = "" ]; then
+				clear
+			fi
+			echo -e "\033[1;32mChoix de la configuration du réseau.\033[0;0m"
+			echo ""
+			echo "Vous avez plusieurs outils de configuration réseau déjà installés"
+			echo "sur ce système. Pour éviter les conflits lors de la configuration"
+			echo "du réseau, un seul outil doit être activé au démarrage du système."
+			echo ""
+			echo "Tapez le numéro de l'outil à activer. Les autres seront désactivés."
+			echo "Appuyez sur ENTRÉE pour ignorer cette étape et n'utiliser que le"
+			echo "fichier de configuration par défaut de 0Linux '/etc/0linux/reseau'."
+			echo ""
+			if [ -e /etc/rc.d/rc.reseau ]; then
+				echo "1 : rc.reseau         - Utiliser le fichier '/etc/0linux/reseau'."
+			fi
+			if [ -e /etc/rc.d/rc.networkmanager ]; then
+				echo "2 : rc.networkmanager - Utiliser NetworkManager."
+			fi
+			if [ -e /etc/rc.d/rc.wicd ]; then
+				echo "3 : rc.wicd.          - Utiliser wicd."
+			fi
+			echo ""
+			echo -n "Votre choix : "
+			read RESEAUCONFIGTOOL;
+			
+			# On rend tout non-exécutable dans un premier temps :
+			chmod 644 /etc/rc.d/rc.{networkmanager,reseau,wicd}
+			
+			# 'rc.reseau' par défaut :
+			if [ "$RESEAUCONFIGTOOL" = "" -o "$RESEAUCONFIGTOOL" = "1" ]; then
+				chmod 755 /etc/rc.d/rc.reseau
+				break
+			
+			# NetworkManager par défaut :
+			elif [ "$RESEAUCONFIGTOOL" = "2" ]; then
+				chmod 755 /etc/rc.d/rc.networkmanager
+				echo "NetworkManager dispose d'une interface graphique. Vous pouvez"
+				echo "l'installer plus tard en tapant :"
+				echo "	0g network-manager-applet"
+				echo ""
+				echo "Appuyez sur ENTRÉE pour continuer."
+				echo ""
+				read WAITFORKEY;
+				break
+			
+			# 'wicd' par défaut :
+			elif [ "$RESEAUCONFIGTOOL" = "3" ]; then
+				chmod 755 /etc/rc.d/rc.wicd
+				break
+			else
+				echo "Veuillez entrer un numéro valide (entre 1 et 3) ou appuyez"
+				echo "sur ENTRÉE."
+				sleep 2
+				unset NETCONFIG RESEAUCONFIGTOOL
+				continue
+			fi
+		fi
+		
+		# 'rc.reseau' est exécutable par défaut ou l'utilisateur l'a choisi
+		# explicitement. Si ce n'est pas le cas, on quitte :
+		if [ ! -x /etc/rc.d/rc.reseau ]; then
+			NETCONFIG="ok"
+		fi
+		
 		if [ "${NETCONFIG}" = "ok" ]; then
 			break
 		fi
@@ -207,8 +278,8 @@ EOF
 					echo ""
 					echo "Veuillez entrer ci-dessous votre paramètres réseau, séparés par"
 					echo "des espaces. Entrez successivement votre IP, votre masque de sous-"
-					echo "réseau, puis l'IP de votre passerelle ou « box » par défaut sous"
-					echo " la forme « xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx »."
+					echo "réseau, puis l'IP de votre passerelle par défaut sous la forme :"
+					echo " « IP MASQUE PASSERELLE »."
 					echo "Exemple : 192.168.0.12 255.255.255.0 192.168.0.254"
 					echo ""
 					echo -n "Votre choix : "
@@ -228,7 +299,7 @@ EOF
 						
 						# Si l'utilisateur a mal entré ses paramètres :
 						if [ "$IPPARAM" = "" -o "$MASKPARAM" = "" -o "$GATEPARAM" = ""]; then
-							echo "Veuillez entrer 3 IP successives, séparées par un espace."
+							echo "Veuillez entrer 3 adresses IP successives, séparées par un espace."
 							sleep 2
 							unset NETPARAMS
 							continue
@@ -249,9 +320,12 @@ EOF
 					echo -e "\033[1;32mConfiguration d 'un éventuel serveur de noms de domaine (DNS).\033[0;0m"
 					echo ""
 					echo "Si vous devez utiliser des serveurs de noms de domaine (DNS) précis"
-					echo "pour accéder au réseau, veuillez entrer ci-après 1 ou 2 de leurs IP."
-					echo "Appuyez sur ENTRÉE pour ignorer cette étape."
-					echo "Exemple : 212.27.134.42 212.27.134.50"
+					echo "pour accéder au réseau, veuillez entrer ci-après 1 ou 2 de leurs IP"
+					echo "ou bien appuyez sur ENTRÉE pour ignorer cette étape."
+					echo "Il est possible que votre passerelle relaie le service DNS (c'est le"
+					echo "cas des « box » des fournisseurs d'accès à Internet en général)."
+					echo "Exemple pour utiliser les DNS d'OpenDNS et de Google :"
+					echo "208.67.222.222 8.8.8.8"
 					echo ""
 					echo -n "Votre choix : "
 					read DNSSERVERS;

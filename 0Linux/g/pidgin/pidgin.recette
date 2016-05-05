@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.10.11
+VERSION=2.10.12
 WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
 DESC="Client de messagerie instantanée multi-protocole"
 
@@ -20,11 +20,21 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+<<<<<<< HEAD
 	--enable-cyrus-sasl \
 	--enable-nm \
 	--disable-gnutls \
         --disable-schemas-install \
         --disable-meanwhile \	
+=======
+	--disable-meanwhile \
+	--disable-gnutls \
+	--disable-doxygen \
+	--disable-schemas-install \
+	--enable-cyrus-sasl \
+	--enable-nm \
+	--with-system-ssl-certs=/etc/ssl/certs \
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

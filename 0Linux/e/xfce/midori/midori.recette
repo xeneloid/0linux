@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.5.9
+VERSION=0.5.11
 WGET=http://www.midori-browser.org/downloads/${NAMESRC}_${VERSION}_all_.tar.bz2
 DESC="Navigateur Web léger pour Xfce"
 EXTRADEPS="gsettings-desktop-schemas"

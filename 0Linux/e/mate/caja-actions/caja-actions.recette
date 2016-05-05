@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.7.0
+VERSION=1.14.0
 WGET=https://github.com/NiceandGently/$NAMESRC/archive/v${VERSION}.tar.gz
 DESC="Extension pour Caja permettant de personnaliser les programmes lancés via le menu contextuel"
 

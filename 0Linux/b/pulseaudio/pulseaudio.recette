@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
+<<<<<<< HEAD
 VERSION=7.1
+=======
+VERSION=8.0
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 WGET=http://freedesktop.org/software/$NAMESRC/releases/$NAMESRC-$VERSION.tar.xz
 DESC="Serveur audio avec fonctionnalités réseau"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -16,15 +19,33 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
 	cflags i686
 	
+	# On autorise tout le monde à déclencher pulseaudio :
+	cat $CWD/pulseaudio.allow-root-spawn.patch | patch -p1
+	sed -i -e 's@; autospawn = yes@autospawn = yes@' \
+		-e 's@; allow-autospawn-for-root = no@allow-autospawn-for-root = yes@' \
+		src/pulse/client.conf.in
+	
+	if ! grep 'allow-autospawn-for-root' src/pulse/client.conf.in; then
+		echo "allow-autospawn-for-root = yes" >> src/pulse/client.conf.in
+	fi
+	
+	# On s'assure que le répertoire de la config utilisateur existe :
+	sed -i -e '/@PA_BINARY@/ imkdir -p \$HOME/.config/pulse' \
+		src/daemon/start-pulseaudio-x11.in
+	
+	# On s'assure du démarrage automatique sous MATE :
+	echo "X-MATE-Autostart-Phase=Initialization" >> src/daemon/pulseaudio.desktop.in
+	
+	# On supprime le comportement « flat volumes » :
+	sed -i 's/; flat-volumes = yes/flat-volumes = no/g' src/daemon/daemon.conf.in
+	
 	# Compilation pour i686 :
-	PKG_CONFIG_PATH="/usr/lib${LIBDIRSUFFIX}/pkgconfig" \
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
+	./bootstrap.sh \
 		--prefix=/usr \
 		--sysconfdir=/etc \
 		--localstatedir=/var \
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--libexecdir=/usr/lib${LIBDIRSUFFIX}/pulse \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
@@ -32,27 +53,19 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--disable-default-build-tests \
 		--disable-gconf \
 		--disable-jack \
+		--disable-tcpwrap \
 		--disable-udev \
+		--with-access-group=audio \
+		--with-bash-completion-dir=/usr/share/bash-completion/completions \
+		--with-system-group=pulse \
+		--with-system-user=pulse \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
-	# On fait en sorte que le minimum de dépendnaces soient nécessaires :
-	sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
 	
-	# On ne compile qu'un minimum de bibliothèques :
-	make -j${JOBS} -C src libpulse.la libpulse-simple.la libpulse-mainloop-glib.la || \
-	make -C src libpulse.la libpulse-simple.la libpulse-mainloop-glib.la
-	
-	make -j${JOBS} -C src libpulsecommon-${VERSION}.la libpulsedsp.la || \
-	make -C src libpulsecommon-${VERSION}.la libpulsedsp.la
-	
-	# On installe le minimum :
-	fakeroot make -C src \
-		lib_LTLIBRARIES="libpulse.la libpulse-simple.la libpulse-mainloop-glib.la" \
-		pkglib_LTLIBRARIES="libpulsecommon-${VERSION}.la libpulsedsp.la" \
-		install-libLTLIBRARIES install-pkglibLTLIBRARIES \
-		DESTDIR=${PKG}
-	
-	fakeroot make install-pkgconfigDATA DESTDIR=${PKG} 
+	# On crée un lien générique :
+	ln -sf pulse-${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/pulse
 fi
 
 # On refait la préparation des sources, il peut rester des déchets de la
@@ -60,19 +73,41 @@ fi
 preparer_sources
 cflags
 
+# On autorise tout le monde à déclencher pulseaudio :
+cat $CWD/pulseaudio.allow-root-spawn.patch | patch -p1
+sed -i -e 's@; autospawn = yes@autospawn = yes@' \
+	-e 's@; allow-autospawn-for-root = no@allow-autospawn-for-root = yes@' \
+	src/pulse/client.conf.in
+
+if ! grep 'allow-autospawn-for-root' src/pulse/client.conf.in; then
+	echo "allow-autospawn-for-root = yes" >> src/pulse/client.conf.in
+fi
+
+# On s'assure que le répertoire de la config utilisateur existe :
+sed -i -e '/@PA_BINARY@/ imkdir -p \$HOME/.config/pulse' \
+	src/daemon/start-pulseaudio-x11.in
+
+# On s'assure du démarrage automatique sous MATE :
+echo "X-MATE-Autostart-Phase=Initialization" >> src/daemon/pulseaudio.desktop.in
+
+# On supprime le comportement « flat volumes » :
+sed -i 's/; flat-volumes = yes/flat-volumes = no/g' src/daemon/daemon.conf.in
+
 # Compilation :
-PKG_CONFIG_PATH="/usr/lib${LIBDIRSUFFIX}/pkgconfig" \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
+./bootstrap.sh \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/pulse \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+	--enable-orc \
 	--with-access-group=audio \
+	--with-bash-completion-dir=/usr/share/bash-completion/completions \
+	--with-system-group=pulse \
+	--with-system-user=pulse \
 	--with-udev-rules-dir=/usr/lib${LIBDIRSUFFIX}/udev/rules.d \
 	--build=${PKGARCH}-0linux-linux-gnu
 
@@ -80,20 +115,12 @@ make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
 # On prend garde à ne rien écraser :
-mv ${PKG}/etc/pulse/client.conf{,.0nouveau}
+for f in $(find ${PKG}/etc/pulse/ -type f); do
+	mv ${f}{,.0nouveau}
+done
 
-# On ajoute de quoi empêcher PulseAudio de se lancer :
-cat >> ${PKG}/etc/pulse/client.conf.0nouveau << "EOF"
-autospawn = no
-daemon-binary = /bin/true
-
-EOF
-
-# On supprime le démarrage automatique :
-rm -rf ${PKG}/etc/xdg/autostart
-
-# On corrige le complètement pour Bash (qui fait planter XDM entre autres...) :
-rm -rf ${PKG}/etc/dbus-1 ${PKG}/etc/bash_completion.d
+# On crée un lien générique :
+ln -sf pulse-${VERSION} ${PKG}/usr/lib${LIBDIRSUFFIX}/pulse
 
 installer_doc
 creer_post_installation

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.6.1
+VERSION=1.6.3
 EXT=tar.xz
 WGET=(http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-0.10.36.$EXT
       http://gstreamer.freedesktop.org/src/$NAMESRC/$NAMESRC-$VERSION.$EXT
@@ -12,52 +12,13 @@ telecharger_sources
 cflags
 
 # On compile la version 0.10.x :
-# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
-if [ "${PKGARCH}" = "x86_64" ]; then
-	
-	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
-	preparer_sources $NAMESRC-0.10.36.$EXT
-	cflags i686
-	
-	# Compilation avec des auto-tools modernes :
-	sed -i -e '/AC_PATH_XTRA/d' -e 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' configure.ac
-	
-	# On applique un grand nombre de correctifs pour ce paquet qui commance à dater :
-	cat $CWD/gst.0byte_ogg_crash.patch | patch -p1
-	cat $CWD/gst.color_balance.patch | patch -p1
-	cat $CWD/gst.ayuv64_lanczos.patch | patch -p1
-	cat $CWD/gst.videoscale.patch | patch -p1
-	cat $CWD/gst.audio_symbols.patch | patch -p1
-	
-	# Regénération de configure :
-	NOCONFIGURE=1 ./autogen.sh
-	
-	# Compilation pour i686 :
-	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-	./configure \
-		--prefix=/usr \
-		--sysconfdir=/etc \
-		--localstatedir=/var \
-		--libdir=/usr/lib${LIBDIRSUFFIX} \
-		--mandir=/usr/man \
-		--infodir=/usr/info \
-		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-		--disable-gnome_vfs \
-		--disable-examples \
-		--enable-experimental \
-		--build=${PKGARCH}-0linux-linux-gnu
-	
-	make -j${JOBS} || make
-	fakeroot make install DESTDIR=${PKG}
-fi
-
 preparer_sources $NAMESRC-0.10.36.$EXT
 cflags
 
 # Compilation avec des auto-tools modernes :
 sed -i -e '/AC_PATH_XTRA/d' -e 's/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/' configure.ac
 
-# On applique un grand nombre de correctifs pour ce paquet qui commance à dater :
+# On applique un grand nombre de correctifs pour ce paquet qui commence à dater :
 cat $CWD/gst.0byte_ogg_crash.patch | patch -p1
 cat $CWD/gst.color_balance.patch | patch -p1
 cat $CWD/gst.ayuv64_lanczos.patch | patch -p1
@@ -78,11 +39,16 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-0.10.36 \
+	--disable-debug \
+	--disable-gnome_vfs \
 	--disable-gtk-doc \
 	--enable-experimental \
 	--with-package-name="GStreamer Base Plugins 0.10 (0Linux)" \
 	--with-package-origin="http://0linux.org" \
 	--build=${PKGARCH}-0linux-linux-gnu
+
+# On corrige, on corrige :
+sed -i 's/^SUBDIRS_EXT =.*/SUBDIRS_EXT =/' Makefile
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
@@ -90,7 +56,38 @@ fakeroot make install DESTDIR=${PKG}
 # On installe la doc dans un sous-répertoire dédié :
 installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-0.10.36
 
-# On compile maintenant la version normale de la recette :
+# On compile maintenant la version de la recette :
+preparer_sources
+cflags
+
+# On compile les bibliothèques 32 bits pour le multilib sous x86_64 :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	
+	# On passe en 32 bits (CFLAGS, LIBDIRSUFFIX, PKGARCH et Cie) :
+	cflags i686
+	
+	# Compilation pour i686 :
+	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+		./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libdir=/usr/lib${LIBDIRSUFFIX} \
+		--libexecdir=/usr/lib${LIBDIRSUFFIX} \
+		--mandir=/usr/man \
+		--infodir=/usr/info \
+		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
+		--disable-examples\
+		--disable-gtk-doc-html \
+		--enable-experimental \
+		--with-package-name="GStreamer Base Plugins (0Linux)" \
+		--with-package-origin="http://0linux.org" \
+		--build=${PKGARCH}-0linux-linux-gnu
+	
+	make -j${JOBS} || make
+	fakeroot make install DESTDIR=${PKG}
+fi
+
 preparer_sources
 cflags
 

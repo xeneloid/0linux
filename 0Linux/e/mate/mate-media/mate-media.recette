@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.8.0
+VERSION=1.14.0
 WGET=http://pub.mate-desktop.org/releases/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Outils multimédia et contrôle du volume pour MATE"
 
@@ -20,10 +20,10 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--disable-pulseaudio \
 	--enable-deprecated \
 	--enable-gst-mixer-applet \
 	--enable-gstmix \
+	--enable-pulseaudio \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

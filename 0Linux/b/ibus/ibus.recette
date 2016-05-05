@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.5.5
-EXT=tar.gz
-WGET=http://ibus.googlecode.com/files/$NAMESRC-$VERSION.$EXT
+VERSION=1.5.13
+WGET=https://github.com/$NAMESRC/$NAMESRC/releases/download/$VERSION/$NAMESRC-$VERSION.tar.gz
 DESC="Bus de traitement des entrées pour Linux"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -18,7 +16,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--sysconfdir=/etc \
 	--localstatedir=/var \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
-	--libexecdir=/usr/lib${LIBDIRSUFFIX}/ibus \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \

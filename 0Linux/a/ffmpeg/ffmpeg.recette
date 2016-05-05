@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.8.3
-WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.13.tar.bz2
+VERSION=3.0
+WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.16.tar.bz2
+      http://ffmpeg.org/releases/$NAMESRC-2.8.6.tar.bz2
       http://ffmpeg.org/releases/$NAMESRC-$VERSION.tar.bz2
      )
 DESC="Solution de traitement de flux audio et vidéo"
 
 telecharger_sources
 
-# On compile FFMPEG 0.10.x pour contenter Audacity et quelques autres :
-preparer_sources $NAMESRC-0.10.13.tar.bz2
+# On compile FFMPEG 0.10.x :
+preparer_sources $NAMESRC-0.10.16.tar.bz2
 cflags
+
+# On corrige la compilation avec les plus récentes 'libvpx' :
+cat $CWD/ffmpeg.libvpx.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -61,12 +65,80 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On ajoute les bibliothèques à 'ld' 
+# On ajoute les bibliothèques à 'ld' :
 mkdir -p ${PKG}/etc/ld.so.conf.d
 echo "/usr/lib${LIBDIRSUFFIX}/ffmpeg-0.x/" > ${PKG}/etc/ld.so.conf.d/ffmpeg-0.x.conf
 
 # On installe la doc dans un sous-répertoire dédié :
-installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-0.10.13
+installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-0.10.16
+
+# On compile FFMPEG 2.x :
+preparer_sources $NAMESRC-2.8.6.tar.bz2 # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--incdir=/usr/include/ffmpeg-2.x \
+	--libdir=/usr/lib${LIBDIRSUFFIX}/ffmpeg-2.x \
+	--shlibdir=/usr/lib${LIBDIRSUFFIX}/ffmpeg-2.x \
+	--disable-debug \
+	--disable-stripping \
+	--mandir=/usr/man \
+	--enable-avfilter \
+	--enable-avisynth \
+	--enable-avresample \
+	--enable-fontconfig \
+	--enable-frei0r \
+	--enable-gnutls \
+	--enable-gpl \
+	--enable-libass \
+	--enable-libbluray \
+	--enable-libcaca \
+	--enable-libcdio \
+	--enable-libdc1394 \
+	--enable-libfaac \
+	--enable-libfreetype \
+	--enable-libfribidi \
+	--enable-libgsm \
+	--enable-libmodplug \
+	--enable-libmp3lame \
+	--enable-libopencore_amrnb \
+	--enable-libopencore_amrwb \
+	--enable-libopencv \
+	--enable-libopus \
+	--enable-librtmp \
+	--enable-libschroedinger \
+	--enable-libspeex \
+	--enable-libtheora \
+	--enable-libtwolame \
+	--enable-libv4l2 \
+	--enable-libvorbis \
+	--enable-libvpx \
+	--enable-libx264 \
+	--enable-libx265 \
+	--enable-libxvid \
+	--enable-nonfree \
+	--enable-openal \
+	--enable-postproc \
+	--enable-pthreads \
+	--enable-runtime-cpudetect \
+	--enable-shared \
+	--enable-swresample \
+	--enable-vdpau \
+	--enable-version3 \
+	--enable-x11grab
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# On ajoute les bibliothèques à 'ld' :
+mkdir -p ${PKG}/etc/ld.so.conf.d
+echo "/usr/lib${LIBDIRSUFFIX}/ffmpeg-2.x/" > ${PKG}/etc/ld.so.conf.d/ffmpeg-2.x.conf
+
+# On installe la doc dans un sous-répertoire dédié :
+installer_doc ${NAMETGZ}-${VERSION}/$NAMESRC-2.8.6
 
 # On compile la version de la recette :
 preparer_sources $NAMESRC-$VERSION.tar.bz2 # À partir d'ici, on se trouve dans les sources décompactées.

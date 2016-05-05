@@ -5,7 +5,6 @@ VERSION=2.2.52
 WGET=http://ftp.igh.cnrs.fr/pub/nongnu/$NAMESRC/$NAMESRC-$VERSION.src.tar.gz
 DESC="Gestion des listes de contrôle d'accès aux fichiers"
 
-
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
@@ -25,6 +24,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 
 	# Compilation pour i686 :
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+	LDFLAGS+="-I/usr/include " \
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \

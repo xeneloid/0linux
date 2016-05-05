@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=5.9
+VERSION=6.0
 WGET=http://mirror1.babylon.network/gnu/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Bibliothèques d'affichage « new curses »"
 
@@ -31,6 +31,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--enable-pc-files \
 		--enable-symlinks \
 		--enable-widec \
+		--without-dlsym \
 		--without-gpm \
 		--with-manpage-format=normal \
 		--with-normal \
@@ -52,7 +53,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		ln -sf lib${bibliotheque}w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${bibliotheque}.a
 	done
 
-	ln -sf libncursesw.so.5 ${PKG}/usr/lib${LIBDIRSUFFIX}/libncursesw.so
+	ln -sf libncursesw.so.$(echo $VERSION | cut -d'.' -f1) ${PKG}/usr/lib${LIBDIRSUFFIX}/libncursesw.so
 
 	# On lie à la bibliothèque statique :
 	ln -sf libncurses++w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libncurses++.a
@@ -61,7 +62,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 		mv ${PKG}/usr/lib/pkgconfig ${PKG}/usr/lib${LIBDIRSUFFIX}/
 	fi
-
+	
+	mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
 	for bibliotheque in ncurses ncurses++ form panel menu; do
 		ln -sf ${bibliotheque}w.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/${bibliotheque}.pc
 	done
@@ -72,7 +74,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	ln -sf libncurses.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libcurses.so
 	ln -sf libncursesw.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.a
 	ln -sf libncurses.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libcurses.a
-	ln -sf ncursesw5-config ${PKG}/usr/bin/ncurses5-config
+	ln -sf ncursesw$(echo $VERSION | cut -d'.' -f1)-config ${PKG}/usr/bin/ncurses$(echo $VERSION | cut -d'.' -f1)-config
 	ln -sf ../share/terminfo ${PKG}/usr/lib${LIBDIRSUFFIX}/terminfo
 fi
 
@@ -105,6 +107,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-shared \
 	--without-ada \
 	--without-debug \
+	--without-dlsym \
 	--without-profile \
 	--build=${PKGARCH}-0linux-linux-gnu
 
@@ -121,7 +124,7 @@ for bibliotheque in ncurses form panel menu; do
 	ln -sf lib${bibliotheque}w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/lib${bibliotheque}.a
 done
 
-ln -sf libncursesw.so.5 ${PKG}/usr/lib${LIBDIRSUFFIX}/libncursesw.so
+ln -sf libncursesw.so.$(echo $VERSION | cut -d'.' -f1) ${PKG}/usr/lib${LIBDIRSUFFIX}/libncursesw.so
 
 # On lie à la bibliothèque statique :
 ln -sf libncurses++w.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libncurses++.a
@@ -131,6 +134,7 @@ if [ ! "${LIBDIRSUFFIX}" = "" ]; then
 	mv ${PKG}/usr/lib/pkgconfig ${PKG}/usr/lib${LIBDIRSUFFIX}/
 fi
 
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
 for bibliotheque in ncurses ncurses++ form panel menu; do
 	ln -sf ${bibliotheque}w.pc ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/${bibliotheque}.pc
 done
@@ -141,7 +145,7 @@ echo "INPUT(-lncursesw)" > ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.so
 ln -sf libncurses.so ${PKG}/usr/lib${LIBDIRSUFFIX}/libcurses.so
 ln -sf libncursesw.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libcursesw.a
 ln -sf libncurses.a ${PKG}/usr/lib${LIBDIRSUFFIX}/libcurses.a
-ln -sf ncursesw5-config ${PKG}/usr/bin/ncurses5-config
+ln -sf ncursesw$(echo $VERSION | cut -d'.' -f1)-config ${PKG}/usr/bin/ncurses$(echo $VERSION | cut -d'.' -f1)-config
 ln -sf ../share/terminfo ${PKG}/usr/lib${LIBDIRSUFFIX}/terminfo
 
 # On renomme l'en-tête 'termcap.h' pour ne rien écraser :

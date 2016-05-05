@@ -24,6 +24,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--libdir=/usr/lib${LIBDIRSUFFIX} \
 		--mandir=/usr/man \
 		--infodir=/usr/info \
+		--enable-cxx \
 		--build=${PKGARCH}-0linux-linux-gnu
 	
 	make -j${JOBS} || make
@@ -44,6 +45,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
+	--enable-cxx \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

@@ -2,16 +2,19 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=NVIDIA
-VERSION=346.47
+VERSION=361.42
 EXT=run
+
+# On teste l'architecture pour savoir quelle archive télécharger :
 cflags
 if [ "${PKGARCH}" = "i686" ]; then
 	SUBARCH="x86"
 elif [ "${PKGARCH}" = "x86_64" ]; then
 	SUBARCH="x86_64"
 fi
+
 WGET=ftp://download.nvidia.com/XFree86/Linux-$SUBARCH/$VERSION/$NAMESRC-Linux-$SUBARCH-$VERSION.$EXT
-DESC="Pilotes et bibliothèques graphiques fermés de Nvidia"
+DESC="Pilotes et bibliothèques graphiques propriétaires de Nvidia"
 
 telecharger_sources
 
@@ -39,15 +42,10 @@ find . \
 	\( -perm 777 -o -perm 775 -o -perm 711 -o -perm 555 -o -perm 511 \) -exec chmod 755 {} \; -o \
 	\( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
 
-# On corrige la compilation avec Linux 3.11 et plus :
-sed -i -e 's@#define NV_NUM_PHYSPAGES                num_physpages@#define NV_NUM_PHYSPAGES                totalram_pages@' \
-	-e '\@#include <acpi/acpi\.h>@d' \
-	-e 's@#include <acpi/acpi_drivers\.h>@#include <linux/acpi.h>@' \
-	kernel/nv-linux.h
-
 # On compile le module noyau :
 cd kernel
-SYSSRC=/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/build make module
+SYSSRC=/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/build make -j${JOBS} module || \
+	SYSSRC=/usr/lib${LIBDIRSUFFIX}/modules/$(uname -r)/build make module
 
 # On place le module où il faut :
 cp -a nvidia.ko ${PKG}/lib/modules/$(uname -r)/kernel/drivers/video/
@@ -66,36 +64,15 @@ cp -a nvidia_drv.so ${PKG}/usr/lib${LIBDIRSUFFIX}/xorg/modules/drivers/
 chmod 755 ${PKG}/usr/lib${LIBDIRSUFFIX}/xorg/modules/drivers/nvidia_drv.so
 
 # On copie les bibliothèques sans vergogne pour écraser celles du système... :
-cp -a \
-	libGL.{la,so*} \
-	tls/libnvidia-tls.so* \
-	libOpenCL.so* \
-	libcuda.so* \
-	nvidia_drv.so* \
-	libcuda.so* \
-	libglx.so* \
-	libEGL.so* \
-	libnvcuvid.so* \
-	libnvidia-*.so* \
-	libvdpau_nvidia.so* \
-	${PKG}/usr/lib${LIBDIRSUFFIX}/
+mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/tls
+cp -a tls/lib*.so* ${PKG}/usr/lib${LIBDIRSUFFIX}/tls/
+cp -a *.{la,so*} ${PKG}/usr/lib${LIBDIRSUFFIX}/
 
 # Idem pour le 32 bits multilib :
 if [ "${PKGARCH}" = "x86_64" ]; then
 	mkdir -p ${PKG}/usr/lib/tls
-	cp -a \
-		32/libGL.{la,so*} \
-		32/tls/libnvidia-tls.so* \
-		32/libOpenCL.so* \
-		32/libcuda.so* \
-		32/nvidia_drv.so* \
-		32/libcuda.so* \
-		32/libglx.so* \
-		32/libEGL.so* \
-		32/libnvcuvid.so* \
-		32/libnvidia-*.so* \
-		32/libvdpau_nvidia.so* \
-		${PKG}/usr/lib/
+	cp -a tls/lib*.so* ${PKG}/usr/lib/tls/
+	cp -a 32/*.{la,so*} ${PKG}/usr/lib/
 fi
 
 # OpenCL :
@@ -115,9 +92,10 @@ chmod 755 ${PKG}/usr/bin/*
 zcat nvidia-cuda-mps-control.1.gz > ${PKG}/usr/man/man1/nvidia-cuda-mps-control.1
 zcat nvidia-smi.1.gz > ${PKG}/usr/man/man1/nvidia-smi.1
 
-# On crée un fichier blacklist pour empêcher 'nouveau' de se charger :
-cat > ${PKG}/etc/modprobe.d/blacklist-nouveau.conf << "EOF"
+# On crée un fichier blacklist pour empêcher 'nouveau'/'nv' de se charger :
+cat > ${PKG}/etc/modprobe.d/blacklist-nouveau-nv.conf << "EOF"
 blacklist nouveau
+blacklist nv
 
 EOF
 
@@ -167,6 +145,10 @@ creer_post_installation
 
 # On complète la post-installation : :
 cat >> ${PKG}/post-install.sh << EOF
+# On ajoute le module CUDA/OpenCL à charger :
+if ! grep -q nvidia-modprobe etc/rc.d/rc.modules; then
+	echo "nvidia-modprobe -c 0 -u" >> etc/rc.d/rc.modules
+fi
 
 chroot . depmod -a
 

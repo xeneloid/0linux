@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.26.1
+VERSION=2.27.1
 WGET=http://www.kernel.org/pub/linux/utils/$NAMESRC/v$(echo ${VERSION} | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.xz
 DESC="Ensemble d'outils système vitaux"
 

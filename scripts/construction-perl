@@ -13,6 +13,8 @@ perl-libintl-perl
 perl-termreadkey
 perl-text-charwidth
 perl-text-wrapi18n
+perl-inc-latest
+perl-module-build
 po4a
 perlqt
 perlkde

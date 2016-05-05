@@ -9,9 +9,8 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige le nom de l'hôte :
-sed -i "/servname/s:rpcbind:sunrpc:" src/rpcbind.c &&
-sed -i "/error = getaddrinfo/s:rpcbind:sunrpc:" src/rpcinfo.c
+# On corrige la compilation avec 'libtirpc' :
+cat $CWD/rpcbind.libtirpc.patch | patch -p1
 
 # On corrige une fuite mémoire :
 cat $CWD/rpcbind.memory.patch | patch -p1

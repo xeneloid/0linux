@@ -2,53 +2,27 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=webkitgtk
+<<<<<<< HEAD
 VERSION=2.4.8
 WGET=http://webkitgtk.org/releases/$NAMESRC-$VERSION.tar.xz
+=======
+VERSION=2.12.1
+WGET=(
+      http://webkitgtk.org/releases/$NAMESRC-$VERSION.tar.xz
+      http://webkitgtk.org/releases/$NAMESRC-2.4.10.tar.xz
+     )
+>>>>>>> Groooooooosse mise à jour pour 0Linux iota :)
 DESC="Port GTK+ du moteur de navigateur web WebKit"
 
 telecharger_sources
 
-# CC="gcc -mXX" plante la compilation... On s'assure que la compilation
-# n'échoue pas pour un détail pareil (webkit, c'est des heures et des heures de
-# compilation en perspective...) :
-export CC=gcc CXX=g++
+# Utilisez 'ccache' ou allez vous pendre tout de suite !
 
-# Compilaton de webkit 1 :
-preparer_sources
+# Compilaton de webkit 1 (quel enfer !) :
+preparer_sources $NAMESRC-2.4.10.tar.xz
 cflags
 
-# On corrige les guillemets qui cassent le stdin de Python :
-sed -i 's@“AS IS”@"AS IS"@g' Source/WebCore/xml/XMLViewer.*
-
-# Compilation :
-CC=gcc CXX=g++ \
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-./configure \
-        --prefix=/usr \
-        --sysconfdir=/etc \
-        --localstatedir=/var \
-        --libdir=/usr/lib${LIBDIRSUFFIX} \
-        --libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
-        --mandir=/usr/man \
-        --infodir=/usr/info \
-        --docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-        --enable-introspection \
-        --disable-webkit2 \
-        --with-gtk=2.0 \
-        --with-html-dir=/usr/doc/${NAMETGZ}-${VERSION}/html \
-        --build=${PKGARCH}-0linux-linux-gnu
-
-make -j${JOBS} || make
-fakeroot make install DESTDIR=${PKG}
-
-# Compilaton de webkit 2 :
-preparer_sources $NAMESRC-$VERSION.tar.xz
-cflags
-
-# On corrige les guillemets qui cassent le stdin de Python :
-sed -i 's@“AS IS”@"AS IS"@g' Source/WebCore/xml/XMLViewer.*
-
-# Compilation :
+# Compilation en 2 temps (quel enfer !) :
 CC=gcc CXX=g++ \
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
@@ -59,13 +33,58 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
 	--mandir=/usr/man \
 	--infodir=/usr/info \
-	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
-	--enable-gtk-doc \
+	--docdir=/usr/doc/${NAMETGZ}-2.4.10 \
+	--disable-gtk-doc \
+	--disable-webkit2 \
 	--enable-introspection \
-	--enable-webkit2 \
-	--with-gtk=3.0 \
-	--with-html-dir=/usr/doc/${NAMETGZ}-${VERSION}/html \
 	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+CC=gcc CXX=g++ \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--libexecdir=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--docdir=/usr/doc/${NAMETGZ}-2.4.10 \
+	--disable-gtk-doc \
+	--disable-webkit2 \
+	--enable-introspection \
+	--with-gtk=2.0 \
+	--build=${PKGARCH}-0linux-linux-gnu
+
+make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
+
+# Compilaton de webkit 2 (je HAIS ce paquet !) :
+preparer_sources $NAMESRC-$VERSION.tar.xz
+cflags
+
+# On supprime les tests :
+rm -rf Source/ThirdParty/gtest
+rm -rf Source/ThirdParty/qunit
+
+# On doit compiler dans un répertoire dédié :
+mkdir build
+cd build
+
+# Compilation :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+cmake \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=/usr \
+	-DCMAKE_SKIP_RPATH=ON \
+	-DLIB_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX} \
+	-DLIBEXEC_INSTALL_DIR=/usr/lib${LIBDIRSUFFIX}/${NAMESRC} \
+	-DPORT=GTK \
+	-DENABLE_GTKDOC=ON \
+	..
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}

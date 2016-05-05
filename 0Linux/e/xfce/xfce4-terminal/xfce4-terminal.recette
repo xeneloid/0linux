@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=0.6.3
-EXT=tar.bz2
-WGET=http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.$EXT
+WGET=http://archive.xfce.org/src/apps/$NAMESRC/$(echo $VERSION | cut -d'.' -f1-2)/$NAMESRC-$VERSION.tar.bz2
 DESC="Émulateur de terminal pour Xfce"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -30,10 +28,18 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 
-# On copie le fichier de préférences globales (police, nombre de lignes pour
-# l'historique, shell non-interactif, mise en valeur des URL, etc.) en prenant
-# garde à ne rien écraser :
-cp -a $CWD/terminalrc ${PKG}/etc/xdg/Terminal/terminalrc.0nouveau
+# On crée le fichier de préférences globales (police, nombre de lignes
+# pour l'historique, shell non-interactif, mise en valeur des URL, etc.)
+# en prenant garde à ne rien écraser :
+mkdir -p ${PKG}/etc/xdg/Terminal
+cat > ${PKG}/etc/xdg/Terminal/terminalrc.0nouveau << "EOF"
+[Configuration]
+FontName=DejaVu Sans Mono 10
+MiscHighlightUrls=TRUE
+ScrollingLines=10000
+CommandLoginShell=TRUE
+
+EOF
 
 installer_doc
 creer_post_installation

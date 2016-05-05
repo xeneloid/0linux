@@ -2,7 +2,7 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=Glib
-VERSION=1.307
+VERSION=1.321
 WGET=http://prdownloads.sourceforge.net/gtk2-perl/$NAMESRC-$VERSION.tar.gz
 DESC="Interfaçage Glib pour Perl"
 

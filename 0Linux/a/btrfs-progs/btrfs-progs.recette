@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=44cdb62d34
+VERSION=9459f3650c
 WGET=git://git.kernel.org/pub/scm/linux/kernel/git/kdave/$NAMESRC.git
 DESC="Outils pour systèmes de fichiers Btrfs"
 
@@ -9,13 +9,21 @@ telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
+# On génère les outils de compilation :
+./autogen.sh
+
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+./configure \
+	--prefix=/usr \
+	--sysconfdir=/etc \
+	--localstatedir=/var \
+	--libdir=/usr/lib${LIBDIRSUFFIX} \
+	--mandir=/usr/man \
+	--infodir=/usr/info \
+	--build=${PKGARCH}-0linux-linux-gnu
+
 make -j${JOBS} || make
-
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
-make -j${JOBS} btrfs-select-super || make btrfs-select-super
-
 fakeroot make install prefix=${PKG}/usr
 
 # On ajoute ce binaire :

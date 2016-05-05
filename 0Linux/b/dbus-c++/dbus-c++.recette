@@ -10,13 +10,20 @@ preparer_sources # À partir d'ici, on se trouve dans les sources décompactées
 cflags
 
 # On corrige la compilation avec GCC 4.7+ :
-sed -i '/#include <fcntl.h>/ a\
+sed -i '/#include <fcntl\.h>/ a\
 #include <unistd.h>' src/eventloop-integration.cpp
 
-# Compilation avec ajout de drapeaux manquants et en évitant une dépendance sur 'efl' :
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+# On corrige une collision entre une macro et une fonction ayant le même
+# nom :
+sed -i -e '/#include <gtkmm\.h>/d' \
+	-e '/#define __DEMO_DBUS_BROWSER_H/ a\
+#include <gtkmm.h>' examples/glib/dbus-browser.h
+
+# Compilation avec ajout de drapeaux manquants et en évitant une
+# dépendance sur 'efl' :
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS} -std=c++11" \
 LDFLAGS+=" -lexpat -lpthread" \
-./configure \
+./autogen.sh \
 	--prefix=/usr \
 	--sysconfdir=/etc \
 	--localstatedir=/var \

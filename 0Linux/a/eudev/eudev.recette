@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.1.2
+VERSION=3.1.5
 WGET=http://dev.gentoo.org/~blueness/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Système de gestion dynamique de périphériques"
 
@@ -19,13 +19,6 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	# On passe en 32 bits :
 	cflags i686
 	
-	# On corrige un chemin pour respecter notre répertoire de bibliothèques.
-	# Cf. https://github.com/gentoo/eudev/issues/93 :
-	sed -i 's@rootprefix}/lib/udev@rootprefix}/${libdir}/udev@' configure.ac
-	
-	# Compilation pour i686 :
-	autoreconf -vif
-	
 	CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	./configure \
 		--bindir=/usr/bin \
@@ -38,13 +31,9 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		--infodir=/usr/info \
 		--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 		--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
-		--config-cache \
-		--enable-gudev \
 		--enable-hwdb \
-		--enable-modules \
 		--disable-introspection \
 		--enable-rule-generator \
-		--enable-static \
 		--with-rootprefix=/ \
 		--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
 		--with-rootlibexecdir=/usr/lib${LIBDIRSUFFIX}/udev \
@@ -59,13 +48,7 @@ fi
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige un chemin pour respecter notre répertoire de bibliothèques.
-# Cf. https://github.com/gentoo/eudev/issues/93 :
-sed -i 's@rootprefix}/lib/udev@rootprefix}/${libdir}/udev@' configure.ac
-
 # Compilation :
-autoreconf -vif
-
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--bindir=/usr/bin \
@@ -79,17 +62,13 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--htmldir=/usr/doc/${NAMETGZ}-${VERSION}/html \
-	--config-cache \
-	--enable-gudev \
 	--enable-hwdb \
-	--enable-libkmod \
-	--enable-modules \
 	--enable-introspection \
 	--enable-rule-generator \
-	--enable-static \
 	--with-rootprefix=/ \
 	--with-rootlibdir=/usr/lib${LIBDIRSUFFIX} \
 	--with-rootlibexecdir=/usr/lib${LIBDIRSUFFIX}/udev \
+	--with-rootrundir=/run \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
