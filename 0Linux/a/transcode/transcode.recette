@@ -2,14 +2,17 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=1.1.7
-WGET=https://bitbucket.org/france/transcode-tcforge/downloads/$NAMESRC-$VERSION.tar.bz2
+WGET=(
+      https://bitbucket.org/france/transcode-tcforge/downloads/$NAMESRC-$VERSION.tar.bz2
+      http://downloads.sourceforge.net/sourceforge/subtitleripper/subtitleripper-0.3-4.tgz
+     )
 DESC="Outils de codage-décodage de formats multimédia"
 
 telecharger_sources
-preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+preparer_sources $NAMESRC-$VERSION.tar.bz2
 cflags
 
-# On adapate le code aux plus récents 'ffmpeg' et on corrige certains problèmes
+# On adapte le code aux plus récents 'ffmpeg' et on corrige certains problèmes
 # avec cette collection de correctifs de Gentoo :
 cat $CWD/transcode.ffmpeg.patch | patch -p0
 cat $CWD/transcode.ffmpeg-0.10.patch | patch -p0
@@ -18,7 +21,9 @@ cat $CWD/transcode.preset-free.patch | patch -p1
 cat $CWD/transcode.libav-9.patch | patch -p0
 cat $CWD/transcode.preset-force.patch | patch -p1
 cat $CWD/transcode.ffmpeg2.patch | patch -p1
+cat $CWD/transcode.freetype251.patch | patch -p1
 cat $CWD/transcode.ffmpeg2.4.patch | patch -p1
+cat $CWD/transcode.ffmpeg3.patch | patch -p1
 
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
@@ -56,6 +61,21 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
+
+# On compile subtitleripper :
+preparer_sources subtitleripper-0.3-4.tgz
+
+# On corrige des problèmes connus :
+sed -i 's|freetype/ftglyph.h|freetype2/freetype/ftglyph.h|' filter/subtitler/load_font.c
+cat $CWD/transcode.subtitleripper-linkingorder.patch | patch -p0
+cat $CWD/transcode.subtitleripper-ldflags.patch | patch -p0
+sed -i -e 's|^\(.*lppm.*\)$|#\1|' \
+	-e 's|^\(.*D_HAVE_LIB_PPM.*\)$|#\1|' \
+	-e 's/DEFINES :=/DEFINES = -DHAVE_GETLINE/' \
+	Makefile
+
+make -j${JOBS} || make
+cp pgm2txt srttool subtitle2pgm subtitle2vobsub vobsub2pgm ${PKG}/usr/bin/
 
 installer_doc
 creer_post_installation

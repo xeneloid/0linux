@@ -2,8 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 NAMESRC=HandBrake
-VERSION=0.10.1
-WGET=http://prdownloads.sourceforge.net/$NAMETGZ/$NAMESRC-$VERSION.tar.bz2
+VERSION=0.10.5
+WGET=https://handbrake.fr/mirror/$NAMESRC-$VERSION.tar.bz2
 DESC="Application de conversion audio et vidéo"
 
 telecharger_sources
@@ -12,16 +12,13 @@ cflags
 
 # On préfère utiliser les libs du système :
 sed -i \
-    -e '/MODULES += contrib\/libbluray/d' \
-    -e '/MODULES += contrib\/libdvdnav/d' \
-    -e '/MODULES += contrib\/libdvdread/d' \
-    make/include/main.defs
-
-# Empêche un crash au chargement d'une vidéo :
-cat $CWD/handbrake.crash.patch | patch -p2
+	-e '/MODULES += contrib\/libbluray/d' \
+	-e '/MODULES += contrib\/libdvdnav/d' \
+	-e '/MODULES += contrib\/libdvdread/d' \
+	make/include/main.defs
 
 # Compilation :
-CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
 	--disable-gtk-update-checks \

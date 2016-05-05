@@ -583,7 +583,7 @@ EOF
 		
 		# Pour chaque script rencontré en '.*sh' :
 		for fichierprofil in $(find ${PKG}/etc/profile.d -type f -name "*.*sh"); do
-			echo "chroot . [ -x etc/profile.d/$(basename ${fichierprofil}) ] && etc/profile.d/$(basename ${fichierprofil}) >/dev/null 2>&1" >> ${PKG}/post-install.sh
+			echo "chroot . etc/profile.d/$(basename ${fichierprofil}) >/dev/null 2>&1 || true" >> ${PKG}/post-install.sh
 		done
 	fi
 	

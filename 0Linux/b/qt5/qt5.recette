@@ -25,11 +25,14 @@ export LD_LIBRARY_PATH=${CWD}/qtbase/lib:${CWD}/qttools/lib:${LD_LIBRARY_PATH}
 export QT_PLUGIN_PATH=${CWD}/qtbase/plugins
 
 ./configure \
-	-prefix "/usr/lib${LIBDIRSUFFIX}/qt5" \
-	-sysconfdir "/etc/xdg" \
-	-headerdir "/usr/include/qt5" \
-	-libdir "/usr/lib${LIBDIRSUFFIX}" \
-	-docdir "/usr/doc/${NAMETGZ}-${VERSION}" \
+	-prefix /usr \
+	-archdatadir /usr/lib${LIBDIRSUFFIX}/qt5 \
+	-bindir /usr/lib${LIBDIRSUFFIX}/qt5/bin \
+	-datadir /usr/share/qt5 \
+	-docdir /usr/doc/${NAMETGZ}-${VERSION} \
+	-headerdir /usr/include/qt5 \
+	-libdir /usr/lib${LIBDIRSUFFIX} \
+	-sysconfdir /etc/xdg \
 	-accessibility \
 	-confirm-license \
 	-dbus-linked \
@@ -71,10 +74,10 @@ for BIN in ${PKG}/usr/lib${LIBDIRSUFFIX}/qt5/bin/*; do
 	TMP_FILE=$(echo ${BIN} | sed -e "s|$PKG||")
 	case $(basename ${BIN}) in
 		syncqt.pl)
-			ln -s ${TMP_FILE} ${PKG}/usr/bin/$(basename ${BIN})
+			ln -sf ${TMP_FILE} ${PKG}/usr/bin/$(basename ${BIN})
 		;;
 		*)
-			ln -s ${TMP_FILE} ${PKG}/usr/bin/$(basename ${BIN})-qt5
+			ln -sf ${TMP_FILE} ${PKG}/usr/bin/$(basename ${BIN})-qt5
 		;;
 	esac
 done
@@ -104,31 +107,6 @@ for icone in qttools/src/linguist/linguist/images/icons/linguist-*-32.png ; do
 	taille=$(echo $(basename ${icone}) | cut -d- -f2)
 	cp -a ${icone} ${PKG}/usr/share/icons/hicolor/${taille}x${taille}/apps/qt5-linguist.png || true
 done
-
-# On crée le fichier pour pkgconfig :
-cat > $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt5.pc << EOF
-prefix=/usr/lib${LIBDIRSUFFIX}/qt5
-bindir=\${prefix}/bin
-datadir=\${prefix}
-docdir=/usr/doc/$NAMETGZ-$VERSION
-archdatadir=\${prefix}
-examplesdir=\${prefix}/examples
-headerdir=/usr/include/qt5
-importdir=\${prefix}/imports
-qmldir=\${prefix}/qml
-libdir=/usr/lib${LIBDIRSUFFIX}
-libexec=\${prefix}/libexec
-moc=\${bindir}/moc
-plugindir=\${prefix}/plugins
-qmake=\${bindir}/qmake
-sysconfdir=/etc/xdg
-translationdir=\${prefix}/translations
-
-Name: Qt5
-Description: Ensemble de bibliothèques Qt5
-Version: $VERSION
-EOF
-
 
 # On ajoute les raccourcis bureau :
 mkdir -p ${PKG}/usr/share/applications

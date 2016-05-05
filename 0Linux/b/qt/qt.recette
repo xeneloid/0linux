@@ -59,6 +59,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		-libdir /usr/lib${LIBDIRSUFFIX} \
 		-no-phonon \
 		-no-rpath \
+		-no-webkit \
 		-nomake demos \
 		-nomake docs \
 		-nomake examples \
@@ -70,7 +71,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 		-plugindir /usr/lib${LIBDIRSUFFIX}/qt4/plugins \
 		-reduce-relocations \
 		-release \
-		-translationdir /usr/share/qt/translations
+		-translationdir /usr/share/qt4/translations
 	
 	make -j${JOBS} || make
 	fakeroot make install INSTALL_ROOT=${PKG}
@@ -148,14 +149,16 @@ QMAKSPEC=linux-g++-${OPTMACHINE} \
 ./configure \
 	-prefix                         /usr \
 	-confirm-license \
-	-datadir                        /usr/share/qt \
+	-datadir                        /usr/share/qt4 \
 	-docdir                         /usr/doc/${NAMETGZ}-$VERSION \
 	-fast \
+	-headerdir                      /usr/include/qt4 \
 	-importdir                      /usr/lib${LIBDIRSUFFIX}/qt4/imports \
 	-L/usr/lib${LIBDIRSUFFIX} \
-	-libdir /usr/lib${LIBDIRSUFFIX} \
+	-libdir                         /usr/lib${LIBDIRSUFFIX} \
 	-no-phonon \
 	-no-rpath \
+	-no-webkit \
 	-nomake demos \
 	-nomake examples \
 	-opensource \
@@ -164,7 +167,7 @@ QMAKSPEC=linux-g++-${OPTMACHINE} \
 	-plugindir                      /usr/lib${LIBDIRSUFFIX}/qt4/plugins \
 	-reduce-relocations \
 	-release \
-	-translationdir                 /usr/share/qt/translations
+	-translationdir                 /usr/share/qt4/translations
 
 make -j${JOBS} || make
 fakeroot make install INSTALL_ROOT=${PKG}
@@ -175,8 +178,8 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	mv ${PKG}/usr/bin/qmake{,-64}
 	mv ${PKG}/usr/bin/uic{,-64}
 	mv ${PKG}/usr/bin/uic3{,-64}
-	mv ${PKG}/usr/include/Qt/qconfig{,-64}.h
-	mv ${PKG}/usr/include/QtCore/qconfig{,-64}.h
+	mv ${PKG}/usr/include/qt4/Qt/qconfig{,-64}.h
+	mv ${PKG}/usr/include/qt4/QtCore/qconfig{,-64}.h
 	
 	# On lie un 'qmake-qt4' dont certains paquets ont besoin :
 	ln -sf qmake-64 ${PKG}/usr/bin/qmake-qt4-64
@@ -189,7 +192,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 	ln -sf enveloppe_multiarch ${PKG}/usr/bin/uic3
 
 	# On crée des entêtes génériques :
-	cat > ${PKG}/usr/include/Qt/qconfig.h << "EOF"
+	cat > ${PKG}/usr/include/qt4/Qt/qconfig.h << "EOF"
 #ifndef __STUB__QT4_CONFIG_H__
 #define __STUB__QT4_CONFIG_H__
 
@@ -202,7 +205,7 @@ if [ "${PKGARCH}" = "x86_64" ]; then
 #endif
 EOF
 
-	cat > ${PKG}/usr/include/QtCore/qconfig.h << "EOF"
+	cat > ${PKG}/usr/include/qt4/QtCore/qconfig.h << "EOF"
 #ifndef __STUB__QT4CORE_CONFIG_H__
 #define __STUB__QT4CORE_CONFIG_H__
 
@@ -241,18 +244,18 @@ installer_doc
 # On crée un fichier pour 'pkg-config' :
 mkdir -p ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig
 cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt.pc << EOF
-prefix=/usr/lib${LIBDIRSUFFIX}
+prefix=/usr
 bindir=\${prefix}/bin
-datadir=\${prefix}/share/qt
-docdir=\${prefix}/doc
-headerdir=\${prefix}/include
+datadir=\${prefix}/share/qt4
+docdir=\${prefix}/doc/${NAMETGZ}-${VERSION}
+headerdir=\${prefix}/include/qt4
 importdir=\${prefix}/lib${LIBDIRSUFFIX}/qt4/imports
 libdir=\${prefix}/lib${LIBDIRSUFFIX}
 moc=\${bindir}/moc
 plugindir=\${prefix}/lib${LIBDIRSUFFIX}/qt4/plugins
 qmake=\${bindir}/qmake
 sysconfdir=\${prefix}/etc
-translationdir=\${prefix}/share/qt/translations
+translationdir=\${prefix}/share/qt4/translations
 
 Name: Qt
 Description: Qt Configuration

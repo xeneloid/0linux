@@ -2,10 +2,8 @@
 . /usr/share/0outils/fonctions_paquets.sh
 
 VERSION=3.99.5
-EXT=tar.gz
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.$EXT
+WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Encodeur et analyseur MP3"
-
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
@@ -22,6 +20,7 @@ CFLAGS="${FLAGS} -O3" CXXFLAGS="${FLAGS} -O3" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--enable-mp3rtp \
+	--enable-nasm \
 	--enable-shared \
 	--build=${PKGARCH}-0linux-linux-gnu
 

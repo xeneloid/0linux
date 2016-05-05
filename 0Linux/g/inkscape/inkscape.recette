@@ -1,23 +1,19 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.48.5
-WGET=http://prdownloads.sourceforge.net/$NAMESRC/$NAMESRC-$VERSION.tar.bz2
+VERSION=0.91
+WGET=https://inkscape.org/en/gallery/item/3860/$NAMESRC-$VERSION.tar.bz2
 DESC="Éditeur de graphismes vectoriels SVG"
 
 telecharger_sources
 preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
 cflags
 
-# On corrige la compilation avec les plus récents 'poppler' :
-cat $CWD/inkscape.poppler-0.29+.patch | patch -p0
-
-# On corrige la détection de 'gc' :
-sed -i '/extern unsigned GC_version;/c unsigned GC_version=GC_VERSION_MAJOR<<16+GC_VERSION_MINOR<<8+GC_VERSION_MICRO;' configure
+# On active une extension oubliée :
+cp $CWD/markers_strokepaint.inx share/extensions/
 
 # Compilation :
-autoreconf -vif
-CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
+CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS} -std=c++11" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -27,10 +23,9 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--infodir=/usr/info \
 	--docdir=/usr/doc/${NAMETGZ}-${VERSION} \
 	--disable-dependency-tracking \
+	--disable-strict-build \
 	--enable-lcms \
 	--enable-poppler-cairo \
-	--with-perl \
-	--with-python \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make

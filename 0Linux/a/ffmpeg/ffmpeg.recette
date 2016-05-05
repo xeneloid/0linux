@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=3.0
+VERSION=3.0.2
 WGET=(http://ffmpeg.org/releases/$NAMESRC-0.10.16.tar.bz2
       http://ffmpeg.org/releases/$NAMESRC-2.8.6.tar.bz2
       http://ffmpeg.org/releases/$NAMESRC-$VERSION.tar.bz2
@@ -42,6 +42,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-libmp3lame \
 	--enable-libopencore_amrnb \
 	--enable-libopencore_amrwb \
+	--enable-libpulse \
 	--enable-librtmp \
 	--enable-libschroedinger \
 	--enable-libspeex \
@@ -108,6 +109,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-libopencore_amrwb \
 	--enable-libopencv \
 	--enable-libopus \
+	--enable-libpulse \
 	--enable-librtmp \
 	--enable-libschroedinger \
 	--enable-libspeex \
@@ -148,6 +150,7 @@ cflags
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \
 	--prefix=/usr \
+	--incdir=/usr/include \
 	--libdir=/usr/lib${LIBDIRSUFFIX} \
 	--shlibdir=/usr/lib${LIBDIRSUFFIX} \
 	--disable-debug \
@@ -175,6 +178,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-libopencore_amrwb \
 	--enable-libopencv \
 	--enable-libopus \
+	--enable-libpulse \
 	--enable-librtmp \
 	--enable-libschroedinger \
 	--enable-libspeex \
