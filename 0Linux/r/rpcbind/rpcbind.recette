@@ -12,12 +12,6 @@ cflags
 # On corrige la compilation avec 'libtirpc' :
 cat $CWD/rpcbind.libtirpc.patch | patch -p1
 
-# On corrige une fuite mémoire :
-cat $CWD/rpcbind.memory.patch | patch -p1
-
-# On corrige un appel :
-cat $CWD/rpcbind-svc_xp_auth.patch | patch -p1
-
 # Compilation :
 CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 ./configure \

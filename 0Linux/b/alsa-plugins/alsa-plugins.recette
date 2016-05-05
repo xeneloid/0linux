@@ -40,6 +40,7 @@ preparer_sources
 cflags
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 # On permet la compilation avec des versions modernes de libavcodec :
 sed -i 's/ && LIBAVCODEC_VERSION_MINOR >= 34//' a52/pcm_a52.c
 
@@ -58,6 +59,8 @@ CFLAGS="${FLAGS}  -DHAVE_STDINT_H" CXXFLAGS="${FLAGS} -DHAVE_STDINT_H" \
 make -j${JOBS} || make
 fakeroot make install DESTDIR=${PKG}
 =======
+=======
+>>>>>>> iota
 # On a besoin de ces drapeaux pour que la compilation passe avec 'speex' :
 export FLAGS="${FLAGS} -DHAVE_STDINT_H -DUSE_LIBSPEEX"
 

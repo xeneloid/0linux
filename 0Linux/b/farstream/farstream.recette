@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
+<<<<<<< HEAD
+=======
+VERSION=0.2.7
+>>>>>>> iota
 WGET=http://freedesktop.org/software/farstream/releases/$NAMESRC/$NAMESRC-$VERSION.tar.gz
 DESC="Ensemble réseau pour les communications audio/vidéo"
 
