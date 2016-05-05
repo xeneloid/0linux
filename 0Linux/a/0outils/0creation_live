@@ -72,7 +72,7 @@ mkdir -p $TMP
 # On crée et on vide les répertoires d'accueil :
 rm -rf ${MEDIAROOT} ${LIVEOS} ${NOYAU} ${INITRDGZ}
 rm -f ${ISODIR}/*.iso
-mkdir -p ${LIVEOS} ${ISODIR} 
+mkdir -p ${LIVEOS} ${ISODIR}
 mkdir -p ${MEDIAROOT}/{boot/isolinux,0/paquets}
 
 # On installe les paquets pour le système temporaire :
@@ -116,6 +116,7 @@ gdbm \
 inetutils \
 perl \
 diffutils \
+libsigsegv \
 gawk \
 findutils \
 xz \
@@ -224,6 +225,7 @@ libmpfr.so* \
 librtmp-*.so* \
 libnettle*.so* \
 libsasl*.so* \
+libsigsegv*.so* \
 libsqlite*.so* \
 libssh*.so* \
 libstdc++.so* \
@@ -402,7 +404,7 @@ sed -i 's@--noclear@@g' ${LIVEOS}/etc/inittab
 ln -sf sbin/init ${LIVEOS}/init
 
 # On vide le mot de passe du compte 'root' (envoyer vos plaintes pour sacrilège) :
-chroot ${LIVEOS} passwd -d root
+chroot ${LIVEOS} echo "root:" | chpasswd
 
 # On nettoie tous les fichiers '*.0nouveau' au cas où :
 for f in $(find ${LIVEOS}/{etc,var} -type f -name "*.0nouveau" 2>/dev/null); do

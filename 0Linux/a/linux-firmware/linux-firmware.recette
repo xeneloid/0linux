@@ -11,7 +11,7 @@ cflags # Pour définir $LIBDIRSUFFIX
 
 # On place tous les firmwares :
 mkdir -p  ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware
-cp -a * ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware/
+fakeroot make install FIRMWAREDIR=/usr/lib${LIBDIRSUFFIX}/firmware DESTDIR=${PKG}
 
 # On supprime les fichiers de construction :
 rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware/{configure,Makefile*}
@@ -19,7 +19,7 @@ rm -f ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware/{configure,Makefile*}
 installer_doc
 
 # On déplace la doc où il faut :
-mv ${PKG}/usr/lib${LIBDIRSUFFIX}/firmware/{README*,GPL*,LICEN*,WHENCE} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
+cp {README*,GPL*,LICEN*,WHENCE} ${PKG}/usr/doc/${NAMETGZ}-${VERSION}/
 
 creer_post_installation
 stripper

@@ -49,6 +49,10 @@ PKGREPO=${PKGREPO:-/usr/local/paquets}
 # entre autres.
 UGLYPKGROOT=${UGLYPKGROOT:-/tmp/paquets_invasifs}
 
+# On construit et on installe les paquets, avec ou sans 'sudo' :
+SUDOBINAIRE=""
+[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
+
 # La fonction de construction/installation de chaque paquet :
 # $f RECETTE
 compiler_installer() {
@@ -56,10 +60,6 @@ compiler_installer() {
 	# On compile chaque recette dans un sous-shell pour éviter de quitter
 	# la boucle à la moindre erreur :
 	(
-		# On construit et on installe le paquet, avec ou sans 'sudo' :
-		SUDOBINAIRE=""
-		[ -x /usr/bin/sudo ] && SUDOBINAIRE="sudo"
-		
 		# On se place dans le répertoire de la recette en paramètre :
 		cd $(dirname ${1})
 		
@@ -173,8 +173,9 @@ for param in $@; do
 			ISOTYPE="$(echo ${param} | cut -d'-' -f3)"
 			
 			# On nettoie et on génère l'iso dans '/usr/local/temp' (par défaut, mais sait-on jamais) :
-			sudo rm -rf /usr/local/temp/iso/${VERSION}/*
-			sudo TMP=/usr/local/temp 0creation_live --${ISOTYPE} ${PKGREPO}/$(uname -m)/
+			${SUDOBINAIRE} rm -rf /usr/local/temp/iso/${VERSION}/*
+			export TMP=/usr/local/temp
+			${SUDOBINAIRE} 0creation_live --${ISOTYPE} ${PKGREPO}/$(uname -m)/
 			
 			# On copie le noyau et l'initrd fraîchement générés :
 			mkdir -p $(pwd)/../../../pub/installateur/${VERSION}/$(uname -m)
@@ -185,8 +186,8 @@ for param in $@; do
 			
 			# On nettoie toute ancienne image, on copie l'image et on génère la somme de contrôle MD5 :
 			rm -f $(pwd)/../../../pub/iso/${VERSION}/*-${ISOTYPE}-$(uname -m).iso*
-			cp /usr/local/temp/iso/${NOMISO} $(pwd)/../../../pub/iso/${VERSION}
-			cd $(pwd)/../../../pub/iso/${VERSION}/
+			cp /usr/local/temp/iso/${NOMISO} $(pwd)/../../../pub/iso/
+			cd $(pwd)/../../../pub/iso/
 			md5sum ${NOMISO} > ${NOMISO}.md5
 			cd -
 			

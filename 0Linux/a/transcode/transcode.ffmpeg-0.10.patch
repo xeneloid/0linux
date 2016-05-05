@@ -12,3 +12,4 @@ http://bugs.gentoo.org/401287
 +static pp_context *context[100];
  static int width[100], height[100];
  static int pre[100];
+ 

@@ -51,6 +51,15 @@ sed -i "s@GROUP=1000@GOUP=100@" ${PKG}/etc/default/useradd
 
 installer_doc
 creer_post_installation
+
+# On complète la post-installation :
+cat >> ${PKG}/post-install.sh << "EOF"
+
+# 'su' doit être SUID root :
+chmod 4755 usr/bin/su
+
+EOF
+
 stripper
 empaqueter
 

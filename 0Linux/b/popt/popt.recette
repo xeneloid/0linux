@@ -24,15 +24,16 @@ make -j${JOBS} || make
 doxygen
 
 # On corrige certains chemins en dur :
-sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" libpopt.la
-sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" .libs/libpopt.lai
+sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" *.la
+sed -i "s@\(^libdir='\).*@\1/usr/lib${LIBDIRSUFFIX}'@g" .libs/*.lai
+sed -i 's@pkgconfigdir =.*@pkgconfigdir = $(libdir)/pkgconfig@' Makefile
+
+fakeroot make install usrlibdir=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
 
 # On lance la suite de tests si $TESTS est positionnée :
 if [ ! "${TESTS}" = "" ]; then
 	make -k check 2>&1 || true
 fi
-
-fakeroot make install usrlibdir=/usr/lib${LIBDIRSUFFIX} DESTDIR=${PKG}
 
 installer_doc
 
