@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=1.18.0
+VERSION=1.18.2
 WGET=http://xorg.freedesktop.org/releases/individual/xserver/$NAMESRC-$VERSION.tar.bz2
 DESC="Le serveur graphique X11"
 
@@ -38,6 +38,7 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--enable-kdrive-kbd \
 	--enable-kdrive-mouse \
 	--enable-record \
+	--enable-suid-wrapper \
 	--enable-xcsecurity \
 	--enable-xephyr \
 	--enable-xfbdev \
@@ -48,21 +49,20 @@ CFLAGS="${FLAGS}" CXXFLAGS="${FLAGS}" \
 	--with-builder-addr="appzer0@0linux.org" \
 	--with-default-font-path="/usr/share/fonts/local,/usr/share/fonts/TTF,/usr/share/fonts/OTF,/usr/share/fonts/Type1,/usr/share/fonts/misc,/usr/share/fonts/CID,/usr/share/fonts/75dpi/:unscaled,/usr/share/fonts/100dpi/:unscaled,/usr/share/fonts/75dpi,/usr/share/fonts/100dpi,/usr/share/fonts/cyrillic" \
 	--with-module-dir=/usr/lib${LIBDIRSUFFIX}/xorg/modules \
-	--with-os-name=0Linux \
-	--with-os-vendor="0Linux" \
+	--with-os-name="0Linux" \
+	--with-os-vendor="Projet 0Linux" \
 	--with-vendor-web="http://0linux.org" \
 	--with-xkb-output=/var/lib/xkb \
 	--with-xkb-path=/etc/X11/xkb \
 	--build=${PKGARCH}-0linux-linux-gnu
 
 make -j${JOBS} || make
+fakeroot make install DESTDIR=${PKG}
 
 # On lance la suite de tests si $TESTS est positionnée :
 if [ ! "${TESTS}" = "" ]; then
 	make -k check 2>&1 || true
 fi
-
-fakeroot make install DESTDIR=${PKG}
 
 # On place les fichiers de configuration et on veille à ne rien écraser :
 mkdir -p ${PKG}/etc/X11/xorg.conf.d
