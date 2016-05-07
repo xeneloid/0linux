@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+. /usr/share/0outils/fonctions_paquets.sh
+
+VERSION=9.38.1
+WGET=https://prdownloads.sourceforge.net/$NAMESRC/${NAMESRC}_${VERSION}_src_all.tar.bz2
+DESC="Compresseur hautes performances 7-zip"
+
+telecharger_sources
+preparer_sources # À partir d'ici, on se trouve dans les sources décompactées.
+cflags
+
+# On prépare les makefiles selon l'architecture :
+if [ "${PKGARCH}" = "x86_64" ]; then
+	cp makefile.linux_amd64_asm makefile.machine
+else
+	cp makefile.linux_x86_asm_gcc_4.X makefile.machine
+fi
+  
+# Compilation :
+make -j${JOBS} all3 OPTFLAGS="${FLAGS} -O3" || make all3 OPTFLAGS="${FLAGS}"
+fakeroot make install DEST_DIR=${PKG} DEST_HOME=/usr DEST_MAN=/usr/man DEST_SHARE=/usr/lib${LIBDIRSUFFIX}/p7zip
+
+installer_doc
+creer_post_installation
+stripper
+empaqueter
+
+# C'est fini.
