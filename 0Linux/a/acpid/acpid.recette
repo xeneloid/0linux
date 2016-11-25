@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=2.0.23
+VERSION=2.0.28
 WGET=http://prdownloads.sourceforge.net/${NAMESRC}2/$NAMESRC-$VERSION.tar.xz
 DESC="Gestion de l'énergie ACPI"
 
