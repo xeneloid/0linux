@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . /usr/share/0outils/fonctions_paquets.sh
 
-VERSION=0.1.1
+VERSION=0.1.7
 WGET=https://github.com/i-rinat/$NAMESRC/archive/v${VERSION}.tar.gz
 DESC="Émulateur PulseAudio pour ALSA"
 
